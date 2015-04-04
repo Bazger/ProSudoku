@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" android:weightSum="1" android:background="@drawable/background">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView" android:layout_gravity="center_horizontal"/>
+    <com.example.ProSudoku.MatrixView
+            android:id="@+id/matrix_view"
+            android:layout_width="match_parent"
+            android:layout_height="311dp"
+            android:layout_weight="0.65"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <Button android:id="@+id/solve_button"
+            android:layout_marginLeft="30px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/solve_label" android:layout_weight="1"/>
+
+        <Button android:id="@+id/clear_button"
+                android:layout_marginRight="30px"
+                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/clear_label"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>
