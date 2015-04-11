@@ -1,6 +1,8 @@
 package com.example.ProSudoku;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.*;
 import android.util.Log;
 import android.widget.Chronometer;
@@ -29,13 +31,12 @@ public class Game extends Activity implements IMatrix {
 
     protected static final int DIFFICULTY_CONTINUE = -1;
 
-    final String PREF_MATRIX = "Matrix";
-    final String PREF_CHANGE_MATRIX = "Change matrix";
+    final static String PREF_MATRIX = "matrix";
+    final static String PREF_CHANGE_MATRIX = "change_matrix";
 
     IRandomizer Randomizer = new DefaultRandomizer();
 
     private TextView textView;
-
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -151,9 +152,9 @@ public class Game extends Activity implements IMatrix {
         // TODO: Continue last game
         switch (diff) {
             case DIFFICULTY_CONTINUE:
-                String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, "");
+                String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null);
                 MemoryMatrix = fromMatrixString(str);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, "");
+                str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null);
                 ChangeMatrix = fromChangeMatrixString(str);
                 break;
             case DIFFICULTY_HARD:
@@ -167,6 +168,19 @@ public class Game extends Activity implements IMatrix {
                 Generate(30 + Randomizer.GetInt(6));
                 break;
         }
+    }
+
+    private void openNewGameDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.new_game_title)
+                .setItems(R.array.difficulty,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialoginterface,
+                                                int i) {
+                                getMatrix(i);
+                            }
+                        })
+                .show();
     }
 
     /*public class CounterClass extends CountDownTimer

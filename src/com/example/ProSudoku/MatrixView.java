@@ -19,7 +19,7 @@ class MatrixView extends View {
 
     private final int matrixSpaceSmall = 5;//2;
     private final int matrixSpaceBig = 10;//5;
-    private final int matrixChoseBorder = 5;//2;
+    private final int matrixChoseBorder = 7;//2;
 
     private Rect[][] RectMatrix;
     private Rect[] NumberMatrix;
@@ -53,19 +53,19 @@ class MatrixView extends View {
 
     private final int backColor = Color.BLACK;
     private final int cellColor = Color.WHITE;
-    private final int choseEmptyCellColor = Color.RED;
-    private final int choseCellColor = Color.GREEN;
+    private final int sameEmptyNumberCellColor = Color.RED;
+    private final int choseEmptyCellColor = Color.GREEN;
+    private final int choseCellColor = Color.rgb(50, 205, 50);
     private final int changeableTextColor = Color.BLUE;
     private final int idleTextColor = Color.BLACK;
+    private final int errorColor = Color.RED;
 
     //Practical matrix width
-    public int getMatrixWidth()
-    {
+    public int getMatrixWidth() {
         return matrixCellWidth * matrixRectCount + matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) + matrixSpaceSmall * matrixSmallSpaceCount;
     }
 
-    public int getNumberMatrixWidth()
-    {
+    public int getNumberMatrixWidth() {
         return numberMatrixCellWidth * NumberMatrix.length + (NumberMatrix.length - 1) * matrixSpaceSmall;
     }
 
@@ -94,11 +94,10 @@ class MatrixView extends View {
 
     String currentTime;
 
-    private void initViews(Context context, AttributeSet attrs)
-    {
+    private void initViews(Context context, AttributeSet attrs) {
         matrixRectCount = activity.getMatrixRectCount();
         asset = context.getAssets();
-        myTypeface =  Typeface.createFromAsset(asset, "Mandarin.ttf");
+        myTypeface = Typeface.createFromAsset(asset, "Mandarin.ttf");
 
         new CountDownTimer(30000, 1000) {
 
@@ -128,32 +127,30 @@ class MatrixView extends View {
         LoadMatrix();
     }
 
-    private void LoadMatrix()
-    {
+    private void LoadMatrix() {
         xPos = (resolution.x - matrixWidth) / 2;
-        yPos = (int)((resolution.y * yPosRatio) / 100);
-        matrixSmallSpaceCount = matrixRectCount - (int)Math.sqrt(matrixRectCount);
+        yPos = (int) ((resolution.y * yPosRatio) / 100);
+        matrixSmallSpaceCount = matrixRectCount - (int) Math.sqrt(matrixRectCount);
         matrixCellWidth = getMatrixCellWidth(); //(matrixWidth - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount) / matrixRectCount;
 
         for (int i = 0; i < RectMatrix.length; i++)
-            for (int j = 0; j < RectMatrix[i].length; j++)
-            {
-                RectMatrix[i][j] = new Rect(xPos + matrixSpaceSmall * j + (matrixSpaceBig - matrixSpaceSmall) * (int)(j / Math.sqrt(matrixRectCount)) + matrixCellWidth * j,
-                        yPos + matrixSpaceSmall * i + (matrixSpaceBig - matrixSpaceSmall) * (int)(i / Math.sqrt(matrixRectCount)) + matrixCellWidth * i,
-                        xPos + matrixSpaceSmall * j + (matrixSpaceBig - matrixSpaceSmall) * (int)(j / Math.sqrt(matrixRectCount)) + matrixCellWidth * j + matrixCellWidth,
-                        yPos + matrixSpaceSmall * i + (matrixSpaceBig - matrixSpaceSmall) * (int)(i / Math.sqrt(matrixRectCount)) + matrixCellWidth * i + matrixCellWidth);
-                if(activity.getMemoryMatrix()[i][j] == 0)
+            for (int j = 0; j < RectMatrix[i].length; j++) {
+                RectMatrix[i][j] = new Rect(xPos + matrixSpaceSmall * j + (matrixSpaceBig - matrixSpaceSmall) * (int) (j / Math.sqrt(matrixRectCount)) + matrixCellWidth * j,
+                        yPos + matrixSpaceSmall * i + (matrixSpaceBig - matrixSpaceSmall) * (int) (i / Math.sqrt(matrixRectCount)) + matrixCellWidth * i,
+                        xPos + matrixSpaceSmall * j + (matrixSpaceBig - matrixSpaceSmall) * (int) (j / Math.sqrt(matrixRectCount)) + matrixCellWidth * j + matrixCellWidth,
+                        yPos + matrixSpaceSmall * i + (matrixSpaceBig - matrixSpaceSmall) * (int) (i / Math.sqrt(matrixRectCount)) + matrixCellWidth * i + matrixCellWidth);
+                if (activity.getMemoryMatrix()[i][j] == 0)
                     activity.getChangeMatrix()[i][j] = true;
             }
 
         //numberYPos = getMatrixWidth() + yPos + resolution.y * yPosNumberCellRatio / 100;
         numberMatrixCellWidth = getNumberMatrixCellWidth();//(matrixWidth - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
-        numberYPos = (int)(resolution.y - (resolution.y * yPosNumberCellRatio) / 100 -  numberMatrixCellWidth - matrixSpaceBig);
+        numberYPos = (int) (resolution.y - (resolution.y * yPosNumberCellRatio) / 100 - numberMatrixCellWidth - matrixSpaceBig);
         numberXPos = xPos + (getMatrixWidth() - getNumberMatrixWidth()) / 2;
 
         for (int i = 0; i < NumberMatrix.length; i++)
             NumberMatrix[i] = new Rect(numberXPos + numberMatrixCellWidth * i + matrixSpaceSmall * i, numberYPos,
-                    numberXPos + numberMatrixCellWidth * i + matrixSpaceSmall * i + numberMatrixCellWidth, numberYPos + numberMatrixCellWidth );
+                    numberXPos + numberMatrixCellWidth * i + matrixSpaceSmall * i + numberMatrixCellWidth, numberYPos + numberMatrixCellWidth);
     }
 
 
@@ -173,29 +170,26 @@ class MatrixView extends View {
     }
 
     //Finding width without remainder
-    public int getMatrixCellWidth()
-    {
+    public int getMatrixCellWidth() {
         int width = matrixWidth;
         double num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount) / matrixRectCount;
-        while(num % 1 != 0)
-        {
+        while (num % 1 != 0) {
             width--;
             num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount) / matrixRectCount;
         }
-        return (int)num;
+        return (int) num;
     }
 
     //Finding width without remainder
-    public int getNumberMatrixCellWidth()
-    {
+    public int getNumberMatrixCellWidth() {
         int width = getMatrixWidth();
         double num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
-        while(num % 1 != 0)
-        {
+        while (num % 1 != 0) {
             width--;
-            num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);;
+            num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
+            ;
         }
-        return (int)num;
+        return (int) num;
     }
 
 /*
@@ -229,33 +223,57 @@ class MatrixView extends View {
                 // if touch was started in square
                 for (int i = 0; i < RectMatrix.length; i++)
                     for (int j = 0; j < RectMatrix[i].length; j++)
-                        if(RectMatrix[i][j].contains((int)evX, (int)evY) && new Point(i,j) != selectedPoint) {
+                        if (RectMatrix[i][j].contains((int) evX, (int) evY) && new Point(i, j) != selectedPoint) {
                             selectedPoint = new Point(i, j);
                             //flag = true;
                         }
 
                 for (int i = 0; i < NumberMatrix.length; i++)
-                    if(NumberMatrix[i].contains((int)evX, (int)evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y]) {
+                    if (NumberMatrix[i].contains((int) evX, (int) evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y]) {
                         activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] = (byte) (i);
                         //flag = true;
                     }
                 //isScreenTouched = flag;
                 break;
             //case MotionEvent.ACTION_UP:
-                //if (!isScreenTouched)
-                    //selectedPoint = new Point(-1,-1);
+            //if (!isScreenTouched)
+            //selectedPoint = new Point(-1,-1);
         }
 
         invalidate();
         return true;
     }
 
-    public void Update()
-    {
+    public void Update() {
         invalidate();
     }
 
+    /// <summary>
+    /// Change color of not correct rectangle
+    /// </summary>
+    /// <returns>True if feasible</returns>
+    public boolean FeasibleNumbers(Point point) {
+        // Check the same numbers in the vertical direction
+        for (int a = 0; a < 9; a++)
+            if (activity.getMemoryMatrix()[a][point.y] == activity.getMemoryMatrix()[point.x][point.y] && a != point.x)
+                return true;
 
+        // Check the same numbers in the horizontal direction
+        for (int b = 0; b < 9; b++)
+            if (activity.getMemoryMatrix()[point.x][b] == activity.getMemoryMatrix()[point.x][point.y] && b != point.y)
+                return true;
+
+        int n = (int) Math.sqrt(matrixRectCount);
+        int sectorX = point.x / n;
+        int sectorY = point.y / n;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                if (i + sectorX * n != point.x && j + sectorY * n != point.y)
+                    if (activity.getMemoryMatrix()[i + sectorX * n][j + sectorY * n] == activity.getMemoryMatrix()[point.x][point.y])
+                        return true;
+            }
+        return false;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -270,12 +288,12 @@ class MatrixView extends View {
         canvas.drawRect(new Rect(numberXPos - matrixSpaceBig, numberYPos - matrixSpaceBig, numberXPos + getNumberMatrixWidth() + matrixSpaceBig, numberYPos + numberMatrixCellWidth + matrixSpaceBig), p);
 
         //1st version of view
-        for (int i = 0; i < RectMatrix.length; i++)
+        /*for (int i = 0; i < RectMatrix.length; i++)
             for (int j = 0; j < RectMatrix[i].length; j++) {
                 p.setColor(cellColor);
                 canvas.drawRect(new Rect(RectMatrix[i][j].left + matrixSpaceSmall, RectMatrix[i][j].top + matrixSpaceSmall, RectMatrix[i][j].right - matrixSpaceSmall, RectMatrix[i][j].bottom - matrixSpaceSmall), p);
                 if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
-                    p.setColor(choseCellColor);
+                    p.setColor(sameNumbersColor);
                     canvas.drawRect(RectMatrix[selectedPoint.x][selectedPoint.y], p);
                 }
                 //else
@@ -283,25 +301,36 @@ class MatrixView extends View {
                 //p.setColor(Color.WHITE);
                 //canvas.drawRect(RectMatrix[i][j], p);
                 //}
-            }
+            }*/
 
         //2nd version of view
         for (int i = 0; i < RectMatrix.length; i++)
             for (int j = 0; j < RectMatrix[i].length; j++)
             {
+                //1st v.
+                //if(activity.getMemoryMatrix()[i][j] != 0 && FeasibleNumbers(new Point(i,j)))
+                    //p.setColor(errorColor);
+                //else
                 p.setColor(cellColor);
+
                 canvas.drawRect(RectMatrix[i][j], p);
                 if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
                     //What kind of cell was chosen
                     if (activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0)
-                        p.setColor(choseEmptyCellColor);
+                        p.setColor(sameEmptyNumberCellColor);
                     else
-                        p.setColor(choseCellColor);
+                        p.setColor(choseEmptyCellColor);
 
-                    if(activity.getMemoryMatrix()[i][j] == activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] && activity.getMemoryMatrix()[i][j] != 0)
-                    {
+                    if(activity.getMemoryMatrix()[i][j] == activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] && activity.getMemoryMatrix()[i][j] != 0) {
+                        if(i == selectedPoint.x && j == selectedPoint.y)
+                            p.setColor(choseCellColor);
                         canvas.drawRect(RectMatrix[i][j], p);
                         p.setColor(cellColor);
+
+                        //1st v.
+                        //if(FeasibleNumbers(new Point(i,j)))
+                            //p.setColor(errorColor);
+
                         canvas.drawRect(new Rect(RectMatrix[i][j].left + matrixChoseBorder,
                                 RectMatrix[i][j].top + matrixChoseBorder,
                                 RectMatrix[i][j].right - matrixChoseBorder,
@@ -332,13 +361,25 @@ class MatrixView extends View {
         for (int i = 0; i < RectMatrix.length; i++)
             for (int j = 0; j < RectMatrix[i].length; j++) {
                 if (activity.getMemoryMatrix()[i][j] > 0) {
-                    if (activity.getChangeMatrix()[i][j]) {
+
+                    //2nd v.
+                    //Check errors
+                    if(activity.getChangeMatrix()[i][j] && FeasibleNumbers(new Point(i, j))) {
                         //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                        Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
+                        Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, errorColor, myTypeface);
                         canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
-                    } else {
-                        Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, idleTextColor, myTypeface);
-                        canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                    }
+
+                    else {
+                        //Check if numbers are changeable
+                        if (activity.getChangeMatrix()[i][j]) {
+                            //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
+                            Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
+                            canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                        } else {
+                            Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, idleTextColor, myTypeface);
+                            canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                        }
                     }
                 }
             }

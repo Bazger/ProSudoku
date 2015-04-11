@@ -8,17 +8,19 @@
         >
     <Button
             android:id="@+id/continue_button"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/continue_bt"
             android:layout_marginBottom="10dip"
+            android:layout_gravity="center_horizontal"
             />
     <Button
             android:id="@+id/new_button"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/newpaper_bt"
             android:layout_marginBottom="10dip"
+            android:layout_gravity="center_horizontal"
             />
     <Button android:id="@+id/solver_button"
             android:layout_width="wrap_content"
@@ -28,23 +30,26 @@
             android:layout_gravity="center_horizontal"/>
     <Button
             android:id="@+id/how_to_play"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/howtoplay_bt"
             android:layout_marginBottom="10dip"
+            android:layout_gravity="center_horizontal"
             />
     <Button
             android:id="@+id/about_button"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/about_bt"
             android:layout_marginBottom="10dip"
+            android:layout_gravity="center_horizontal"
             />
     <Button
             android:id="@+id/exit_button"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/exit_bt"
+            android:layout_gravity="center_horizontal"
             />
 </LinearLayout>
 
