@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
-
 /**
- * Created by Vanya on 28.03.2015.
+ * Created by Vanya on 21.02.2015
  */
 public class Timer extends Activity{
 
@@ -14,12 +13,13 @@ public class Timer extends Activity{
 
     private Handler mHandler;
     private boolean mStarted;
+    private long milliseconds;
 
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             if (mStarted) {
-                long seconds = (System.currentTimeMillis()) / 1000;
+                long seconds = (System.currentTimeMillis() - milliseconds) / 1000;
                 setTitle(String.format("%02d:%02d", seconds / 60, seconds % 60));
                 mHandler.postDelayed(mRunnable, 1000L);
             }
@@ -39,6 +39,7 @@ public class Timer extends Activity{
     @Override
     protected void onStart() {
         super.onStart();
+        milliseconds = System.currentTimeMillis();
         mStarted = true;
         mHandler.postDelayed(mRunnable, 1000L);
     }

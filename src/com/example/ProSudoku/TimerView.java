@@ -1,11 +1,11 @@
 package com.example.ProSudoku;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.content.res.AssetManager;
+import android.graphics.*;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Chronometer;
@@ -14,81 +14,96 @@ import android.widget.TextView;
 import java.util.Date;
 
 /**
- * Created by Vanya on 02.04.2015.
+ * Created by Vanya on 02.04.2015
  */
 public class TimerView extends View {
 
-    String currentTime;
+    private String currentTime = "";
+    private Point resolution;
 
+    private AssetManager asset;
+    private Typeface myTypeface;
 
-    public TimerView(Context context){
+    private Paint p;
+
+    private double yBorderRatio = 10;
+    private int yPos;
+    private int textSize;
+
+    private int timeInMilliseconds = 5999000;
+
+    private int textColor = Color.WHITE;
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        this.setMeasuredDimension(parentWidth, parentHeight);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        resolution = new Point(parentWidth, parentHeight);
+        onLoad();
+    }
+
+    public TimerView(Context context) {
         super(context);
-        setFocusable(true);
+        initViews(context);
+    }
 
-        Thread myThread = null;
-        Runnable myRunnableThread = new CountDownRunner();
-        myThread= new Thread(myRunnableThread);
-        myThread.start();
-        new CountDownTimer(30000, 1000) {
+    public TimerView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initViews(context);
+    }
+
+    private void initViews(Context context) {
+        asset = context.getAssets();
+        myTypeface = Typeface.createFromAsset(asset, "Mandarin.ttf");
+    }
+
+
+    private void onLoad() {
+        p = new Paint();
+
+        yPos = (int)((resolution.y * yBorderRatio) / 100);
+        textSize = resolution.y - yPos;
+
+        new CountDownTimer(timeInMilliseconds, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                currentTime = ("seconds remaining: " + millisUntilFinished / 1000);
+                long seconds = (timeInMilliseconds - millisUntilFinished) / 1000;
+                currentTime = String.format("%02d:%02d", seconds / 60, seconds % 60);
                 invalidate();
             }
 
             public void onFinish() {
-                currentTime = ("done!");
+                currentTime = ("99+");
                 invalidate();
             }
         }.start();
-
     }
 
-    public void doWork() {
-        new Runnable() {
-            public void run() {
-                try{
-                    Date dt = new Date();
-                    int hours = dt.getHours();
-                    int minutes = dt.getMinutes();
-                    int seconds = dt.getSeconds();
-                    currentTime = hours + ":" + minutes + ":" + seconds;
-                }catch (Exception e) {}
-            }
-        };
-    }
-
-
-    class CountDownRunner implements Runnable{
-        // @Override
-        public void run() {
-            while(!Thread.currentThread().isInterrupted()){
-                try {
-                    doWork();
-                    Thread.sleep(1000);
-                    // Pause of 1 Second
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }catch(Exception e){
-                }
-            }
-        }
+    public Bitmap textAsBitmap(String text, float textSize, int textColor, Typeface font) {
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTypeface(font);
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        float baseline = (int) (-paint.ascent() + 0.5f); // ascent() is negative
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        invalidate();
-        return true;
-    }
-
-    protected void onDraw(Canvas Square)
+    protected void onDraw(Canvas canvas)
     {
-        super.onDraw(Square);
-        Paint squareColor = new Paint();
-        squareColor.setColor(Color.WHITE);
-        squareColor.setTextSize(60);
-        Square.drawText(currentTime, 200,200, squareColor);
-        return;
+        super.onDraw(canvas);
+        p.setColor(Color.WHITE);
+        Bitmap bit = textAsBitmap(currentTime, textSize, textColor, myTypeface);
+        canvas.drawBitmap(bit, resolution.x / 2 - bit.getWidth() / 2, yPos + resolution.y / 2 - bit.getHeight() / 2, p);
+        //Square.drawText(currentTime, 200,200, squareColor);
     }
 
 }

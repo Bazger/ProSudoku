@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * Created by Vanya on 21.02.2015.
+ * Created by Vanya on 21.02.2015
  */
 class MatrixView extends View {
 
@@ -81,7 +81,6 @@ class MatrixView extends View {
         initViews(context, attrs);
     }
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
@@ -92,25 +91,10 @@ class MatrixView extends View {
         onLoad();
     }
 
-    String currentTime;
-
     private void initViews(Context context, AttributeSet attrs) {
         matrixRectCount = activity.getMatrixRectCount();
         asset = context.getAssets();
         myTypeface = Typeface.createFromAsset(asset, "Mandarin.ttf");
-
-        new CountDownTimer(30000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                currentTime = String.valueOf((30000 - millisUntilFinished) / 1000);
-                invalidate();
-            }
-
-            public void onFinish() {
-                currentTime = ("done!");
-                invalidate();
-            }
-        }.start();
     }
 
     private void onLoad() {
@@ -187,7 +171,6 @@ class MatrixView extends View {
         while (num % 1 != 0) {
             width--;
             num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
-            ;
         }
         return (int) num;
     }
@@ -350,12 +333,12 @@ class MatrixView extends View {
             }
 
         p.setColor(cellColor);
-        for (int i = 0; i < NumberMatrix.length; i++) {
+        for (Rect aNumberMatrix : NumberMatrix) {
             //1st version of view
             //canvas.drawRect(new Rect(NumberMatrix[i].left + matrixSpaceSmall, NumberMatrix[i].top + matrixSpaceSmall, NumberMatrix[i].right - matrixSpaceSmall, NumberMatrix[i].bottom - matrixSpaceSmall), p);
 
             //2nd version of view
-            canvas.drawRect(NumberMatrix[i], p);
+            canvas.drawRect(aNumberMatrix, p);
         }
 
         for (int i = 0; i < RectMatrix.length; i++)

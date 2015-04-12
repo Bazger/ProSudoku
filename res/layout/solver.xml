@@ -12,8 +12,8 @@
     <com.example.ProSudoku.MatrixView
             android:id="@+id/matrix_view"
             android:layout_width="match_parent"
-            android:layout_height="311dp"
-            android:layout_weight="0.65"/>
+            android:layout_height="369dp"
+            android:layout_weight="0.41"/>
 
     <LinearLayout
             android:orientation="horizontal"

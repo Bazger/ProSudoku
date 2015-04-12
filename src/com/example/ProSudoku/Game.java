@@ -2,15 +2,19 @@ package com.example.ProSudoku;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.*;
 import android.util.Log;
-import android.widget.Chronometer;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class Game extends Activity implements IMatrix {
     private static final String TAG = "Sudoku";
@@ -33,10 +37,12 @@ public class Game extends Activity implements IMatrix {
 
     final static String PREF_MATRIX = "matrix";
     final static String PREF_CHANGE_MATRIX = "change_matrix";
+    final static String PREF_TIME= "seconds";
 
     IRandomizer Randomizer = new DefaultRandomizer();
 
     private TextView textView;
+    private MatrixView matrixView;
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -56,18 +62,9 @@ public class Game extends Activity implements IMatrix {
 
     private Handler mHandler;
     private boolean mStarted;
-
-    private final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mStarted) {
-                long seconds = (System.currentTimeMillis()) / 1000;
-                //textView.setText(String.format("%02d:%02d", seconds / 60, seconds % 60));
-                mHandler.postDelayed(mRunnable, 1000L);
-            }
-        }
-
-    };
+    private long milliseconds;
+    private long saveSeconds;
+    private long seconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +80,7 @@ public class Game extends Activity implements IMatrix {
         getMatrix(diff);
 
         textView = (TextView) findViewById(R.id.textView);
+        matrixView = (MatrixView) findViewById(R.id.matrix_view);
         mHandler = new Handler();
 
         getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
@@ -114,12 +112,36 @@ public class Game extends Activity implements IMatrix {
         //setContentView(new DrawView(this, 9, 2, 5));
     }
 
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mStarted) {
+                seconds = saveSeconds + (System.currentTimeMillis() - milliseconds) / 1000;
+                setTitle(String.format("%02d:%02d", seconds / 60, seconds % 60));
+                mHandler.postDelayed(mRunnable, 1000L);
+            }
+        }
+
+    };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        // TODO Auto-generated method stub
+        super.dispatchTouchEvent(ev);
+        if (!mStarted) {
+            milliseconds = System.currentTimeMillis();
+            mStarted = true;
+            mHandler.postDelayed(mRunnable, 1000L);
+            setTitle(String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60));
+            return true;
+        }
+        return false;
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mStarted = true;
-        mHandler.postDelayed(mRunnable, 1000L);
+
     }
 
     @Override
@@ -138,6 +160,7 @@ public class Game extends Activity implements IMatrix {
                 toMatrixString(MemoryMatrix)).commit();
         getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
                 toChangeMatrixString(ChangeMatrix)).commit();
+        getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
     }
 
     @Override
@@ -156,18 +179,23 @@ public class Game extends Activity implements IMatrix {
                 MemoryMatrix = fromMatrixString(str);
                 str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null);
                 ChangeMatrix = fromChangeMatrixString(str);
+                str = getPreferences(MODE_PRIVATE).getString(PREF_TIME, null);
+                saveSeconds = Long.parseLong(str, 10);
                 break;
             case DIFFICULTY_HARD:
-                Generate(22 + Randomizer.GetInt(3));
+                Generate(23 + Randomizer.GetInt(2));
                 break;
             case DIFFICULTY_MEDIUM:
                 Generate(25 + Randomizer.GetInt(6));
                 break;
             case DIFFICULTY_EASY:
-            default:
                 Generate(30 + Randomizer.GetInt(6));
+            case DIFFICULTY_BEGINNER:
+            default:
+                Generate(35 + Randomizer.GetInt(6));
                 break;
         }
+        setTitle("(" + String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60) + ")");
     }
 
     private void openNewGameDialog() {
@@ -177,11 +205,70 @@ public class Game extends Activity implements IMatrix {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialoginterface,
                                                 int i) {
-                                getMatrix(i);
+                                finish();
+                                startGame(i);
                             }
                         })
                 .show();
     }
+
+    private void startGame(int i) {
+        Log.d(TAG, "clicked on " + i);
+        Intent intent = new Intent(Game.this, Game.class);
+        intent.putExtra(Game.KEY_DIFFICULTY, i);
+        startActivity(intent);
+    }
+
+    private void openFinishDialog()
+    {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.finish);
+        dialog.setTitle("Title...");
+
+        // set the custom dialog components - text, image and button
+        TextView text = (TextView) dialog.findViewById(R.id.text);
+        text.setText("Android custom dialog example!");
+        ImageView image = (ImageView) dialog.findViewById(R.id.image);
+        image.setImageResource(R.drawable.ic_launcher);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.game_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_paper:
+                openNewGameDialog();
+                matrixView.Update();
+                return true;
+            case R.id.clear_button:
+                for (int i = 0; i < MemoryMatrix.length; i++)
+                    for (int j = 0; j < MemoryMatrix[i].length; j++)
+                        if (ChangeMatrix[i][j])
+                            MemoryMatrix[i][j] = 0;
+                matrixView.Update();
+                return true;
+            // More items go here (if any) ...
+        }
+        return false;
+    }
+
 
     /*public class CounterClass extends CountDownTimer
     {
@@ -268,10 +355,7 @@ public class Game extends Activity implements IMatrix {
         boolean[][] matrix = new boolean[(int)Math.sqrt(string.length())][(int)Math.sqrt(string.length())];
         for (int i = 0; i < matrix.length; i++)
             for (int j = 0; j < matrix[i].length; j++)
-                if((string.charAt(j + i * 9) - '0') == 1)
-                    matrix[i][j] = true;
-                else
-                    matrix[i][j] = false;
+                matrix[i][j] = (string.charAt(j + i * 9) - '0') == 1;
 
         return matrix;
     }
