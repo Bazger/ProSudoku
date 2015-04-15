@@ -21,14 +21,14 @@
             android:layout_height="wrap_content">
 
         <Button android:id="@+id/solve_button"
-            android:layout_marginLeft="30px"
+            android:layout_marginLeft="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/solve_label" android:layout_weight="1"/>
 
         <Button android:id="@+id/clear_button"
-                android:layout_marginRight="30px"
+                android:layout_marginRight="30dp"
                 android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

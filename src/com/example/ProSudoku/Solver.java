@@ -2,13 +2,15 @@ package com.example.ProSudoku;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 /**
- * Created by Vanya on 07.03.2015.
+ * Created by Vanya on 07.03.2015
  */
 public class Solver extends Activity implements View.OnClickListener, IMatrix {
+    private static final String TAG = "Solver";
 
     TextView message;
     MatrixView matrixView;
@@ -18,6 +20,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
 
     final int matrixRectCount = 9;
 
+    final static String PREF_MATRIX = "matrix";
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -44,8 +47,17 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         clear_button.setOnClickListener(this);
         message = (TextView)findViewById(R.id.textView);
         matrixView = (MatrixView)findViewById(R.id.matrix_view);
+
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
+        if(getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null) != null)
+        {
+            String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null);
+            MemoryMatrix = fromMatrixString(str);
+        }
         ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
+        for(int i = 0; i < matrixRectCount; i++)
+            for (int j = 0; j < matrixRectCount; j++)
+                ChangeMatrix[i][j] = true;
     }
 
     public void onClick(View v){
@@ -59,6 +71,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                     message.setText("Can't solve");
                 break;
             case R.id.clear_button:
+                toMatrixString(MemoryMatrix);
                 MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
                 message.setText("");
                 break;
@@ -66,11 +79,40 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         matrixView.Update();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+
+        // Save the current matrix
+        getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
+                toMatrixString(MemoryMatrix)).commit();
+    }
+
+    /** Convert an array into a matrix string */
+    static private String toMatrixString(byte[][] matrix)
+    {
+        StringBuilder str =  new StringBuilder();
+        for(byte[] element : matrix)
+            for(byte element2 : element )
+                str.append(element2);
+        return str.toString();
+    }
+
+    /** Convert a puzzle string into an array */
+    static protected byte[][]  fromMatrixString(String string) {
+        byte[][] matrix = new byte[(int)Math.sqrt(string.length())][(int)Math.sqrt(string.length())];
+        for (int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix[i].length; j++)
+                matrix[i][j] = (byte)(string.charAt(j + i * 9) - '0');
+        return matrix;
+    }
+
     public boolean matrixIsFull()
     {
-        for(int i = 0; i < MemoryMatrix.length; i++)
-            for (int j = 0; j < MemoryMatrix[i].length; j++)
-                if(MemoryMatrix[i][j] == 0)
+        for (byte[] aMemoryMatrix : MemoryMatrix)
+            for (byte anAMemoryMatrix : aMemoryMatrix)
+                if (anAMemoryMatrix == 0)
                     return false;
         return true;
     }

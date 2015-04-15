@@ -9,5 +9,11 @@
             android:id="@+id/matrix_view"
             android:layout_width="match_parent"
             android:layout_height="343dp"
-            android:layout_weight="0.72"/>
+            android:layout_weight="0.93"/>
+    <Button
+            android:layout_width="150dp"
+            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
+            android:text="@string/hints_label"
+            android:id="@+id/hints_button" android:layout_gravity="left"/>
 </LinearLayout>

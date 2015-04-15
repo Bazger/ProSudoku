@@ -4,17 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import java.sql.Time;
 
 public class MyActivity extends Activity implements OnClickListener {
 
@@ -42,10 +37,10 @@ public class MyActivity extends Activity implements OnClickListener {
         solverButton.setOnClickListener(this);
     }
 
-    public void onClick(View v){
-        switch(v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.continue_button:
-                if(getSharedPreferences("Game",MODE_PRIVATE).getString(Game.PREF_MATRIX, null) != null)
+                if (getSharedPreferences("Game", MODE_PRIVATE).getString(Game.PREF_MATRIX, null) != null)
                     startGame(Game.DIFFICULTY_CONTINUE);
                 else
                     openNewGameDialog();
@@ -54,12 +49,16 @@ public class MyActivity extends Activity implements OnClickListener {
                 openNewGameDialog();
                 break;
             case R.id.solver_button:
-                Intent l = new Intent(this,Game.class);
+                Intent l = new Intent(this, Solver.class);
                 startActivity(l);
                 break;
             case R.id.how_to_play:
-                Intent j = new Intent(this,HowToPlay.class);
+                Intent j = new Intent(this, HowToPlay.class);
                 startActivity(j);
+                break;
+            case R.id.about_button:
+                Intent z = new Intent(this, About.class);
+                startActivity(z);
                 break;
             case R.id.exit_button:
                 finish();

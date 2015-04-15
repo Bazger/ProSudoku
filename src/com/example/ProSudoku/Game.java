@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.*;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +13,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.Arrays;
 
@@ -20,6 +20,7 @@ public class Game extends Activity implements IMatrix {
     private static final String TAG = "Sudoku";
 
     private byte[][] MemoryMatrix;
+    private byte[][] AnswerMatrix;
     private boolean[][] ChangeMatrix;
 
     private final int matrixRectCount = 9;
@@ -38,11 +39,17 @@ public class Game extends Activity implements IMatrix {
     final static String PREF_MATRIX = "matrix";
     final static String PREF_CHANGE_MATRIX = "change_matrix";
     final static String PREF_TIME= "seconds";
+    final static String PREF_ANSWER_MATRIX= "answer_matrix";
+    final static String PREF_HINTS= "hints";
+
+    final String mat = "123456789456789123789123456231674895875912364694538217317265948542897631968341570";
 
     IRandomizer Randomizer = new DefaultRandomizer();
 
     private TextView textView;
     private MatrixView matrixView;
+    private Button buttonHints;
+    private Dialog dialog;
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -65,6 +72,8 @@ public class Game extends Activity implements IMatrix {
     private long milliseconds;
     private long saveSeconds;
     private long seconds;
+    private boolean isShown = false;
+    private int hintsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +83,8 @@ public class Game extends Activity implements IMatrix {
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
         ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
+        AnswerMatrix = new byte[matrixRectCount][matrixRectCount];
+        buttonHints = (Button) findViewById(R.id.hints_button);
 
         int diff = getIntent().getIntExtra(KEY_DIFFICULTY,
                 DIFFICULTY_EASY);
@@ -81,9 +92,55 @@ public class Game extends Activity implements IMatrix {
 
         textView = (TextView) findViewById(R.id.textView);
         matrixView = (MatrixView) findViewById(R.id.matrix_view);
+
+        buttonHints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (hintsCount > 0) {
+                    Hints();
+                    hintsCount--;
+                    buttonHints.setText(getResources().getString(R.string.hints_label) + " " + hintsCount );
+                }
+            }
+        });
+
         mHandler = new Handler();
 
         getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
+
+        //Dialog creating
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.finish);
+        dialog.setTitle(R.string.welldone_label);
+
+        Button dialogButtonNew = (Button) dialog.findViewById(R.id.dialogButtonNew);
+        // if button is clicked, close the custom dialog
+        dialogButtonNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openNewGameDialog();
+            }
+        });
+
+        Button dialogButtonFinish = (Button) dialog.findViewById(R.id.dialogButtonFinish);
+        // if button is clicked, close the custom dialog
+        dialogButtonFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(final DialogInterface arg0) {
+                getPreferences(MODE_PRIVATE).edit().remove(PREF_MATRIX).commit();
+                getPreferences(MODE_PRIVATE).edit().remove(PREF_CHANGE_MATRIX).commit();
+                getPreferences(MODE_PRIVATE).edit().remove(PREF_TIME).commit();
+                finish();
+            }
+        });
 
         //chronometer = (Chronometer) findViewById(R.id.chronometer);
         //chronometer.setBase(SystemClock.elapsedRealtime());
@@ -135,6 +192,11 @@ public class Game extends Activity implements IMatrix {
             setTitle(String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60));
             return true;
         }
+        if(GetNumberSpots() == matrixRectCount * matrixRectCount && !dialog.isShowing() && IsSudokuFeasible()) {
+            isShown = true;
+            dialog.show();
+            return true;
+        }
         return false;
     }
 
@@ -156,11 +218,16 @@ public class Game extends Activity implements IMatrix {
         Log.d(TAG, "onPause");
 
         // Save the current matrix
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
-                toMatrixString(MemoryMatrix)).commit();
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
-                toChangeMatrixString(ChangeMatrix)).commit();
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
+        if(!isShown) {
+            getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
+                    toMatrixString(MemoryMatrix)).commit();
+            getPreferences(MODE_PRIVATE).edit().putString(PREF_ANSWER_MATRIX,
+                    toMatrixString(AnswerMatrix)).commit();
+            getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
+                    toChangeMatrixString(ChangeMatrix)).commit();
+            getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
+            getPreferences(MODE_PRIVATE).edit().putString(PREF_HINTS, Integer.toString(hintsCount)).commit();
+        }
     }
 
     @Override
@@ -177,25 +244,43 @@ public class Game extends Activity implements IMatrix {
             case DIFFICULTY_CONTINUE:
                 String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null);
                 MemoryMatrix = fromMatrixString(str);
+                str = getPreferences(MODE_PRIVATE).getString(PREF_ANSWER_MATRIX, null);
+                AnswerMatrix = fromMatrixString(str);
                 str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null);
                 ChangeMatrix = fromChangeMatrixString(str);
                 str = getPreferences(MODE_PRIVATE).getString(PREF_TIME, null);
                 saveSeconds = Long.parseLong(str, 10);
+                str = getPreferences(MODE_PRIVATE).getString(PREF_HINTS, null);
+                hintsCount = Integer.parseInt(str, 10);
                 break;
             case DIFFICULTY_HARD:
                 Generate(23 + Randomizer.GetInt(2));
+                AnswerMatrix = getData();
+                Solve();
+                hintsCount = 0;
                 break;
             case DIFFICULTY_MEDIUM:
                 Generate(25 + Randomizer.GetInt(6));
+                AnswerMatrix = getData();
+                Solve();
+                hintsCount = 1;
                 break;
             case DIFFICULTY_EASY:
                 Generate(30 + Randomizer.GetInt(6));
+                AnswerMatrix = getData();
+                Solve();
+                hintsCount = 2;
+                break;
             case DIFFICULTY_BEGINNER:
             default:
                 Generate(35 + Randomizer.GetInt(6));
+                AnswerMatrix = getData();
+                Solve();
+                hintsCount = 3;
                 break;
         }
         setTitle("(" + String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60) + ")");
+        buttonHints.setText(getResources().getString(R.string.hints_label) + " " + hintsCount );
     }
 
     private void openNewGameDialog() {
@@ -219,29 +304,6 @@ public class Game extends Activity implements IMatrix {
         startActivity(intent);
     }
 
-    private void openFinishDialog()
-    {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.finish);
-        dialog.setTitle("Title...");
-
-        // set the custom dialog components - text, image and button
-        TextView text = (TextView) dialog.findViewById(R.id.text);
-        text.setText("Android custom dialog example!");
-        ImageView image = (ImageView) dialog.findViewById(R.id.image);
-        image.setImageResource(R.drawable.ic_launcher);
-
-        Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-        // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -255,7 +317,6 @@ public class Game extends Activity implements IMatrix {
         switch (item.getItemId()) {
             case R.id.new_paper:
                 openNewGameDialog();
-                matrixView.Update();
                 return true;
             case R.id.clear_button:
                 for (int i = 0; i < MemoryMatrix.length; i++)
@@ -268,7 +329,6 @@ public class Game extends Activity implements IMatrix {
         }
         return false;
     }
-
 
     /*public class CounterClass extends CountDownTimer
     {
@@ -360,6 +420,107 @@ public class Game extends Activity implements IMatrix {
         return matrix;
     }
 
+    public void Hints()
+    {
+        Point points[] = new Point[matrixRectCount * matrixRectCount];
+        int count = 0;
+        for (int i = 0; i < matrixRectCount; i++)
+            for (int j = 0; j < matrixRectCount; j++)
+                if(ChangeMatrix[i][j] &&(MemoryMatrix[i][j] != AnswerMatrix[i][j] || MemoryMatrix[i][j] == 0))
+                {
+                    points[count++] = new Point(i,j);
+                }
+        int num = Randomizer.GetInt(count);
+        MemoryMatrix[points[num].x][points[num].y] = AnswerMatrix[points[num].x][points[num].y];
+        ChangeMatrix[points[num].x][points[num].y] = false;
+        matrixView.Update();
+    }
+
+    /// <summary>
+    /// Solves the given Sudoku.
+    /// </summary>
+    /// <returns>Success</returns>
+    public boolean Solve()
+    {
+        // Find untouched location with most information
+        int xp = 0;
+        int yp = 0;
+        byte[] Mp = null;
+        int cMp = 10;
+
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 9; y++) {
+                if (AnswerMatrix[x][y] == 0)
+                {
+                    // Set M of possible solutions
+                    byte[] M = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+                    // Remove used numbers in the vertical direction
+                    for (int a = 0; a < 9; a++)
+                        M[AnswerMatrix[a][y]] = 0;
+
+                    // Remove used numbers in the horizontal direction
+                    for (int b = 0; b < 9; b++)
+                        M[AnswerMatrix[x][b]] = 0;
+
+                    // Remove used numbers in the sub square. BUG:
+                    //int squareIndex = m_subSquare[y, x];
+                    //for (int c = 0; c < 9; c++)
+                    //{
+                    //    EntryPoint p = m_subIndex[squareIndex, c];
+                    //    M[m_sudoku[p.x, p.y]] = 0;
+                    //}
+
+                    int n = (int) Math.sqrt(AnswerMatrix.length);
+                    int sectorX = x / n;
+                    int sectorY = y / n;
+                    for (int a = 0; a < n; a++) {
+                        for (int b = 0; b < n; b++) {
+                            M[AnswerMatrix[a + sectorX * n][b + sectorY * n]] = 0;
+                        }
+                    }
+
+
+                    int cM = 0;
+                    // Calculate cardinality of M
+                    for (int d = 1; d < 10; d++)
+                        cM += M[d] == 0 ? 0 : 1;
+
+                    // Is there more information in this spot than in the best yet?
+                    if (cM < cMp) {
+                        cMp = cM;
+                        Mp = M;
+                        xp = x;
+                        yp = y;
+                    }
+                }
+            }
+
+        }
+
+        // Finished?
+        if (cMp == 10)
+            return true;
+
+        // Couldn't find a solution?
+        if (cMp == 0)
+            return false;
+
+        // Try elements
+        for (int i = 1; i < 10; i++)
+        {
+            if (Mp[i] != 0)
+            {
+                AnswerMatrix[xp][yp] = Mp[i];
+                if (Solve())
+                    return true;
+            }
+        }
+
+        // Restore to original state.
+        AnswerMatrix[xp][yp] = 0;
+        return false;
+    }
 
     private enum Ret { Unique, NotUnique, NoSolution }
 
@@ -487,7 +648,6 @@ public class Game extends Activity implements IMatrix {
         setData(m);
         return b;
     }
-
 
     // Generate spots
     private boolean Gen(int spots)

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.ProSudoku"
           android:versionCode="1"
-          android:versionName="5.2">
-    <uses-sdk android:minSdkVersion="15"/>
+          android:versionName="5.2.1">
+    <uses-sdk android:minSdkVersion="19"/>
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher"
                  android:theme="@android:style/Theme.Holo">
         <activity android:name=".MyActivity"
@@ -27,7 +27,7 @@
         <activity android:name=".Prefs"
                   android:label="@string/settings_title">
         </activity>
-        <activity android:name=".Timer"
+        <activity android:name=".About"
                   android:label="@string/settings_title">
         </activity>
     </application>
