@@ -7,6 +7,7 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/sudoku_solve_label"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textView" android:layout_gravity="center_horizontal"/>
     <com.example.ProSudoku.MatrixView
@@ -27,12 +28,12 @@
             android:layout_marginTop="5dp"
             android:text="@string/solve_label" android:layout_weight="1"/>
 
-        <Button android:id="@+id/clear_button"
+        <Button android:id="@+id/clear_all_button"
                 android:layout_marginRight="30dp"
                 android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/clear_label"
+            android:text="@string/clear_all_label"
             android:layout_weight="1"/>
 
     </LinearLayout>

@@ -37,7 +37,8 @@
     <string name="return_label">Finish</string>
 
     <string name ="solve_label">Solve</string>
-    <string name ="clear_label">Clear</string>
+    <string name ="clear_all_label">Clear All</string>
+    <string name ="sudoku_solve_label">Enter sudoku matrix for solving</string>
 
     <string name="new_paper_shortcut">n</string>
     <string name="clear_shortcut">n</string>

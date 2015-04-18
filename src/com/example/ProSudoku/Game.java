@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import java.util.Arrays;
 
@@ -50,6 +51,7 @@ public class Game extends Activity implements IMatrix {
     private MatrixView matrixView;
     private Button buttonHints;
     private Dialog dialog;
+    private Chronometer chronometer;
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -280,7 +282,7 @@ public class Game extends Activity implements IMatrix {
                 break;
         }
         setTitle("(" + String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60) + ")");
-        buttonHints.setText(getResources().getString(R.string.hints_label) + " " + hintsCount );
+        buttonHints.setText(getResources().getString(R.string.hints_label) + " " + hintsCount);
     }
 
     private void openNewGameDialog() {
@@ -318,7 +320,7 @@ public class Game extends Activity implements IMatrix {
             case R.id.new_paper:
                 openNewGameDialog();
                 return true;
-            case R.id.clear_button:
+            case R.id.clear_all_button:
                 for (int i = 0; i < MemoryMatrix.length; i++)
                     for (int j = 0; j < MemoryMatrix[i].length; j++)
                         if (ChangeMatrix[i][j])

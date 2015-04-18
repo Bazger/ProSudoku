@@ -59,6 +59,7 @@ class MatrixView extends View {
     private final int changeableTextColor = Color.BLUE;
     private final int idleTextColor = Color.BLACK;
     private final int errorColor = Color.RED;
+    private final int solveColor = Color.GRAY;
 
     //Practical matrix width
     public int getMatrixWidth() {
@@ -211,11 +212,18 @@ class MatrixView extends View {
                             //flag = true;
                         }
 
-                for (int i = 0; i < NumberMatrix.length; i++)
-                    if (NumberMatrix[i].contains((int) evX, (int) evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y]) {
+                for (int i = 0; i < NumberMatrix.length; i++) {
+                    if (NumberMatrix[i].contains((int) evX, (int) evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y] &&
+                            activity.getClass() != Solver.class) {
                         activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] = (byte) (i);
                         //flag = true;
                     }
+                    else if (NumberMatrix[i].contains((int) evX, (int) evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getClass() == Solver.class)
+                    {
+                        activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] = (byte) (i);
+                        activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y] = true;
+                    }
+                }
                 //isScreenTouched = flag;
                 break;
             //case MotionEvent.ACTION_UP:
@@ -355,13 +363,26 @@ class MatrixView extends View {
 
                     else {
                         //Check if numbers are changeable
-                        if (activity.getChangeMatrix()[i][j]) {
-                            //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                            Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
-                            canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
-                        } else {
-                            Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, idleTextColor, myTypeface);
-                            canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                        //Check the activity class
+                        if (activity.getClass() != Solver.class)
+                            if (activity.getChangeMatrix()[i][j]) {
+                                //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
+                                canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                            } else {
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, idleTextColor, myTypeface);
+                                canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                            }
+                        else
+                        {
+                            if (activity.getChangeMatrix()[i][j]) {
+                                //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
+                                canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                            } else {
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, solveColor, myTypeface);
+                                canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
+                            }
                         }
                     }
                 }

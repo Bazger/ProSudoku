@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -14,13 +15,17 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
 
     TextView message;
     MatrixView matrixView;
+    Button solve_but;
 
     byte[][] MemoryMatrix;
     boolean[][] ChangeMatrix;
 
+    boolean isSolved;
+
     final int matrixRectCount = 9;
 
     final static String PREF_MATRIX = "matrix";
+    final static String PREF_CHANGE_MATRIX = "change_matrix";
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -43,37 +48,67 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         setContentView(R.layout.solver);
         View solve_button = findViewById(R.id.solve_button);
         solve_button.setOnClickListener(this);
-        View clear_button = findViewById(R.id.clear_button);
+        View clear_button = findViewById(R.id.clear_all_button);
         clear_button.setOnClickListener(this);
+        solve_but = (Button)findViewById(R.id.solve_button);
+
         message = (TextView)findViewById(R.id.textView);
-        matrixView = (MatrixView)findViewById(R.id.matrix_view);
+        message.setText(getResources().getString(R.string.sudoku_solve_label));
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
-        if(getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null) != null)
-        {
+        ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
+        isSolved = false;
+
+        if(getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null) != null) {
             String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null);
             MemoryMatrix = fromMatrixString(str);
+            str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null);
+            ChangeMatrix = fromChangeMatrixString(str);
+            for (int i = 0; i < matrixRectCount; i++)
+                for (int j = 0; j < matrixRectCount; j++)
+                    if (!ChangeMatrix[i][j]) {
+                        isSolved = true;
+                        solve_but.setText("Clear");
+                        message.setText("Solving was completed");
+                        break;
+                    }
         }
-        ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
-        for(int i = 0; i < matrixRectCount; i++)
-            for (int j = 0; j < matrixRectCount; j++)
-                ChangeMatrix[i][j] = true;
+
+        matrixView = (MatrixView)findViewById(R.id.matrix_view);
     }
 
     public void onClick(View v){
         switch(v.getId()) {
             case R.id.solve_button:
-                if (IsSudokuFeasible()) {
-                    if (Solve())
-                        message.setText("Solving was completed");
+                if(!isSolved) {
+                    if (IsSudokuFeasible()) {
+                        for (int i = 0; i < matrixRectCount; i++)
+                            for (int j = 0; j < matrixRectCount; j++)
+                                if (MemoryMatrix[i][j] == 0)
+                                    ChangeMatrix[i][j] = false;
+                        if (Solve())
+                            message.setText("Solving was completed");
+                        isSolved = true;
+                        solve_but.setText("Clear");
+                    } else
+                        message.setText("Can't solve");
                 }
                 else
-                    message.setText("Can't solve");
+                {
+                    for (int i = 0; i < matrixRectCount; i++)
+                        for (int j = 0; j < matrixRectCount; j++)
+                            if (!ChangeMatrix[i][j]) {
+                                MemoryMatrix[i][j] = 0;
+                                ChangeMatrix[i][j] = true;
+                            }
+                    isSolved = false;
+                    solve_but.setText("Solve");
+                    message.setText(getResources().getString(R.string.sudoku_solve_label));
+                }
                 break;
-            case R.id.clear_button:
-                toMatrixString(MemoryMatrix);
+            case R.id.clear_all_button:
                 MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
-                message.setText("");
+                message.setText(getResources().getString(R.string.sudoku_solve_label));
                 break;
         }
         matrixView.Update();
@@ -87,6 +122,8 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         // Save the current matrix
         getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
                 toMatrixString(MemoryMatrix)).commit();
+        getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
+                toChangeMatrixString(ChangeMatrix)).commit();
     }
 
     /** Convert an array into a matrix string */
@@ -106,6 +143,29 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
             for (int j = 0; j < matrix[i].length; j++)
                 matrix[i][j] = (byte)(string.charAt(j + i * 9) - '0');
         return matrix;
+    }
+
+    /** Convert a puzzle string into an array */
+    static protected boolean[][]  fromChangeMatrixString(String string) {
+        boolean[][] matrix = new boolean[(int)Math.sqrt(string.length())][(int)Math.sqrt(string.length())];
+        for (int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix[i].length; j++)
+                matrix[i][j] = (string.charAt(j + i * 9) - '0') == 1;
+
+        return matrix;
+    }
+
+    /** Convert an array into a matrix string */
+    static private String toChangeMatrixString(boolean[][] matrix)
+    {
+        StringBuilder str =  new StringBuilder();
+        for(boolean [] element : matrix)
+            for(boolean element2 : element )
+                if(element2)
+                    str.append(1);
+                else
+                    str.append(0);
+        return str.toString();
     }
 
     public boolean matrixIsFull()
