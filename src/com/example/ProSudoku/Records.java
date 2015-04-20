@@ -13,6 +13,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -21,8 +22,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Records extends FragmentActivity implements LoaderCallbacks<Cursor> {
-
+public class Records extends FragmentActivity {
     private static final int CM_DELETE_ID = 1;
     ListView lvData;
     DB db;
@@ -41,8 +41,10 @@ public class Records extends FragmentActivity implements LoaderCallbacks<Cursor>
         String[] from = new String[] { DB.COLUMN_NAME, DB.COLUMN_TIME };
         int[] to = new int[] { R.id.tvName, R.id.tvTime};
 
+        Cursor c = db.getQuery(null, DB.COLUMN_TIME + " > ?", new String[]{"10"}, null, null, DB.COLUMN_TIME);
+
         // создааем адаптер и настраиваем список
-        scAdapter = new SimpleCursorAdapter(this, R.layout.records_item, null, from, to, 0);
+        scAdapter = new SimpleCursorAdapter(this, R.layout.records_item, c, from, to, 0);
 
         scAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -51,7 +53,6 @@ public class Records extends FragmentActivity implements LoaderCallbacks<Cursor>
                     TextView textView = (TextView) view;
                     long seconds = cursor.getLong(columnIndex);
                     textView.setText(String.format("%02d:%02d", seconds / 60, seconds % 60));
-
                     return true;
                 }
 
@@ -66,14 +67,12 @@ public class Records extends FragmentActivity implements LoaderCallbacks<Cursor>
         // добавляем контекстное меню к списку
         registerForContextMenu(lvData);
 
-        // создаем лоадер для чтения данных
-        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     // обработка нажатия кнопки
     public void onButtonClick(View view) {
         // добавляем запись
-        db.addRec("sometext " + (scAdapter.getCount() + 1), 20);
+        db.addRec("sometext " + (scAdapter.getCount() + 1), 20, DB.Dif.Easy);
         // получаем новый курсор с данными
         getSupportLoaderManager().getLoader(0).forceLoad();
     }
@@ -102,42 +101,5 @@ public class Records extends FragmentActivity implements LoaderCallbacks<Cursor>
         super.onDestroy();
         // закрываем подключение при выходе
         db.close();
-    }
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle bndl) {
-        return new RecordsCursorLoader(this, db);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        scAdapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    static class RecordsCursorLoader extends CursorLoader {
-
-        DB db;
-
-        public RecordsCursorLoader(Context context, DB db) {
-            super(context);
-            this.db = db;
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-            Cursor cursor = db.getAllData();
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return cursor;
-        }
-
     }
 }

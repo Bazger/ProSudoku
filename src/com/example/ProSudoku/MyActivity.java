@@ -49,7 +49,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 openNewGameDialog();
                 break;
             case R.id.solver_button:
-                Intent l = new Intent(this, Records.class);
+                Intent l = new Intent(this, MainActivity.class);
                 startActivity(l);
                 break;
             case R.id.how_to_play:
