@@ -1,105 +1,99 @@
 package com.example.ProSudoku;
 
-/**
- * Created by Vanya on 16.04.2015
- */
-import java.util.concurrent.TimeUnit;
-
-import android.content.Context;
-import android.database.Cursor;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 
-public class Records extends FragmentActivity {
-    private static final int CM_DELETE_ID = 1;
-    ListView lvData;
-    DB db;
-    SimpleCursorAdapter scAdapter;
+public class Records extends FragmentActivity implements
+		ActionBar.TabListener {
 
-    /** Called when the activity is first created. */
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.records);
+	private ViewPager viewPager;
+	private TabsPagerAdapter mAdapter;
+	private ActionBar actionBar;
+	// Tab titles
+	private String[] tabs = { "Beginner", "Easy", "Medium", "Hard" };
 
-        // открываем подключение к БД
-        db = new DB(this);
-        db.open();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.records);
 
-        // формируем столбцы сопоставления
-        String[] from = new String[] { DB.COLUMN_NAME, DB.COLUMN_TIME };
-        int[] to = new int[] { R.id.tvName, R.id.tvTime};
+		// Initilization
+		viewPager = (ViewPager) findViewById(R.id.pager);
+		actionBar = getActionBar();
+		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
-        Cursor c = db.getQuery(null, DB.COLUMN_TIME + " > ?", new String[]{"10"}, null, null, DB.COLUMN_TIME);
+		viewPager.setAdapter(mAdapter);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // создааем адаптер и настраиваем список
-        scAdapter = new SimpleCursorAdapter(this, R.layout.records_item, c, from, to, 0);
+		// Adding Tabs
+		for (String tab_name : tabs) {
+			actionBar.addTab(actionBar.newTab().setText(tab_name)
+					.setTabListener(this));
+		}
 
-        scAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
-                if (columnIndex == 2) {
-                    TextView textView = (TextView) view;
-                    long seconds = cursor.getLong(columnIndex);
-                    textView.setText(String.format("%02d:%02d", seconds / 60, seconds % 60));
-                    return true;
-                }
+		/**
+		 * on swiping the viewpager make respective tab selected
+		 * */
+		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-                return false;
-            }
+			@Override
+			public void onPageSelected(int position) {
+				// on changing the page
+				// make respected tab selected
+				actionBar.setSelectedNavigationItem(position);
+			}
 
-        });
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
 
-        lvData = (ListView) findViewById(R.id.lvData);
-        lvData.setAdapter(scAdapter);
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
+	}
 
-        // добавляем контекстное меню к списку
-        registerForContextMenu(lvData);
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	}
 
-    }
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// on tab selected
+		// show respected fragment view
+		viewPager.setCurrentItem(tab.getPosition());
+	}
 
-    // обработка нажатия кнопки
-    public void onButtonClick(View view) {
-        // добавляем запись
-        db.addRec("sometext " + (scAdapter.getCount() + 1), 20, DB.Dif.Easy);
-        // получаем новый курсор с данными
-        getSupportLoaderManager().getLoader(0).forceLoad();
-    }
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	}
 
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, CM_DELETE_ID, 0, "Delete");
-    }
 
-    public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == CM_DELETE_ID) {
-            // получаем из пункта контекстного меню данные по пункту списка
-            AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item
-                    .getMenuInfo();
-            // извлекаем id записи и удаляем соответствующую запись в БД
-            db.delRec(acmi.id);
-            // получаем новый курсор с данными
-            getSupportLoaderManager().getLoader(0).forceLoad();
-            return true;
-        }
-        return super.onContextItemSelected(item);
-    }
+	/**
+	 * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
+	 * sequence.
+	 */
+	private class TabsPagerAdapter extends FragmentStatePagerAdapter {
+		public TabsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
 
-    protected void onDestroy() {
-        super.onDestroy();
-        // закрываем подключение при выходе
-        db.close();
-    }
+		@Override
+		public Fragment getItem(int position) {
+			return RecordsFragment.newInstance(position);
+		}
+
+		@Override
+		public int getCount() {
+			return tabs.length;
+		}
+	}
+
 }

@@ -36,6 +36,11 @@
     <string name="welldone_label">Well Done!</string>
     <string name="return_label">Finish</string>
 
+    <string name="new_record_label">New Record!</string>
+    <string name="save_label">Save</string>
+    <string name="enter_name_label">Enter your name:</string>
+    <string name="continue_dialog_label">Don&#65287;t save</string>
+
     <string name ="solve_label">Solve</string>
     <string name ="clear_all_label">Clear All</string>
     <string name ="sudoku_solve_label">Enter sudoku matrix for solving</string>

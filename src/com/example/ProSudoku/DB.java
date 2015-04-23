@@ -27,6 +27,7 @@ public class DB implements BaseColumns{
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
+    private static int tableCount = 10;
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DB_TABLE + " (" +
@@ -70,10 +71,15 @@ public class DB implements BaseColumns{
 
     // добавить запись в DB_TABLE
     public void addRec(String txt, long seconds, Dif dif) {
+        Cursor c = getQuery(null, DB.COLUMN_DIFFICULTY + " == ?", new String[]{dif.ordinal() + ""}, null, null, DB.COLUMN_TIME);
+        if(c.getCount() >= tableCount) {
+            c.moveToLast();
+            delRec(c.getInt(c.getColumnIndex(DB._ID)));
+        }
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_NAME, txt);
         cv.put(COLUMN_TIME, seconds);
-        cv.put(COLUMN_TIME, dif.ordinal());
+        cv.put(COLUMN_DIFFICULTY, dif.ordinal());
         mDB.insert(DB_TABLE, null, cv);
     }
 
@@ -96,9 +102,9 @@ public class DB implements BaseColumns{
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(SQL_CREATE_ENTRIES);
-
             ContentValues cv = new ContentValues();
             for (int i = 1; i < 5; i++) {
+                //addRec("sometext " + i, i * 5, Dif.values()[i - 1]);
                 cv.put(COLUMN_NAME, "sometext " + i);
                 cv.put(COLUMN_TIME, i * 5);
                 cv.put(COLUMN_DIFFICULTY, i - 1);
