@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical">
 
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:orientation="horizontal" android:weightSum="1">
+
+    </LinearLayout>
+
     <!-- center chat display -->
     <com.example.ProSudoku.AboutScrollView android:id="@+id/chat_ScrollView"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentLeft="true">
+                android:layout_height="fill_parent">
 
         <TextView android:id="@+id/chat_text_chat"
                   android:text="@string/test"
@@ -19,4 +22,4 @@
 
     </com.example.ProSudoku.AboutScrollView>
 
-</RelativeLayout>
+</LinearLayout>

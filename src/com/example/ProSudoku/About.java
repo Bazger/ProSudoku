@@ -9,8 +9,6 @@ import android.widget.TextView;
  */
 public class About extends Activity{
 
-    TimerView timerView;
-
     AboutScrollView chat_ScrollView;
     TextView chat_text_chat;
 
@@ -22,12 +20,5 @@ public class About extends Activity{
 
         chat_ScrollView = (AboutScrollView) this.findViewById(R.id.chat_ScrollView);
         chat_text_chat = (TextView) this.findViewById(R.id.chat_text_chat);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        chat_ScrollView.mStarted = false;
-        chat_ScrollView.mHandler.removeCallbacks(chat_ScrollView.mRunnable);
     }
 }
