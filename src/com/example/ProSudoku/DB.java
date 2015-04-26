@@ -6,17 +6,14 @@ package com.example.ProSudoku;
 
 import android.content.Context;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public class DB implements BaseColumns{
 
-    enum Dif {Beginner, Easy, Medium, Hard}
+    public enum Dif {Beginner, Easy, Medium, Hard}
 
     private static final String DB_TABLE = "records";
 

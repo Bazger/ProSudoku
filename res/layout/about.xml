@@ -4,22 +4,55 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical">
 
-    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="140dp"
                   android:orientation="horizontal" android:weightSum="1">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                      android:orientation="vertical" android:weightSum="1" android:layout_weight="0.50">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:scaleType="fitStart"
+                    android:id="@+id/imageView" android:src="@drawable/about_img2" android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                      android:orientation="vertical" android:weightSum="1" android:layout_weight="0.50">
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-    <!-- center chat display -->
-    <com.example.ProSudoku.AboutScrollView android:id="@+id/chat_ScrollView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+    <!--About -->
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                                       android:id="@+id/pager"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="match_parent">
 
-        <TextView android:id="@+id/chat_text_chat"
-                  android:text="@string/test"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent"
-                  android:singleLine="false" />
+        <!--
+        This title strip will display the currently visible page title, as well as the page
+        titles for adjacent pages.
+        -->
+        <android.support.v4.view.PagerTitleStrip android:id="@+id/pager_title_strip"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="wrap_content"
+                                                 android:layout_gravity="top"
+                                                 android:background="#33b5e5"
+                                                 android:textColor="#fff"
+                                                 android:paddingTop="4dp"
+                                                 android:paddingBottom="4dp" />
 
-    </com.example.ProSudoku.AboutScrollView>
+    </android.support.v4.view.ViewPager>
+
+    <!--About2 -->
+    <!--<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                                       android:id="@+id/aboutPager"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>-->
+
 
 </LinearLayout>

@@ -1,24 +1,68 @@
 package com.example.ProSudoku;
 
-import android.app.Activity;
+import android.app.ActionBar;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.support.v4.app.*;
+import android.support.v4.view.ViewPager;
 
-/**
- * Created by Vanya on 21.02.2015
- */
-public class About extends Activity{
+public class About extends FragmentActivity{
 
-    AboutScrollView chat_ScrollView;
-    TextView chat_text_chat;
+    TabsPagerAdapter mTabsPagerAdapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    ViewPager mViewPager;
+    String[] tabs = { "About", "Tweets"};
+
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //timerView = new TimerView(this);
         setContentView(R.layout.about);
 
-        chat_ScrollView = (AboutScrollView) this.findViewById(R.id.chat_ScrollView);
-        chat_text_chat = (TextView) this.findViewById(R.id.chat_text_chat);
+        mTabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+
+        // Set up action bar.
+        final ActionBar actionBar = getActionBar();
+
+        // Specify that the Home button should show an "Up" caret, indicating that touching the
+        // button will take the user one step up in the application's hierarchy.
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        // Set up the ViewPager, attaching the adapter.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mTabsPagerAdapter);
     }
+
+    /**
+     * A {@link FragmentStatePagerAdapter} that returns a fragment
+     * representing an object in the collection.
+     */
+    public class TabsPagerAdapter extends FragmentStatePagerAdapter {
+
+        public TabsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch(position)
+            {
+                case 0:
+                    return new AboutInfoFragment();
+                case 1:
+                    return new AboutTwitterFragment();
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            // For this contrived example, we have a 100-object collection.
+            return tabs.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabs[position];
+        }
+    }
+
 }

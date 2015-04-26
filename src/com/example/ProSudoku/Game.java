@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import java.util.Arrays;
 
 public class Game extends Activity implements IMatrix {

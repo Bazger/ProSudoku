@@ -25,7 +25,7 @@ public class Records extends FragmentActivity implements
 		setContentView(R.layout.records);
 
 		// Initilization
-		viewPager = (ViewPager) findViewById(R.id.pager);
+		viewPager = (ViewPager) findViewById(R.id.recordsPager);
 		actionBar = getActionBar();
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
