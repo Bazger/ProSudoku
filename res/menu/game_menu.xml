@@ -6,4 +6,7 @@
     <item android:id="@+id/new_paper"
           android:title="@string/new_label"
           android:alphabeticShortcut="@string/new_paper_shortcut" />
+    <item android:id="@+id/settings"
+          android:title="@string/settings_label"
+          android:alphabeticShortcut="@string/settings_shortcut" />
 </menu>

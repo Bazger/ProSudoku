@@ -1,13 +1,13 @@
 package com.example.ProSudoku;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.*;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
@@ -22,7 +22,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 
 public class Game extends Activity implements IMatrix {
-    private static final String TAG = "Sudoku";
+    private static final String TAG = "Game";
 
     private byte[][] MemoryMatrix;
     private byte[][] AnswerMatrix;
@@ -58,7 +58,6 @@ public class Game extends Activity implements IMatrix {
     private Dialog finishDialog;
     private Dialog recordsDialog;
     private Chronometer chronometer;
-    private boolean isDialogShowed = false;
     private DB db;
 
     @Override
@@ -97,12 +96,18 @@ public class Game extends Activity implements IMatrix {
         AnswerMatrix = new byte[matrixRectCount][matrixRectCount];
         buttonHints = (Button) findViewById(R.id.hints_button);
 
+        final ActionBar actionBar = getActionBar();
+
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         int diff = getIntent().getIntExtra(KEY_DIFFICULTY,
                 DIFFICULTY_EASY);
         getMatrix(diff);
 
         textView = (TextView) findViewById(R.id.textView);
         matrixView = (MatrixView) findViewById(R.id.matrix_view);
+
         db = new DB(this);
         db.open();
 
@@ -120,8 +125,6 @@ public class Game extends Activity implements IMatrix {
         mHandler = new Handler();
 
         getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
-
-
 
         //Records Dialog creating
         recordsDialog = new Dialog(this);
@@ -145,6 +148,7 @@ public class Game extends Activity implements IMatrix {
                 }
 
             });
+
 
         Button dialogButtonContinue = (Button) recordsDialog.findViewById(R.id.dialogButtonContinue);
         // if button is clicked, close this dialog and open finish dialog
@@ -251,7 +255,7 @@ public class Game extends Activity implements IMatrix {
             if(c.getLong(c.getColumnIndex(DB.COLUMN_TIME)) > seconds)
                 recordsDialog.show();
             else
-            finishDialog.show();
+                finishDialog.show();
             return true;
         }
         return false;
@@ -266,6 +270,8 @@ public class Game extends Activity implements IMatrix {
     @Override
     protected void onResume() {
         super.onResume();
+        String str = getPreferences(MODE_PRIVATE).getString(PREF_TIME, null);
+        saveSeconds = Long.parseLong(str, 10);
     }
 
     @Override
@@ -280,7 +286,6 @@ public class Game extends Activity implements IMatrix {
                     toMatrixString(AnswerMatrix)).commit();
             getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
                     toChangeMatrixString(ChangeMatrix)).commit();
-            getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
             getPreferences(MODE_PRIVATE).edit().putString(PREF_HINTS, Integer.toString(hintsCount)).commit();
         }
     }
@@ -290,6 +295,10 @@ public class Game extends Activity implements IMatrix {
         super.onStop();
         mStarted = false;
         mHandler.removeCallbacks(mRunnable);
+        if(!isShown && seconds != 0) {
+            getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
+            setTitle("(" + String.format("%02d:%02d", seconds / 60, seconds % 60) + ")");
+        }
     }
 
     @Override
@@ -303,7 +312,6 @@ public class Game extends Activity implements IMatrix {
                     toMatrixString(AnswerMatrix)).commit();
             getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
                     toChangeMatrixString(ChangeMatrix)).commit();
-            getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
             getPreferences(MODE_PRIVATE).edit().putString(PREF_HINTS, Integer.toString(hintsCount)).commit();
         }
     }
@@ -332,6 +340,8 @@ public class Game extends Activity implements IMatrix {
                 Solve();
                 difficulty = DIFFICULTY_HARD;
                 getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
+                saveSeconds = 0;
+                getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
                 hintsCount = 0;
                 break;
             case DIFFICULTY_MEDIUM:
@@ -340,6 +350,8 @@ public class Game extends Activity implements IMatrix {
                 Solve();
                 difficulty = DIFFICULTY_MEDIUM;
                 getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
+                saveSeconds = 0;
+                getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
                 hintsCount = 1;
                 break;
             case DIFFICULTY_EASY:
@@ -348,6 +360,8 @@ public class Game extends Activity implements IMatrix {
                 Solve();
                 difficulty = DIFFICULTY_EASY;
                 getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
+                saveSeconds = 0;
+                getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
                 hintsCount = 2;
                 break;
             case DIFFICULTY_BEGINNER:
@@ -357,6 +371,8 @@ public class Game extends Activity implements IMatrix {
                 Solve();
                 difficulty = DIFFICULTY_BEGINNER;
                 getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
+                saveSeconds = 0;
+                getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
                 hintsCount = 3;
                 break;
         }
@@ -406,9 +422,22 @@ public class Game extends Activity implements IMatrix {
                             MemoryMatrix[i][j] = 0;
                 matrixView.Update();
                 return true;
+            case R.id.settings:
+                Intent intent = new Intent(this, Prefs.class);
+                startActivityForResult(intent, 1);
+                return true;
+            case android.R.id.home:
+                finish();
             // More items go here (if any) ...
         }
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        finish();
+        startActivity(getIntent());
     }
 
     /*public class CounterClass extends CountDownTimer

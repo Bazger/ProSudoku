@@ -3,12 +3,11 @@ package com.example.ProSudoku;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
 
 public class Records extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -31,6 +30,10 @@ public class Records extends FragmentActivity implements
 
 		viewPager.setAdapter(mAdapter);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
 		// Adding Tabs
 		for (String tab_name : tabs) {
@@ -60,7 +63,23 @@ public class Records extends FragmentActivity implements
 		});
 	}
 
-	@Override
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                return  true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
 

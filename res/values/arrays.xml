@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <array name="difficulty">
-      <item>@string/beginner_label</item>
-      <item>@string/easy_label</item>
-      <item>@string/medium_label</item>
-      <item>@string/hard_label</item>
-   </array>
+    <array name="difficulty">
+        <item>@string/beginner_label</item>
+        <item>@string/easy_label</item>
+        <item>@string/medium_label</item>
+        <item>@string/hard_label</item>
+    </array>
+
+    <string-array name="matrix_border">
+        <item>Small</item>
+        <item>Normal</item>
+        <item>Large</item>
+    </string-array>
+    <string-array name="matrix_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="themes">
+        <item>Theme 1</item>
+        <item>Theme 2</item>
+        <item>Theme 3</item>
+    </string-array>
+    <string-array name="themes_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="fonts">
+        <item>Mandarin</item>
+        <item>Arial</item>
+        <item>Font 3</item>
+    </string-array>
+    <string-array name="fonts_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>

@@ -1,9 +1,11 @@
 package com.example.ProSudoku;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.*;
-import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,14 +14,17 @@ import android.view.View;
  * Created by Vanya on 21.02.2015
  */
 class MatrixView extends View {
+    private static final String TAG = "MatrixView";
 
-    final double widthRatio = 5.56;
+    final double widthRatio = 2;//5.56;
     final double yPosRatio = 2;//5;//7.81;
     final double yPosNumberCellRatio = 2;
 
-    private final int matrixSpaceSmall = 5;//2;
-    private final int matrixSpaceBig = 10;//5;
-    private final int matrixChoseBorder = 7;//2;
+    private int matrixSpaceSmall;
+    private int matrixSpaceBig;
+    private int matrixChoseBorder;
+    private int matrixBorder;
+
 
     private Rect[][] RectMatrix;
     private Rect[] NumberMatrix;
@@ -36,8 +41,8 @@ class MatrixView extends View {
     private int yPos;
 
     private int numberYPos;
+    private int numberYPos2;
     private int numberXPos;
-
 
     //boolean isScreenTouched = false;
 
@@ -51,22 +56,23 @@ class MatrixView extends View {
 
     private final IMatrix activity;
 
-    private final int backColor = Color.BLACK;
-    private final int cellColor = Color.WHITE;
-    private final int sameEmptyNumberCellColor = Color.RED;
-    private final int choseEmptyCellColor = Color.GREEN;
-    private final int choseCellColor = Color.rgb(50, 205, 50);
-    private final int changeableTextColor = Color.BLUE;
-    private final int idleTextColor = Color.BLACK;
-    private final int errorColor = Color.RED;
-    private final int solveColor = Color.GRAY;
+    private final int backColor = Color.BLACK; // Задний фон
+    private final int cellColor = Color.WHITE; // Цвет ячейки
+    private final int sameEmptyNumberCellColor = Color.RED; // Ореол пустой ячейки
+    private final int choseEmptyCellColor = Color.GREEN; // Ореол подобной ячейки
+    private final int choseCellColor = Color.rgb(50, 205, 50); // Ореол выбранной ячейки
+    private final int changeableTextColor = Color.BLUE; // Цвет не закрпленных цифр
+    private final int idleTextColor = Color.BLACK; // Цвет закрепленных цифр
+    private final int errorColor = Color.RED; // Цвет ошибочного числа
+    private final int solveColor = Color.GRAY; // Цвет временного числа
 
-    //Practical matrix width
+    //Practical matrix width (without fault)
     public int getMatrixWidth() {
         return matrixCellWidth * matrixRectCount + matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) + matrixSpaceSmall * matrixSmallSpaceCount;
     }
 
-    public int getNumberMatrixWidth() {
+    //NumberMatrix width without spaces and borders
+    public int getRealNumberMatrixWidth() {
         return numberMatrixCellWidth * NumberMatrix.length + (NumberMatrix.length - 1) * matrixSpaceSmall;
     }
 
@@ -96,6 +102,16 @@ class MatrixView extends View {
         matrixRectCount = activity.getMatrixRectCount();
         asset = context.getAssets();
         myTypeface = Typeface.createFromAsset(asset, "Mandarin.ttf");
+
+        //int a = matrixBorder[Integer.parseInt(Prefs.getMatrixBorder(context))][0];
+        //Log.d("VIEW", a + "");
+
+        //Prefs sets
+        //SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //double_row = sharedPrefs.getBoolean(getResources().getString(R.string.double_row_key), getResources().getBoolean(R.bool.double_row_default));
+        matrixSpaceSmall = Prefs.getMatrixBorder(context, Prefs.Border.Small);
+        matrixBorder = matrixSpaceBig = Prefs.getMatrixBorder(context, Prefs.Border.Big);
+        matrixChoseBorder = Prefs.getMatrixBorder(context, Prefs.Border.Chose);
     }
 
     private void onLoad() {
@@ -103,18 +119,16 @@ class MatrixView extends View {
         RectMatrix = new Rect[matrixRectCount][matrixRectCount];
         NumberMatrix = new Rect[matrixRectCount + 1];
 
-
-        this.matrixWidth = (int) (resolution.x - (resolution.x * widthRatio) / 100);
+        this.matrixWidth = (int) (resolution.x - (resolution.x * widthRatio) / 100);// Matrix width with borders
         this.selectedPoint = new Point(-1, -1);
-
         p = new Paint();
 
         LoadMatrix();
     }
 
     private void LoadMatrix() {
-        xPos = (resolution.x - matrixWidth) / 2;
-        yPos = (int) ((resolution.y * yPosRatio) / 100);
+        xPos = (resolution.x - matrixWidth) / 2 + matrixBorder;
+        yPos = (int) ((resolution.y * yPosRatio) / 100) + matrixBorder;
         matrixSmallSpaceCount = matrixRectCount - (int) Math.sqrt(matrixRectCount);
         matrixCellWidth = getMatrixCellWidth(); //(matrixWidth - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount) / matrixRectCount;
 
@@ -131,7 +145,7 @@ class MatrixView extends View {
         //numberYPos = getMatrixWidth() + yPos + resolution.y * yPosNumberCellRatio / 100;
         numberMatrixCellWidth = getNumberMatrixCellWidth();//(matrixWidth - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
         numberYPos = (int) (resolution.y - (resolution.y * yPosNumberCellRatio) / 100 - numberMatrixCellWidth - matrixSpaceBig);
-        numberXPos = xPos + (getMatrixWidth() - getNumberMatrixWidth()) / 2;
+        numberXPos = xPos + (getMatrixWidth() - getRealNumberMatrixWidth()) / 2;
 
         for (int i = 0; i < NumberMatrix.length; i++)
             NumberMatrix[i] = new Rect(numberXPos + numberMatrixCellWidth * i + matrixSpaceSmall * i, numberYPos,
@@ -157,16 +171,16 @@ class MatrixView extends View {
     //Finding width without remainder
     public int getMatrixCellWidth() {
         int width = matrixWidth;
-        double num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount) / matrixRectCount;
+        double num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount - 2 * matrixBorder) / matrixRectCount;
         while (num % 1 != 0) {
             width--;
-            num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount) / matrixRectCount;
+            num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount - 2 * matrixBorder) / matrixRectCount;
         }
         return (int) num;
     }
 
     //Finding width without remainder
-    public int getNumberMatrixCellWidth() {
+    public int  getNumberMatrixCellWidth() {
         int width = getMatrixWidth();
         double num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
         while (num % 1 != 0) {
@@ -174,6 +188,7 @@ class MatrixView extends View {
             num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
         }
         return (int) num;
+
     }
 
 /*
@@ -194,7 +209,7 @@ class MatrixView extends View {
     }*/
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         // coordinates of Touch-event
         float evX = event.getX();
         float evY = event.getY();
@@ -245,12 +260,12 @@ class MatrixView extends View {
     /// <returns>True if feasible</returns>
     public boolean FeasibleNumbers(Point point) {
         // Check the same numbers in the vertical direction
-        for (int a = 0; a < 9; a++)
+        for (int a = 0; a <matrixRectCount; a++)
             if (activity.getMemoryMatrix()[a][point.y] == activity.getMemoryMatrix()[point.x][point.y] && a != point.x)
                 return true;
 
         // Check the same numbers in the horizontal direction
-        for (int b = 0; b < 9; b++)
+        for (int b = 0; b < matrixRectCount; b++)
             if (activity.getMemoryMatrix()[point.x][b] == activity.getMemoryMatrix()[point.x][point.y] && b != point.y)
                 return true;
 
@@ -273,10 +288,10 @@ class MatrixView extends View {
 
         p.setColor(backColor);
 
-        canvas.drawRect(new Rect(xPos - matrixSpaceBig, yPos - matrixSpaceBig, xPos + getMatrixWidth() + matrixSpaceBig, yPos + getMatrixWidth() + matrixSpaceBig), p);
+        canvas.drawRect(new Rect(xPos - matrixBorder, yPos - matrixBorder, xPos + getMatrixWidth() + matrixBorder, yPos + getMatrixWidth() + matrixBorder), p);
         //if(selectedPoint.x >= 0 && selectedPoint.y >= 0)
         //p.setColor(Color.YELLOW);
-        canvas.drawRect(new Rect(numberXPos - matrixSpaceBig, numberYPos - matrixSpaceBig, numberXPos + getNumberMatrixWidth() + matrixSpaceBig, numberYPos + numberMatrixCellWidth + matrixSpaceBig), p);
+        canvas.drawRect(new Rect(numberXPos - matrixBorder, numberYPos - matrixBorder, numberXPos + getRealNumberMatrixWidth() + matrixBorder, numberYPos + numberMatrixCellWidth + matrixBorder), p);
 
         //1st version of view
         /*for (int i = 0; i < RectMatrix.length; i++)
@@ -300,7 +315,7 @@ class MatrixView extends View {
             {
                 //1st v.
                 //if(activity.getMemoryMatrix()[i][j] != 0 && FeasibleNumbers(new Point(i,j)))
-                    //p.setColor(errorColor);
+                //p.setColor(errorColor);
                 //else
                 p.setColor(cellColor);
 
@@ -320,7 +335,7 @@ class MatrixView extends View {
 
                         //1st v.
                         //if(FeasibleNumbers(new Point(i,j)))
-                            //p.setColor(errorColor);
+                        //p.setColor(errorColor);
 
                         canvas.drawRect(new Rect(RectMatrix[i][j].left + matrixChoseBorder,
                                 RectMatrix[i][j].top + matrixChoseBorder,

@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import java.io.IOException;
 
 public class MyActivity extends Activity implements OnClickListener {
 
@@ -21,6 +25,27 @@ public class MyActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        /*AssetFileDescriptor asset = null;
+        try {
+            asset = getAssets().openFd("audio.mp3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MediaPlayer player = new MediaPlayer();
+        try {
+            player.setDataSource(asset.getFileDescriptor(), asset.getStartOffset(), asset.getLength());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(Prefs.getMusic(this)) {
+            try {
+                player.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            player.start();
+        }*/
 
         //Set up Click listeners for all the buttons
         View continueButton = findViewById(R.id.continue_button);
@@ -49,11 +74,11 @@ public class MyActivity extends Activity implements OnClickListener {
                 openNewGameDialog();
                 break;
             case R.id.solver_button:
-                Intent l = new Intent(this, Records.class);
+                Intent l = new Intent(this, Solver.class);
                 startActivity(l);
                 break;
             case R.id.how_to_play:
-                Intent j = new Intent(this, HowToPlay.class);
+                Intent j = new Intent(this, Records.class);
                 startActivity(j);
                 break;
             case R.id.about_button:
@@ -88,12 +113,22 @@ public class MyActivity extends Activity implements OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                startActivity(new Intent(this, Prefs.class));
+                Intent intent = new Intent(this, Prefs.class);
+                startActivityForResult(intent, 1);
+
                 return true;
             // More items go here (if any) ...
         }
         return false;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        finish();
+        startActivity(getIntent());
+    }
+
 
     /** Ask the user what difficulty level they want */
     private void openNewGameDialog() {

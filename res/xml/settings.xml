@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-   xmlns:android="http://schemas.android.com/apk/res/android">
-   <CheckBoxPreference
-      android:key="music"
-      android:title="@string/music_title"
-      android:summary="@string/music_summary"
-      android:defaultValue="true" />
-   <CheckBoxPreference
-      android:key="hints"
-      android:title="@string/hints_title"
-      android:summary="@string/hints_summary"
-      android:defaultValue="true" />
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:key="musicCateg"
+            android:summary="Music"
+            android:title="Music">
+        <CheckBoxPreference
+                android:key="@string/music_key"
+                android:title="@string/music_title"
+                android:summary="@string/music_summary"
+                android:defaultValue="@bool/music_default" />
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:key="graphicsCateg"
+            android:summary="Fonts, Themes, Matrix sizes"
+            android:title="Graphics">
+        <!--<CheckBoxPreference
+                android:key="@string/double_row_key"
+                android:title="@string/double_row_title"
+                android:summary="@string/double_row_summary"
+                android:defaultValue="@bool/double_row_default" />-->
+        <ListPreference
+                android:entries="@array/matrix_border"
+                android:entryValues="@array/matrix_values"
+                android:key="@string/border_size_key"
+                android:summary="Border size of game matrix"
+                android:defaultValue = "1"
+                android:title="Matrix border size">
+        </ListPreference>
+        <ListPreference
+                android:entries="@array/themes"
+                android:entryValues="@array/themes_value"
+                android:key="@string/themes_key"
+                android:summary="With themes can be changed background image, color of matrix, buttons, etc."
+                android:defaultValue="1"
+                android:title="Themes">
+        </ListPreference>
+        <ListPreference
+                android:entries="@array/fonts"
+                android:entryValues="@array/fonts_value"
+                android:key="@string/fonts_key"
+                android:summary="Font of game text"
+                android:defaultValue="1"
+                android:title="Fonts">
+        </ListPreference>
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -1,8 +1,13 @@
 package com.example.ProSudoku;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -52,8 +57,14 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         clear_button.setOnClickListener(this);
         solve_but = (Button)findViewById(R.id.solve_button);
 
+
+        final ActionBar actionBar = getActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         message = (TextView)findViewById(R.id.textView);
         message.setText(getResources().getString(R.string.sudoku_solve_label));
+        message.setTextColor(Color.WHITE);
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
         ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
@@ -108,11 +119,17 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                 break;
             case R.id.clear_all_button:
                 MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
+                for (int i = 0; i < matrixRectCount; i++)
+                    for (int j = 0; j < matrixRectCount; j++)
+                        if (!ChangeMatrix[i][j]) {
+                            ChangeMatrix[i][j] = true;
+                        }
                 message.setText(getResources().getString(R.string.sudoku_solve_label));
                 break;
         }
         matrixView.Update();
     }
+
 
     @Override
     protected void onPause() {
@@ -124,6 +141,36 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                 toMatrixString(MemoryMatrix)).commit();
         getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
                 toChangeMatrixString(ChangeMatrix)).commit();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent intent = new Intent(this, Prefs.class);
+                startActivityForResult(intent, 1);
+                return true;
+            case android.R.id.home:
+                finish();
+                // More items go here (if any) ...
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        finish();
+        startActivity(getIntent());
     }
 
     /** Convert an array into a matrix string */

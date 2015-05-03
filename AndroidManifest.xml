@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.ProSudoku"
           android:versionCode="1"
-          android:versionName="5.3.2">
+          android:versionName="5.4">
 
     <uses-sdk android:minSdkVersion="19"
-              android:targetSdkVersion="21" />
+              android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -26,18 +26,16 @@
         </activity>
         <activity android:name=".Game">
         </activity>
-        <activity android:name=".Solver"
-                  android:label="@string/game_title"
-                  android:theme="@android:style/Theme.NoTitleBar">
+        <activity android:name=".Solver">
         </activity>
         <activity android:name=".Prefs"
                   android:label="@string/settings_title">
         </activity>
         <activity android:name=".About"
-                  android:label="@string/settings_title">
+                  android:label="@string/about_label">
         </activity>
         <activity android:name=".Records"
-                  android:label="@string/settings_title">
+                  android:label="@string/records_label">
         </activity>
     </application>
 </manifest>

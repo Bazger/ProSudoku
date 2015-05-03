@@ -1,9 +1,12 @@
 package com.example.ProSudoku;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.MenuItem;
 
 public class About extends FragmentActivity{
 
@@ -31,10 +34,21 @@ public class About extends FragmentActivity{
         mViewPager.setAdapter(mTabsPagerAdapter);
     }
 
-    /**
-     * A {@link FragmentStatePagerAdapter} that returns a fragment
-     * representing an object in the collection.
-     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                return  true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
         public TabsPagerAdapter(FragmentManager fm) {
