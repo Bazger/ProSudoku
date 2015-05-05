@@ -10,7 +10,7 @@
                 android:layout_height="fill_parent">
 
         <TextView android:id="@+id/chat_text_chat"
-                  android:text="@string/test"
+                  android:text="@string/my_description"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:singleLine="false" />

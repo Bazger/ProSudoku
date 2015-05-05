@@ -99,14 +99,14 @@ public class DB implements BaseColumns{
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(SQL_CREATE_ENTRIES);
-            /*ContentValues cv = new ContentValues();
+            ContentValues cv = new ContentValues();
             for (int i = 1; i < 5; i++) {
                 //addRec("sometext " + i, i * 5, Dif.values()[i - 1]);
                 cv.put(COLUMN_NAME, "sometext " + i);
                 cv.put(COLUMN_TIME, i * 5);
                 cv.put(COLUMN_DIFFICULTY, i - 1);
                 db.insert(DB_TABLE, null, cv);
-            }*/
+            }
         }
 
         @Override

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" android:weightSum="1" android:background="@drawable/background">
+              android:layout_height="match_parent"
+              android:weightSum="1" android:background="@drawable/background">
 
     <TextView
             android:layout_width="wrap_content"
@@ -13,8 +14,8 @@
     <com.example.ProSudoku.MatrixView
             android:id="@+id/matrix_view"
             android:layout_width="match_parent"
-            android:layout_height="405dp"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="0.98"/>
 
     <LinearLayout
             android:orientation="horizontal"
@@ -23,17 +24,18 @@
             android:layout_marginTop="5dp">
 
         <Button android:id="@+id/clear_all_button"
-            android:layout_marginLeft="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/clear_all_label" android:layout_weight="1"/>
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_all_label"
+                android:layout_weight="1"/>
 
         <Button android:id="@+id/solve_button"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/solve_label"
-            android:layout_weight="1"/>
+                android:layout_height="wrap_content"
+                android:text="@string/solve_label"
+                android:layout_weight="1"/>
 
     </LinearLayout>
 

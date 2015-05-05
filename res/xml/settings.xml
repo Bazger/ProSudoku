@@ -10,16 +10,16 @@
                 android:title="@string/music_title"
                 android:summary="@string/music_summary"
                 android:defaultValue="@bool/music_default" />
+        <CheckBoxPreference
+                android:key="@string/sound_button_key"
+                android:title="@string/sound_button_title"
+                android:summary="@string/sound_button_summary"
+                android:defaultValue="@bool/sound_button_default" />
     </PreferenceCategory>
     <PreferenceCategory
             android:key="graphicsCateg"
             android:summary="Fonts, Themes, Matrix sizes"
             android:title="Graphics">
-        <!--<CheckBoxPreference
-                android:key="@string/double_row_key"
-                android:title="@string/double_row_title"
-                android:summary="@string/double_row_summary"
-                android:defaultValue="@bool/double_row_default" />-->
         <ListPreference
                 android:entries="@array/matrix_border"
                 android:entryValues="@array/matrix_values"
@@ -40,9 +40,9 @@
                 android:entries="@array/fonts"
                 android:entryValues="@array/fonts_value"
                 android:key="@string/fonts_key"
-                android:summary="Font of game text"
+                android:summary="Font of game matrix"
                 android:defaultValue="1"
-                android:title="Fonts">
+                android:title="Matrix fonts">
         </ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>

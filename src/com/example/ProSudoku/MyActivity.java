@@ -60,6 +60,8 @@ public class MyActivity extends Activity implements OnClickListener {
         exitButton.setOnClickListener(this);
         View solverButton = findViewById(R.id.solver_button);
         solverButton.setOnClickListener(this);
+        View recordsButton = findViewById(R.id.records_button);
+        recordsButton.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -77,9 +79,13 @@ public class MyActivity extends Activity implements OnClickListener {
                 Intent l = new Intent(this, Solver.class);
                 startActivity(l);
                 break;
-            case R.id.how_to_play:
+            case R.id.records_button:
                 Intent j = new Intent(this, Records.class);
                 startActivity(j);
+                break;
+            case R.id.how_to_play:
+                Intent k = new Intent(this, HowToPlay.class);
+                startActivity(k);
                 break;
             case R.id.about_button:
                 Intent z = new Intent(this, About.class);

@@ -10,6 +10,7 @@ import android.os.*;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -84,6 +85,8 @@ public class Game extends Activity implements IMatrix {
     private boolean isShown = false;
     private int hintsCount;
     private int difficulty;
+    private int actionBarHeight;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +100,6 @@ public class Game extends Activity implements IMatrix {
         buttonHints = (Button) findViewById(R.id.hints_button);
 
         final ActionBar actionBar = getActionBar();
-
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -108,6 +110,16 @@ public class Game extends Activity implements IMatrix {
         textView = (TextView) findViewById(R.id.textView);
         matrixView = (MatrixView) findViewById(R.id.matrix_view);
 
+        /*actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }*/
+
+        /**
+         * Database creating
+         */
         db = new DB(this);
         db.open();
 
@@ -126,7 +138,9 @@ public class Game extends Activity implements IMatrix {
 
         getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
 
-        //Records Dialog creating
+        /**
+         * Records Dialog creating
+         */
         recordsDialog = new Dialog(this);
         recordsDialog.setContentView(R.layout.records_dialog);
         recordsDialog.setTitle(R.string.new_record_label);
@@ -161,7 +175,9 @@ public class Game extends Activity implements IMatrix {
         });
 
 
-        //Finish Dialog creating
+        /**
+         * Finish Dialog creating
+         */
         finishDialog = new Dialog(this);
         finishDialog.setContentView(R.layout.finish_dialog);
         finishDialog.setTitle(R.string.welldone_label);
@@ -194,32 +210,6 @@ public class Game extends Activity implements IMatrix {
                 finish();
             }
         });
-
-        //chronometer = (Chronometer) findViewById(R.id.chronometer);
-        //chronometer.setBase(SystemClock.elapsedRealtime());
-        //chronometer.start();
-
-        /*chronometer
-                .setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-
-                    @Override
-                    public void onChronometerTick(Chronometer chronometer) {
-                        // TODO Auto-generated method stub
-                        long myElapsedMillis = SystemClock.elapsedRealtime()
-                                - chronometer.getBase();
-
-                        if (myElapsedMillis > 5000) {
-                            String strElapsedMillis = "Прошло больше 5 секунд: "
-                                    + myElapsedMillis;
-                            Toast.makeText(Game.this,
-                                    strElapsedMillis, Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                });*/
-
-
-        //setContentView(new DrawView(this, 9, 2, 5));
     }
 
     private final Runnable mRunnable = new Runnable() {
@@ -240,13 +230,14 @@ public class Game extends Activity implements IMatrix {
     public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
         // TODO Auto-generated method stub
         super.dispatchTouchEvent(ev);
-        if (!mStarted) {
+        /*float evY = ev.getY();
+        if (!mStarted && evY > actionBarHeight) {
             milliseconds = System.currentTimeMillis();
             mStarted = true;
             mHandler.postDelayed(mRunnable, 1000L);
             setTitle(String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60));
             return true;
-        }
+        }*/
         if(GetNumberSpots() == matrixRectCount * matrixRectCount && !finishDialog.isShowing() && IsSudokuFeasible()) {
             isShown = true;
             setTitle("(" + String.format("%02d:%02d", seconds / 60, seconds % 60) + ")");
@@ -272,6 +263,19 @@ public class Game extends Activity implements IMatrix {
         super.onResume();
         String str = getPreferences(MODE_PRIVATE).getString(PREF_TIME, null);
         saveSeconds = Long.parseLong(str, 10);
+        new CountDownTimer(3000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                milliseconds = System.currentTimeMillis();
+                mStarted = true;
+                mHandler.postDelayed(mRunnable, 1000L);
+                setTitle(String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60));
+            }
+
+        }.start();
     }
 
     @Override

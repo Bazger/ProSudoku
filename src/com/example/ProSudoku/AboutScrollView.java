@@ -21,7 +21,7 @@ class AboutScrollView extends ScrollView {
 
     int startPos;
     private int moveSpeed = 1;
-    private int threadSpeed = 5;
+    private int threadSpeed = 10;
 
     public AboutScrollView(Context context) {
         super(context);
@@ -82,7 +82,7 @@ class AboutScrollView extends ScrollView {
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         View view = getChildAt(getChildCount() - 1);
         int diff = (view.getBottom() - (getHeight() + getScrollY() + view.getTop()));// Calculate the scrolldiff
-        if (diff == startPos) {  // if diff is zero, then the bottom has been reached
+        if (diff >= startPos) {  // if diff is zero, then the bottom has been reached
             moveSpeed = Math.abs(moveSpeed);
         }
         if(diff == 0)
