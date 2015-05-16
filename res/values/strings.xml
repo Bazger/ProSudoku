@@ -33,6 +33,7 @@
     <string name="return_label">Finish</string>
 
     <string name="new_record_label">New Record!</string>
+    <string name="no_records_label">No Records</string>
     <string name="records_label">Records</string>
     <string name="save_label">Save</string>
     <string name="enter_name_label">Enter your name:</string>
@@ -55,8 +56,13 @@
     <string name="sound_button_summary">Sound of buttons click</string>
 
     <string name="border_size_key">border_size</string>
+    <string name="border_size_default">1</string>
+
     <string name="themes_key">themes</string>
+    <string name="themes_default">1</string>
+
     <string name="fonts_key">fonts</string>
+    <string name="fonts_default">Mandarin.ttf</string>
 
     <!--About-->
     <string name="my_name"><b>Ivan Zolotaryov</b></string>

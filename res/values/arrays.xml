@@ -19,9 +19,9 @@
     </string-array>
 
     <string-array name="themes">
-        <item>Theme 1</item>
-        <item>Theme 2</item>
-        <item>Theme 3</item>
+        <item>Day</item>
+        <item>Japan</item>
+        <item>Night Sleep</item>
     </string-array>
     <string-array name="themes_value">
         <item>0</item>
@@ -31,13 +31,13 @@
 
     <string-array name="fonts">
         <item>Mandarin</item>
-        <item>Arial</item>
-        <item>Font 3</item>
+        <item>Space Age</item>
+        <item>Dalek</item>
     </string-array>
     <string-array name="fonts_value">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
+        <item>Mandarin.ttf</item>
+        <item>SpaceAge.ttf</item>
+        <item>Dalek.ttf</item>
     </string-array>
 
 </resources>

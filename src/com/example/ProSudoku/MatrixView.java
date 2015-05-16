@@ -7,6 +7,7 @@ import android.graphics.*;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -101,7 +102,7 @@ class MatrixView extends View {
     private void initViews(Context context, AttributeSet attrs) {
         matrixRectCount = activity.getMatrixRectCount();
         asset = context.getAssets();
-        myTypeface = Typeface.createFromAsset(asset, "Mandarin.ttf");
+	    myTypeface = Typeface.createFromAsset(asset, Prefs.getFonts(context));
 
         //int a = matrixBorder[Integer.parseInt(Prefs.getMatrixBorder(context))][0];
         //Log.d("VIEW", a + "");
@@ -109,7 +110,7 @@ class MatrixView extends View {
         //Prefs sets
         //SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         //double_row = sharedPrefs.getBoolean(getResources().getString(R.string.double_row_key), getResources().getBoolean(R.bool.double_row_default));
-        matrixSpaceSmall = Prefs.getMatrixBorder(context, Prefs.Border.Small);
+	    matrixSpaceSmall = Prefs.getMatrixBorder(context, Prefs.Border.Small);
         matrixBorder = matrixSpaceBig = Prefs.getMatrixBorder(context, Prefs.Border.Big);
         matrixChoseBorder = Prefs.getMatrixBorder(context, Prefs.Border.Chose);
     }

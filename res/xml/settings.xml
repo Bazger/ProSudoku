@@ -5,11 +5,11 @@
             android:key="musicCateg"
             android:summary="Music"
             android:title="Music">
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
                 android:key="@string/music_key"
                 android:title="@string/music_title"
                 android:summary="@string/music_summary"
-                android:defaultValue="@bool/music_default" />
+                android:defaultValue="@bool/music_default" />-->
         <CheckBoxPreference
                 android:key="@string/sound_button_key"
                 android:title="@string/sound_button_title"
@@ -25,7 +25,7 @@
                 android:entryValues="@array/matrix_values"
                 android:key="@string/border_size_key"
                 android:summary="Border size of game matrix"
-                android:defaultValue = "1"
+                android:defaultValue="@string/border_size_default"
                 android:title="Matrix border size">
         </ListPreference>
         <ListPreference
@@ -33,7 +33,7 @@
                 android:entryValues="@array/themes_value"
                 android:key="@string/themes_key"
                 android:summary="With themes can be changed background image, color of matrix, buttons, etc."
-                android:defaultValue="1"
+                android:defaultValue="@string/themes_default"
                 android:title="Themes">
         </ListPreference>
         <ListPreference
@@ -41,7 +41,7 @@
                 android:entryValues="@array/fonts_value"
                 android:key="@string/fonts_key"
                 android:summary="Font of game matrix"
-                android:defaultValue="1"
+                android:defaultValue="@string/fonts_default"
                 android:title="Matrix fonts">
         </ListPreference>
     </PreferenceCategory>

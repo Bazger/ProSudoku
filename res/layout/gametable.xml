@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@drawable/background"
+              android:background="@drawable/Japan"
               android:weightSum="1">
     <com.example.ProSudoku.MatrixView
             android:id="@+id/matrix_view"

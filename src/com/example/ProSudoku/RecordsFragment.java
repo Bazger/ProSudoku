@@ -4,10 +4,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Layout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class RecordsFragment extends Fragment {
@@ -29,7 +33,7 @@ public class RecordsFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
+	                         Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.records_fragment, container, false);
 
@@ -53,7 +57,11 @@ public class RecordsFragment extends Fragment {
 		scAdapter = new SimpleCursorAdapter(getActivity(),
 				R.layout.records_item,c, from, to, 0);
 
-
+		if(db.getAllData().getCount() == 0)
+		{
+			TextView tv = (TextView) rootView.findViewById(R.id.recordsText);
+			tv.setVisibility(View.VISIBLE);
+		}
 		scAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 			@Override
 			public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {

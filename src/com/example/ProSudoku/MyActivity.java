@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,39 +11,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import java.io.IOException;
-
 public class MyActivity extends Activity implements OnClickListener {
 
     private static final String TAG = "Sudoku";
     /**
      * Called when the activity is first created.
      */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        /*AssetFileDescriptor asset = null;
-        try {
-            asset = getAssets().openFd("audio.mp3");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        MediaPlayer player = new MediaPlayer();
-        try {
-            player.setDataSource(asset.getFileDescriptor(), asset.getStartOffset(), asset.getLength());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(Prefs.getMusic(this)) {
-            try {
-                player.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            player.start();
-        }*/
 
         //Set up Click listeners for all the buttons
         View continueButton = findViewById(R.id.continue_button);
@@ -105,9 +81,12 @@ public class MyActivity extends Activity implements OnClickListener {
         return true;
     }*/
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
 
-
-    @Override
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);

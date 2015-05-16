@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,7 @@ public class About extends FragmentActivity{
 
     ViewPager mViewPager;
     ImageView imageViewAbout;
-    LinearLayout infoLayout;
+    LinearLayout infoLayout, aboutLayout;
     String[] tabs = { "About", "Tweets"};
 
     public void onCreate(Bundle savedInstanceState) {
@@ -40,11 +41,11 @@ public class About extends FragmentActivity{
         mViewPager.setAdapter(mTabsPagerAdapter);
 
         infoLayout = (LinearLayout) findViewById(R.id.info_layout);
+        aboutLayout = (LinearLayout) findViewById(R.id.about_layout);
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
 
         imageViewAbout = (ImageView)findViewById(R.id.imageViewAbout);
-        imageViewAbout.getLayoutParams().width = infoLayout.getLayoutParams().height;
-        imageViewAbout.setBackgroundResource(R.drawable.about_img2);
-        imageViewAbout.setScaleType(ImageView.ScaleType.FIT_START);
+        imageViewAbout.getLayoutParams().width = (int)(metrics.widthPixels * 0.4);
     }
 
     @Override

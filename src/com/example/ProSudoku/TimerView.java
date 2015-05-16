@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.Date;
 
 /**
- * Created by Vanya on 02.04.2015
+ * Created by Vanya on 02.04.2015 (No usage)
  */
 public class TimerView extends View {
 

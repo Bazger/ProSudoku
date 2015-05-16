@@ -2,26 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
+              android:weightSum="1"
+              android:id="@+id/about_layout"
               android:orientation="vertical">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="140dp" android:id="@+id/info_layout"
-                  android:orientation="horizontal" android:weightSum="1">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp"
+                  android:layout_weight="0.33"
+                  android:id="@+id/info_layout"
+                  android:weightSum="1"
+                  android:orientation="horizontal">
 
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageViewAbout"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/about_img2"
+                android:id="@+id/imageViewAbout" />
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                       android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize = "20sp"
-                android:layout_marginStart="15dp"
-                android:text="@string/my_name"
-                android:id="@+id/about_name"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize = "20sp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/my_name"
+                    android:id="@+id/about_name"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -49,7 +56,8 @@
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
                                        android:id="@+id/pager"
                                        android:layout_width="match_parent"
-                                       android:layout_height="match_parent">
+                                       android:layout_height="0dp"
+                                       android:layout_weight="0.67">
 
         <!--
         This title strip will display the currently visible page title, as well as the page
