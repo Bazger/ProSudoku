@@ -20,24 +20,24 @@
 
     <string-array name="themes">
         <item>Day</item>
-        <item>Japan</item>
         <item>Night Sleep</item>
     </string-array>
     <string-array name="themes_value">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
     </string-array>
 
     <string-array name="fonts">
         <item>Mandarin</item>
         <item>Space Age</item>
         <item>Dalek</item>
+        <item>Polo</item>
     </string-array>
     <string-array name="fonts_value">
         <item>Mandarin.ttf</item>
         <item>SpaceAge.ttf</item>
         <item>Dalek.ttf</item>
+        <item>Polo.ttf</item>
     </string-array>
 
 </resources>

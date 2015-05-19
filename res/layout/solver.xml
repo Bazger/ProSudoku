@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="1" android:background="@drawable/Japan">
+              android:weightSum="1">
 
     <TextView
             android:layout_width="wrap_content"
@@ -21,20 +21,27 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.02"
             android:layout_marginTop="5dp">
 
         <Button android:id="@+id/clear_all_button"
                 android:layout_marginStart="10dp"
+                android:layout_marginEnd="3dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/clear_all_label"
+                android:textSize="24sp"
+                android:layout_marginBottom="10dip"
                 android:layout_weight="1"/>
 
         <Button android:id="@+id/solve_button"
                 android:layout_marginEnd="10dp"
+                android:layout_marginStart="3dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/solve_label"
+                android:textSize="24sp"
+                android:layout_marginBottom="10dip"
                 android:layout_weight="1"/>
 
     </LinearLayout>

@@ -20,6 +20,7 @@ public class Records extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Prefs.setSettings(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.records);
 

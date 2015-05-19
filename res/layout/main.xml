@@ -3,58 +3,74 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:padding="15dip"
-              android:background="@drawable/Japan">
+              android:padding="15dip" android:weightSum="1">
     <Button
             android:id="@+id/continue_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/continue_bt"
+            android:text="@string/continue_label"
+            android:textSize="30sp"
             android:layout_marginBottom="10dip"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"
             />
+
     <Button
             android:id="@+id/new_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/newpaper_bt"
+            android:text="@string/new_label"
+            android:textSize="30sp"
             android:layout_marginBottom="10dip"
             android:layout_gravity="center_horizontal"
-            />
-    <Button android:id="@+id/solver_button"
-            android:layout_width="wrap_content"
+            android:layout_weight="0.1"/>
+
+    <Button
+            android:id="@+id/solver_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button2"
+            android:text="@string/solve_label"
+            android:textSize="30sp"
             android:layout_marginBottom="10dip"
+            android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"/>
 
-    <Button android:id="@+id/records_button"
-            android:layout_width="wrap_content"
+    <Button
+            android:id="@+id/records_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/howtoplay_bt"
+            android:text="@string/records_label"
+            android:textSize="30sp"
             android:layout_marginBottom="10dip"
+            android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"/>
     <Button
             android:id="@+id/how_to_play"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/howtoplay_bt"
+            android:text="@string/how_to_play"
+            android:textSize="30sp"
             android:layout_marginBottom="10dip"
+            android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"
             />
     <Button
             android:id="@+id/about_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/about_bt"
+            android:text="@string/about_label"
+            android:textSize="30sp"
             android:layout_marginBottom="10dip"
+            android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"
             />
     <Button
             android:id="@+id/exit_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/exit_bt"
+            android:text="@string/exit_label"
+            android:textSize="30sp"
+            android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"
             />
 </LinearLayout>

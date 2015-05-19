@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.text.Layout;
 import android.util.DisplayMetrics;
@@ -23,8 +24,9 @@ public class About extends FragmentActivity{
     String[] tabs = { "About", "Tweets"};
 
     public void onCreate(Bundle savedInstanceState) {
+	    Prefs.setSettings(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.about);
+	    setContentView(R.layout.about);
 
         mTabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
@@ -39,6 +41,9 @@ public class About extends FragmentActivity{
         // Set up the ViewPager, attaching the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mTabsPagerAdapter);
+
+	    PagerTitleStrip pagerTitleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+	    Prefs.setPagerTitleStripColor(this, pagerTitleStrip);
 
         infoLayout = (LinearLayout) findViewById(R.id.info_layout);
         aboutLayout = (LinearLayout) findViewById(R.id.about_layout);

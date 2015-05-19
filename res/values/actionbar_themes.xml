@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ActionBar styles -->
+    <style name="DayActionBar"
+           parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/day_actionbar</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="NightActionBar"
+           parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/night_actionbar</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
+    <style name="DayPopupMenu" parent="android:Widget.Holo.ListPopupWindow">
+        <item name="android:popupBackground">@color/day_pressed</item>
+    </style>
+
+
+    <style name="NightPopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/night_normal</item>
+    </style>
+
+
+
+    <style name="MyActionBarTabs"
+           parent="android:Widget.Holo.Light.ActionBar.TabView">
+        <!-- tab indicator -->
+        <item name="android:background">@drawable/actionbar_tab_indicator</item>
+        <item name="android:titleTextStyle">@style/MyActionBarTabText</item>
+    </style>
+    <!-- ActionBar title text -->
+    <style name="MyActionBarTabText"
+           parent="android:Widget.Holo.ActionBar.TabText">
+        <item name="android:textColor">#fff</item>
+    </style>
+
+
+
+
+</resources>

@@ -14,14 +14,13 @@ import android.view.View.OnClickListener;
 public class MyActivity extends Activity implements OnClickListener {
 
     private static final String TAG = "Sudoku";
-    /**
-     * Called when the activity is first created.
-     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+	    Prefs.setSettings(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+	    Prefs.setBackground(this);
 
         //Set up Click listeners for all the buttons
         View continueButton = findViewById(R.id.continue_button);
@@ -53,7 +52,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 break;
             case R.id.solver_button:
                 Intent l = new Intent(this, Solver.class);
-                startActivity(l);
+	            startActivityForResult(l, 1);
                 break;
             case R.id.records_button:
                 Intent j = new Intent(this, Records.class);
@@ -72,6 +71,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 break;
         }
     }
+
 
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -133,6 +133,6 @@ public class MyActivity extends Activity implements OnClickListener {
         Log.d(TAG, "clicked on " + i);
         Intent intent = new Intent(MyActivity.this, Game.class);
         intent.putExtra(Game.KEY_DIFFICULTY, i);
-        startActivity(intent);
+	    startActivityForResult(intent, 1);
     }
 }

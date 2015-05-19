@@ -59,10 +59,10 @@
     <string name="border_size_default">1</string>
 
     <string name="themes_key">themes</string>
-    <string name="themes_default">1</string>
+    <string name="themes_default">0</string>
 
     <string name="fonts_key">fonts</string>
-    <string name="fonts_default">Mandarin.ttf</string>
+    <string name="fonts_default">Polo.ttf</string>
 
     <!--About-->
     <string name="my_name"><b>Ivan Zolotaryov</b></string>

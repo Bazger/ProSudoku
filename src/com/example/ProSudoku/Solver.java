@@ -49,8 +49,11 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+	    Prefs.setSettings(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.solver);
+	    setContentView(R.layout.solver);
+	    Prefs.setBackground(this);
+
         View solve_button = findViewById(R.id.solve_button);
         solve_button.setOnClickListener(this);
         View clear_button = findViewById(R.id.clear_all_button);
@@ -169,8 +172,11 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        finish();
-        startActivity(getIntent());
+	    Intent intent = new Intent();
+	    intent.putExtra("isChanged", true);
+	    setResult(RESULT_OK, intent);
+	    finish();
+	    startActivity(getIntent());
     }
 
     /** Convert an array into a matrix string */

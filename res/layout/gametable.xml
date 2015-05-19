@@ -3,17 +3,30 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@drawable/Japan"
               android:weightSum="1">
     <com.example.ProSudoku.MatrixView
             android:id="@+id/matrix_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.98"/>
-    <Button
-            android:layout_width="150dp"
-            android:layout_marginLeft="10dp"
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hints_label"
-            android:id="@+id/hints_button" android:layout_gravity="left"/>
+            android:layout_weight="0.02"
+            android:weightSum="1"
+            android:layout_marginTop="5dp">
+
+        <Button
+                android:id="@+id/hints_button"
+                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/hints_label"
+                android:textSize="24sp"
+                android:layout_marginBottom="10dip"
+                android:layout_weight="0.5"/>
+
+
+    </LinearLayout>
 </LinearLayout>

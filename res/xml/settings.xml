@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
+    <!--<PreferenceCategory
             android:key="musicCateg"
             android:summary="Music"
             android:title="Music">
-        <!--<CheckBoxPreference
+        <CheckBoxPreference
                 android:key="@string/music_key"
                 android:title="@string/music_title"
                 android:summary="@string/music_summary"
-                android:defaultValue="@bool/music_default" />-->
+                android:defaultValue="@bool/music_default" />
         <CheckBoxPreference
                 android:key="@string/sound_button_key"
                 android:title="@string/sound_button_title"
                 android:summary="@string/sound_button_summary"
                 android:defaultValue="@bool/sound_button_default" />
-    </PreferenceCategory>
+    </PreferenceCategory>-->
     <PreferenceCategory
             android:key="graphicsCateg"
             android:summary="Fonts, Themes, Matrix sizes"
@@ -29,20 +29,20 @@
                 android:title="Matrix border size">
         </ListPreference>
         <ListPreference
-                android:entries="@array/themes"
-                android:entryValues="@array/themes_value"
-                android:key="@string/themes_key"
-                android:summary="With themes can be changed background image, color of matrix, buttons, etc."
-                android:defaultValue="@string/themes_default"
-                android:title="Themes">
-        </ListPreference>
-        <ListPreference
                 android:entries="@array/fonts"
                 android:entryValues="@array/fonts_value"
                 android:key="@string/fonts_key"
                 android:summary="Font of game matrix"
                 android:defaultValue="@string/fonts_default"
                 android:title="Matrix fonts">
+        </ListPreference>
+        <ListPreference
+                android:entries="@array/themes"
+                android:entryValues="@array/themes_value"
+                android:key="@string/themes_key"
+                android:summary="With themes can be changed background image, color of matrix, buttons, etc."
+                android:defaultValue="@string/themes_default"
+                android:title="Themes">
         </ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>

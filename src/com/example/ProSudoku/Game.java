@@ -12,10 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.util.Arrays;
 
@@ -87,8 +84,10 @@ public class Game extends Activity implements IMatrix {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+	    Prefs.setSettings(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gametable);
+		Prefs.setBackground(this);
         Log.d(TAG, "onCreate");
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
@@ -437,6 +436,9 @@ public class Game extends Activity implements IMatrix {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
+	    Intent intent = new Intent();
+	    intent.putExtra("isChanged", true);
+	    setResult(RESULT_OK, intent);
         finish();
         startActivity(getIntent());
     }
