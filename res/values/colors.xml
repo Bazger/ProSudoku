@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="night_actionbar">#6633B5E5</color>
-    <color name="night_pressed">@android:color/holo_blue_dark</color>
-    <color name="night_normal">@android:color/holo_blue_light</color>
+    <color name="night_actionbar">#2070B0</color>
+    <color name="night_pressed">#660099CC</color>
+    <color name="night_normal">#6633B5E5</color>
+    <color name="night_popup">#2070B0</color>
 
     <color name="day_actionbar">#287332</color>
     <color name="day_pressed">#66B349</color>
     <color name="day_normal">#B5E61D</color>
+    <color name="day_tab_text">#fff</color>
+    <color name="day_pager_text">#fff</color>
+    <color name="day_actionbar_text">#fff</color>
 
     <color name="japan_actionbar">#895023</color>
     <color name="japan_pressed">#895023</color>

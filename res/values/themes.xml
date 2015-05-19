@@ -17,8 +17,11 @@
     <style name="AppDayTheme" parent="AppBaseTheme">
         <item name="android:buttonStyle">@style/ButtonDay</item>
         <item name="android:typeface">monospace</item>
+
         <item name="android:actionBarStyle">@style/DayActionBar</item>
-        <item name="android:actionBarTabStyle">@style/DayActionBar</item>
+        <item name="android:actionBarTabBarStyle">@style/MyActionBarTabStyle</item>
+        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+
         <item name="android:popupMenuStyle">@style/DayPopupMenu</item>
     </style>
 
@@ -27,7 +30,11 @@
     <style name="AppNightTheme" parent="AppBaseTheme">
         <item name="android:buttonStyle">@style/ButtonNight</item>
         <item name="android:typeface">monospace</item>
+
         <item name="android:actionBarStyle">@style/NightActionBar</item>
+        <item name="android:actionBarTabBarStyle">@style/MyActionBarTabStyle</item>
+        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+
         <item name="android:popupMenuStyle">@style/NightPopupMenu</item>
     </style>
 

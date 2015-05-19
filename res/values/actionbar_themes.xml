@@ -4,7 +4,7 @@
     <style name="DayActionBar"
            parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/day_actionbar</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/day_actionbar_text</item>
     </style>
 
     <style name="NightActionBar"
@@ -20,21 +20,29 @@
 
 
     <style name="NightPopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
-        <item name="android:popupBackground">@color/night_normal</item>
+        <item name="android:popupBackground">@color/night_popup</item>
     </style>
 
 
+
+    <!-- ActionBar tabs styles -->
+    <style name="MyActionBarTabStyle"
+           parent="android:Widget.Holo.Light.ActionBar.TabBar">
+        <item name="android:background">@color/day_pressed</item>
+        <item name="android:actionBarTabStyle">@style/MyActionBarTabs</item>
+    </style>
+
+    <!-- ActionBar tabs text styles -->
+    <style name="MyActionBarTabText"
+           parent="android:Widget.Holo.Light.ActionBar.TabText">
+        <item name="android:textColor">@color/day_tab_text</item>
+
+    </style>
 
     <style name="MyActionBarTabs"
            parent="android:Widget.Holo.Light.ActionBar.TabView">
         <!-- tab indicator -->
-        <item name="android:background">@drawable/actionbar_tab_indicator</item>
-        <item name="android:titleTextStyle">@style/MyActionBarTabText</item>
-    </style>
-    <!-- ActionBar title text -->
-    <style name="MyActionBarTabText"
-           parent="android:Widget.Holo.ActionBar.TabText">
-        <item name="android:textColor">#fff</item>
+        <item name="android:background">@drawable/actionbar_tab_indicator_day</item>
     </style>
 
 

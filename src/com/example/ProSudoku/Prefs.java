@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -117,7 +118,8 @@ public class Prefs extends PreferenceActivity implements SharedPreferences.OnSha
         switch (getThemes(context))
         {
             default:
-                pager.setBackgroundResource(R.color.day_normal);
+                pager.setBackgroundResource(R.color.day_pressed);
+                pager.setTextColor(context.getResources().getColor(R.color.day_pager_text));
                 break;
             case 1:
                 pager.setBackgroundResource(R.color.night_normal);
