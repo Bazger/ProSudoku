@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.*;
 import android.support.annotation.NonNull;
 import android.view.*;
@@ -319,7 +320,7 @@ public class Game extends Activity implements IMatrix {
 				isTimerStoped = Boolean.parseBoolean(str);
 				break;
 			case DIFFICULTY_HARD:
-				Generate(23 + Randomizer.GetInt(2));
+				Generate(25 + Randomizer.GetInt(2));
 				AnswerMatrix = getData();
 				Solve();
 				difficulty = DIFFICULTY_HARD;
@@ -329,7 +330,7 @@ public class Game extends Activity implements IMatrix {
 				hintsCount = 0;
 				break;
 			case DIFFICULTY_MEDIUM:
-				Generate(25 + Randomizer.GetInt(6));
+				Generate(27 + Randomizer.GetInt(3));
 				AnswerMatrix = getData();
 				Solve();
 				difficulty = DIFFICULTY_MEDIUM;
@@ -340,7 +341,7 @@ public class Game extends Activity implements IMatrix {
 				break;
 			case DIFFICULTY_EASY:
 				//MemoryMatrix =  fromMatrixString(testMatrix);
-				Generate(30 + Randomizer.GetInt(6));
+				Generate(30 + Randomizer.GetInt(3));
 				AnswerMatrix = getData();
 				Solve();
 				difficulty = DIFFICULTY_EASY;
@@ -351,7 +352,7 @@ public class Game extends Activity implements IMatrix {
 				break;
 			case DIFFICULTY_BEGINNER:
 			default:
-				Generate(35 + Randomizer.GetInt(6));
+				Generate(33 + Randomizer.GetInt(3));
 				AnswerMatrix = getData();
 				Solve();
 				difficulty = DIFFICULTY_BEGINNER;
@@ -781,7 +782,7 @@ public class Game extends Activity implements IMatrix {
 			{
 				int e;
 
-				do //BUG: Random
+				do
 				{
 					// Randomize number from the feasible set M
 					e = Randomizer.GetInt(1, 10);

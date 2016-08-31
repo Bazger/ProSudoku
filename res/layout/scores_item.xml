@@ -18,25 +18,25 @@
     </RelativeLayout>
 
     <RelativeLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2.64">
-                <TextView
-                    android:id="@+id/tvName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginStart="10dp"
-                    android:text=""
-                    android:textSize="24sp">
-                </TextView>
-        </RelativeLayout>
+        <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginStart="10dp"
+                android:text=""
+                android:textSize="24sp">
+        </TextView>
+    </RelativeLayout>
 
-        <RelativeLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1">
-            <TextView
-                    android:id="@+id/tvTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:text=""
-                    android:textSize="24sp" android:layout_gravity="top">
-            </TextView>
-        </RelativeLayout>
+    <RelativeLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1">
+        <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text=""
+                android:textSize="24sp" android:layout_gravity="top">
+        </TextView>
+    </RelativeLayout>
 </LinearLayout>
