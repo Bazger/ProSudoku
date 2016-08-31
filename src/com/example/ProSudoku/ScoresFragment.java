@@ -4,27 +4,23 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.text.Layout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class RecordsFragment extends Fragment {
+public class ScoresFragment extends Fragment {
 
 	ListView lvData;
 	DB db;
 	SimpleCursorAdapter scAdapter;
 	int pageNum;
 
-	private static final String TAG = "Records fragment";
+	private static final String TAG = "Scores fragment";
 
-	static RecordsFragment newInstance(int page) {
-		RecordsFragment pageFragment = new RecordsFragment();
+	static ScoresFragment newInstance(int page) {
+		ScoresFragment pageFragment = new ScoresFragment();
 		Bundle arguments = new Bundle();
 		arguments.putInt(TAG, page);
 		pageFragment.setArguments(arguments);
@@ -35,7 +31,7 @@ public class RecordsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.records_fragment, container, false);
+		View rootView = inflater.inflate(R.layout.scores_fragment, container, false);
 
 		// открываем подключение к БД
 		db = new DB(getActivity());
@@ -55,7 +51,7 @@ public class RecordsFragment extends Fragment {
 
 		// создааем адаптер и настраиваем список
 		scAdapter = new SimpleCursorAdapter(getActivity(),
-				R.layout.records_item,c, from, to, 0);
+				R.layout.scores_item,c, from, to, 0);
 
 		if(db.getAllData().getCount() == 0)
 		{

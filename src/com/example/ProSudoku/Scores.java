@@ -3,13 +3,12 @@ package com.example.ProSudoku;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 
-public class Records extends FragmentActivity implements
+public class Scores extends FragmentActivity implements
 		ActionBar.TabListener {
 
 	private ViewPager viewPager;
@@ -22,7 +21,7 @@ public class Records extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		Prefs.setSettings(this);
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.records);
+		setContentView(R.layout.scores);
 
 		// Initilization
 		viewPager = (ViewPager) findViewById(R.id.recordsPager);
@@ -107,7 +106,7 @@ public class Records extends FragmentActivity implements
 
 		@Override
 		public Fragment getItem(int position) {
-			return RecordsFragment.newInstance(position);
+			return ScoresFragment.newInstance(position);
 		}
 
 		@Override

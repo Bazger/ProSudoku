@@ -15,7 +15,7 @@ public class DB implements BaseColumns{
 
     public enum Dif {Beginner, Easy, Medium, Hard}
 
-    private static final String DB_TABLE = "records";
+    private static final String DB_TABLE = "scores";
 
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_TIME = "time";
@@ -88,7 +88,7 @@ public class DB implements BaseColumns{
     // класс по созданию и управлению БД
     private class DBHelper extends SQLiteOpenHelper {
 
-        private static final String DB_NAME = "Records.db";
+        private static final String DB_NAME = "Scores.db";
         private static final int DB_VERSION = 1;
 
         public DBHelper(Context context) {

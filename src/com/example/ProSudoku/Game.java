@@ -29,9 +29,6 @@ public class Game extends Activity implements IMatrix {
 	public static final int DIFFICULTY_MEDIUM = 2;
 	public static final int DIFFICULTY_HARD = 3;
 
-	final static int RECORDSDIALOG = 1;
-	final static int FINISHDIALOG = 2;
-
 	protected static final int DIFFICULTY_CONTINUE = -1;
 
 	final static String PREF_MATRIX = "matrix";
@@ -129,10 +126,10 @@ public class Game extends Activity implements IMatrix {
 		getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
 
 		/**
-		 * Records Dialog creating
+		 * Scores Dialog creating
 		 */
 		recordsDialog = new Dialog(this);
-		recordsDialog.setContentView(R.layout.records_dialog);
+		recordsDialog.setContentView(R.layout.scores_dialog);
 		recordsDialog.setTitle(R.string.new_record_label);
 
 		final EditText dialogName = (EditText) recordsDialog.findViewById(R.id.dialogEditTextName);
@@ -351,8 +348,8 @@ public class Game extends Activity implements IMatrix {
 				hintsCount = 1;
 				break;
 			case DIFFICULTY_EASY:
-				MemoryMatrix =  fromMatrixString(mat);
-				//Generate(30 + Randomizer.GetInt(6));
+				//MemoryMatrix =  fromMatrixString(mat);
+				Generate(30 + Randomizer.GetInt(6));
 				AnswerMatrix = getData();
 				Solve();
 				difficulty = DIFFICULTY_EASY;

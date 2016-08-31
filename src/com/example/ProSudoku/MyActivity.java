@@ -55,7 +55,7 @@ public class MyActivity extends Activity implements OnClickListener {
 	            startActivityForResult(l, 1);
                 break;
             case R.id.records_button:
-                Intent j = new Intent(this, Records.class);
+                Intent j = new Intent(this, Scores.class);
                 startActivity(j);
                 break;
             case R.id.how_to_play:

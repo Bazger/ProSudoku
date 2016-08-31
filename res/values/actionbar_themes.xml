@@ -15,7 +15,7 @@
 
 
     <style name="DayPopupMenu" parent="android:Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@color/day_popup</item>
+        <item name="android:popupBackground">@color/day_popup</item>0
     </style>
 
 
