@@ -35,8 +35,8 @@ public class MyActivity extends Activity implements OnClickListener {
         exitButton.setOnClickListener(this);
         View solverButton = findViewById(R.id.solver_button);
         solverButton.setOnClickListener(this);
-        View recordsButton = findViewById(R.id.records_button);
-        recordsButton.setOnClickListener(this);
+        View scoresButton = findViewById(R.id.records_button);
+        scoresButton.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -81,10 +81,7 @@ public class MyActivity extends Activity implements OnClickListener {
         return true;
     }*/
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {

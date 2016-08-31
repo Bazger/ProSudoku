@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerTitleStrip;
 
 public class Prefs extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
-    private static final String TAG = "Prefs";
 
     public enum Border{Small, Big, Chose}
 
@@ -22,11 +20,6 @@ public class Prefs extends PreferenceActivity implements SharedPreferences.OnSha
             {10, 15, 12}};// Large
 
     private boolean isChanged = false;
-
-    public boolean getIsChanged()
-    {
-        return isChanged;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +99,9 @@ public class Prefs extends PreferenceActivity implements SharedPreferences.OnSha
         {
             default:
                 if(context.getClass() == MyActivity.class)
-                    context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day);
+                    context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day_title);
 	            else
-	                context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day3);
+	                context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day);
                 break;
             case 1:
 	            if(context.getClass() == MyActivity.class)

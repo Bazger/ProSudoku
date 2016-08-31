@@ -40,17 +40,14 @@ public class Game extends Activity implements IMatrix {
 	final static String PREF_TIMER_STOP = "timer_stop";
 
 
-	final String mat = "123456789456789123789123456231674895875912364694538217317265948542897631968341570";
+	final String testMatrix = "123456789456789123789123456231674895875912364694538217317265948542897631968341570";
 
 	IRandomizer Randomizer = new DefaultRandomizer();
 
-	private TextView textView;
 	private MatrixView matrixView;
 	private Button buttonHints;
 	private Dialog finishDialog;
 	private Dialog recordsDialog;
-	private View dialogView;
-	private EditText dialogEditTextName;
 	private DB db;
 
 	@Override
@@ -99,7 +96,6 @@ public class Game extends Activity implements IMatrix {
 				                                  DIFFICULTY_EASY);
 		getMatrix(diff);
 
-		textView = (TextView) findViewById(R.id.textView);
 		matrixView = (MatrixView) findViewById(R.id.matrix_view);
 
 		/**
@@ -131,6 +127,7 @@ public class Game extends Activity implements IMatrix {
 		recordsDialog = new Dialog(this);
 		recordsDialog.setContentView(R.layout.scores_dialog);
 		recordsDialog.setTitle(R.string.new_record_label);
+		recordsDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
 		final EditText dialogName = (EditText) recordsDialog.findViewById(R.id.dialogEditTextName);
 		final TextView dialogTextView =(TextView) recordsDialog.findViewById(R.id.dialogTextView);
@@ -169,7 +166,6 @@ public class Game extends Activity implements IMatrix {
 		finishDialog.setContentView(R.layout.finish_dialog);
 		finishDialog.setTitle(R.string.welldone_label);
 
-		dialogEditTextName = (EditText) finishDialog.findViewById(R.id.dialogEditTextName);
 
 		Button dialogButtonNew = (Button) finishDialog.findViewById(R.id.dialogButtonNew);
 		// if button is clicked, open new game diaolog
@@ -190,6 +186,7 @@ public class Game extends Activity implements IMatrix {
 				finish();
 			}
 		});
+
 
 		finishDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 			@Override
@@ -251,12 +248,6 @@ public class Game extends Activity implements IMatrix {
 				recordsDialog.show();
 		}
 		return false;
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
 	}
 
 	@Override
@@ -348,7 +339,7 @@ public class Game extends Activity implements IMatrix {
 				hintsCount = 1;
 				break;
 			case DIFFICULTY_EASY:
-				//MemoryMatrix =  fromMatrixString(mat);
+				//MemoryMatrix =  fromMatrixString(testMatrix);
 				Generate(30 + Randomizer.GetInt(6));
 				AnswerMatrix = getData();
 				Solve();

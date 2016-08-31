@@ -15,7 +15,6 @@ import android.view.View;
  * Created by Vanya on 21.02.2015
  */
 class MatrixView extends View {
-    private static final String TAG = "MatrixView";
 
     final double widthRatio = 2;//5.56;
     final double yPosRatio = 2;//5;//7.81;
@@ -42,7 +41,6 @@ class MatrixView extends View {
     private int yPos;
 
     private int numberYPos;
-    private int numberYPos2;
     private int numberXPos;
 
     //boolean isScreenTouched = false;
@@ -166,10 +164,6 @@ class MatrixView extends View {
     public int getMatrixCellWidth() {
         int width = matrixWidth;
         double num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount - 2 * matrixBorder) / matrixRectCount;
-        while (num % 1 != 0) {
-            width--;
-            num = (width - matrixSpaceBig * (matrixRectCount - matrixSmallSpaceCount - 1) - matrixSpaceSmall * matrixSmallSpaceCount - 2 * matrixBorder) / matrixRectCount;
-        }
         return (int) num;
     }
 
@@ -177,10 +171,6 @@ class MatrixView extends View {
     public int  getNumberMatrixCellWidth() {
         int width = getMatrixWidth();
         double num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
-        while (num % 1 != 0) {
-            width--;
-            num = (width - (matrixSpaceSmall * (NumberMatrix.length - 1))) / (NumberMatrix.length);
-        }
         return (int) num;
 
     }

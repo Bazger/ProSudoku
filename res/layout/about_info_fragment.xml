@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:padding="15dip"
         android:orientation="vertical">
 
-    <com.example.ProSudoku.AboutScrollView android:id="@+id/chat_ScrollView"
-                                           android:layout_width="fill_parent"
-                                           android:layout_height="fill_parent">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="15dp"
+            android:paddingBottom="10dip"
+            android:textSize = "20sp"
+            android:text="@string/school_name_label"
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:padding="15dip"
-                      android:orientation="vertical">
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="15dp"
-                    android:textSize = "20sp"
-                    android:text="@string/school_name_label"
-                    android:id="@+id/textViewSchool"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="15dp"
-                    android:textSize = "20sp"
-                    android:text="@string/school_teacher_name"
-                    android:id="@+id/textViewTeacher"/>
-        </LinearLayout>
-    </com.example.ProSudoku.AboutScrollView>
-
-</LinearLayout>
+            android:id="@+id/textViewSchool"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize = "20sp"
+            android:text="@string/school_teacher_name"
+            android:id="@+id/textViewTeacher"
+            android:layout_below="@+id/textViewSchool" android:layout_alignStart="@+id/textViewSchool"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="65dp"
+            android:scaleType="fitEnd"
+            android:background="@drawable/school"
+            android:id="@+id/imageViewSchool" android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"/>
+</RelativeLayout>

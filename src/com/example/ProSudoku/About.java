@@ -20,7 +20,6 @@ public class About extends FragmentActivity{
 
     ViewPager mViewPager;
     ImageView imageViewAbout;
-    LinearLayout infoLayout, aboutLayout;
     String[] tabs = { "School", "Tweets"};
 
     public void onCreate(Bundle savedInstanceState) {
@@ -45,8 +44,6 @@ public class About extends FragmentActivity{
 	    PagerTitleStrip pagerTitleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
 	    Prefs.setPagerTitleStripColor(this, pagerTitleStrip);
 
-        infoLayout = (LinearLayout) findViewById(R.id.info_layout);
-        aboutLayout = (LinearLayout) findViewById(R.id.about_layout);
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
 
         imageViewAbout = (ImageView)findViewById(R.id.imageViewAbout);

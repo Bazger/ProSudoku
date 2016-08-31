@@ -128,6 +128,8 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                             ChangeMatrix[i][j] = true;
                         }
                 message.setText(getResources().getString(R.string.sudoku_solve_label));
+	            isSolved = false;
+	            solve_but.setText("Solve");
                 break;
         }
         matrixView.Update();
@@ -219,15 +221,6 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                 else
                     str.append(0);
         return str.toString();
-    }
-
-    public boolean matrixIsFull()
-    {
-        for (byte[] aMemoryMatrix : MemoryMatrix)
-            for (byte anAMemoryMatrix : aMemoryMatrix)
-                if (anAMemoryMatrix == 0)
-                    return false;
-        return true;
     }
 
     /// <summary>
