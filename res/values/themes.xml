@@ -19,8 +19,9 @@
         <item name="android:typeface">monospace</item>
 
         <item name="android:actionBarStyle">@style/DayActionBar</item>
-        <item name="android:actionBarTabBarStyle">@style/MyActionBarTabStyle</item>
-        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="android:actionBarTabBarStyle">@style/DayActionBarTabStyle</item>
+        <item name="android:actionBarTabTextStyle">@style/DayActionBarTabText</item>
+        <item name="android:actionBarTabStyle">@style/DayActionBarTabs</item>
 
         <item name="android:popupMenuStyle">@style/DayPopupMenu</item>
     </style>
@@ -32,23 +33,22 @@
         <item name="android:typeface">monospace</item>
 
         <item name="android:actionBarStyle">@style/NightActionBar</item>
-        <item name="android:actionBarTabBarStyle">@style/MyActionBarTabStyle</item>
-        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="android:actionBarTabBarStyle">@style/NightActionBarTabStyle</item>
+        <item name="android:actionBarTabTextStyle">@style/NightActionBarTabText</item>
+        <!--<item name="android:actionBarTabStyle">@style/NightActionBarTabs</item>-->
 
         <item name="android:popupMenuStyle">@style/NightPopupMenu</item>
     </style>
 
     <!-- Button Styles -->
     <style name="ButtonDay" parent="@android:style/Widget.Button">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@color/day_button_text</item>
         <item name="android:background">@drawable/button_day</item>
     </style>
 
     <style name="ButtonNight" parent="@android:style/Widget.Button">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/night_button_text</item>
         <item name="android:background">@drawable/button_night</item>
     </style>
-
-
 
 </resources>

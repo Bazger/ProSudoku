@@ -21,7 +21,7 @@ public class About extends FragmentActivity{
     ViewPager mViewPager;
     ImageView imageViewAbout;
     LinearLayout infoLayout, aboutLayout;
-    String[] tabs = { "About", "Tweets"};
+    String[] tabs = { "School", "Tweets"};
 
     public void onCreate(Bundle savedInstanceState) {
 	    Prefs.setSettings(this);

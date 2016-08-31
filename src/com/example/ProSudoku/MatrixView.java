@@ -54,18 +54,9 @@ class MatrixView extends View {
 
     private AssetManager asset;
     private Typeface myTypeface;
+	private MatrixColors matrixColors;
 
     private final IMatrix activity;
-
-    private final int backColor = Color.BLACK; // Задний фон
-    private final int cellColor = Color.WHITE; // Цвет ячейки
-    private final int sameEmptyNumberCellColor = Color.RED; // Ореол пустой ячейки
-    private final int choseEmptyCellColor = Color.GREEN; // Ореол подобной ячейки
-    private final int choseCellColor = Color.rgb(50, 205, 50); // Ореол выбранной ячейки
-    private final int changeableTextColor = Color.BLUE; // Цвет не закрпленных цифр
-    private final int idleTextColor = Color.BLACK; // Цвет закрепленных цифр
-    private final int errorColor = Color.RED; // Цвет ошибочного числа
-    private final int solveColor = Color.GRAY; // Цвет временного числа
 
     //Practical matrix width (without fault)
     public int getMatrixWidth() {
@@ -103,6 +94,8 @@ class MatrixView extends View {
         matrixRectCount = activity.getMatrixRectCount();
         asset = context.getAssets();
 	    myTypeface = Typeface.createFromAsset(asset, Prefs.getFonts(context));
+
+		matrixColors = Prefs.setMatrixColor(context);
 
         //int a = matrixBorder[Integer.parseInt(Prefs.getMatrixBorder(context))][0];
         //Log.d("VIEW", a + "");
@@ -287,7 +280,7 @@ class MatrixView extends View {
         //canvas.drawRGB(173, 255, 47);
         //canvas.drawARGB(50, 20, 204, 255);
 
-        p.setColor(backColor);
+        p.setColor(matrixColors.getBackColor());
 
         canvas.drawRect(new Rect(xPos - matrixBorder, yPos - matrixBorder, xPos + getMatrixWidth() + matrixBorder, yPos + getMatrixWidth() + matrixBorder), p);
         //if(selectedPoint.x >= 0 && selectedPoint.y >= 0)
@@ -318,21 +311,21 @@ class MatrixView extends View {
                 //if(activity.getMemoryMatrix()[i][j] != 0 && FeasibleNumbers(new Point(i,j)))
                 //p.setColor(errorColor);
                 //else
-                p.setColor(cellColor);
+                p.setColor(matrixColors.getCellColor());
 
                 canvas.drawRect(RectMatrix[i][j], p);
                 if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
                     //What kind of cell was chosen
                     if (activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0)
-                        p.setColor(sameEmptyNumberCellColor);
+                        p.setColor(matrixColors.getSameEmptyNumberCellColor());
                     else
-                        p.setColor(choseEmptyCellColor);
+                        p.setColor(matrixColors.getChoseEmptyCellColor());
 
                     if(activity.getMemoryMatrix()[i][j] == activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] && activity.getMemoryMatrix()[i][j] != 0) {
                         if(i == selectedPoint.x && j == selectedPoint.y)
-                            p.setColor(choseCellColor);
+                            p.setColor(matrixColors.getChoseCellColor());
                         canvas.drawRect(RectMatrix[i][j], p);
-                        p.setColor(cellColor);
+                        p.setColor(matrixColors.getCellColor());
 
                         //1st v.
                         //if(FeasibleNumbers(new Point(i,j)))
@@ -347,7 +340,7 @@ class MatrixView extends View {
                     if(activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0)
                     {
                         canvas.drawRect(RectMatrix[selectedPoint.x][selectedPoint.y], p);
-                        p.setColor(cellColor);
+                        p.setColor(matrixColors.getCellColor());
                         canvas.drawRect(new Rect(RectMatrix[selectedPoint.x][selectedPoint.y].left + matrixChoseBorder,
                                 RectMatrix[selectedPoint.x][selectedPoint.y].top + matrixChoseBorder,
                                 RectMatrix[selectedPoint.x][selectedPoint.y].right - matrixChoseBorder,
@@ -356,7 +349,7 @@ class MatrixView extends View {
                 }
             }
 
-        p.setColor(cellColor);
+        p.setColor(matrixColors.getCellColor());
         for (Rect aNumberMatrix : NumberMatrix) {
             //1st version of view
             //canvas.drawRect(new Rect(NumberMatrix[i].left + matrixSpaceSmall, NumberMatrix[i].top + matrixSpaceSmall, NumberMatrix[i].right - matrixSpaceSmall, NumberMatrix[i].bottom - matrixSpaceSmall), p);
@@ -373,7 +366,7 @@ class MatrixView extends View {
                     //Check errors
                     if(activity.getChangeMatrix()[i][j] && FeasibleNumbers(new Point(i, j))) {
                         //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                        Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, errorColor, myTypeface);
+                        Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, matrixColors.getErrorColor(), myTypeface);
                         canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
                     }
 
@@ -383,20 +376,20 @@ class MatrixView extends View {
                         if (activity.getClass() != Solver.class)
                             if (activity.getChangeMatrix()[i][j]) {
                                 //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, matrixColors.getChangeableTextColor(), myTypeface);
                                 canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
                             } else {
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, idleTextColor, myTypeface);
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, matrixColors.getIdleTextColor(), myTypeface);
                                 canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
                             }
                         else
                         {
                             if (activity.getChangeMatrix()[i][j]) {
                                 //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, changeableTextColor, myTypeface);
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, matrixColors.getChangeableTextColor(), myTypeface);
                                 canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
                             } else {
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, solveColor, myTypeface);
+                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), matrixCellWidth, matrixColors.getSolveColor(), myTypeface);
                                 canvas.drawBitmap(bit, RectMatrix[i][j].centerX() - bit.getWidth() / 2, RectMatrix[i][j].centerY() - bit.getHeight() / 2, p);
                             }
                         }
@@ -405,7 +398,7 @@ class MatrixView extends View {
             }
 
         for (int i = 1; i < NumberMatrix.length; i++) {
-            Bitmap bit = textAsBitmap(String.valueOf(i), numberMatrixCellWidth, idleTextColor, myTypeface);
+            Bitmap bit = textAsBitmap(String.valueOf(i), numberMatrixCellWidth, matrixColors.getIdleTextColor(), myTypeface);
             canvas.drawBitmap(bit, NumberMatrix[i].centerX() - bit.getWidth() / 2, NumberMatrix[i].centerY() - bit.getHeight() / 2, p);
         }
 

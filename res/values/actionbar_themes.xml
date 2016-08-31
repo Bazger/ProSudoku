@@ -10,12 +10,12 @@
     <style name="NightActionBar"
            parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/night_actionbar</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/night_actionbar_text</item>
     </style>
 
 
     <style name="DayPopupMenu" parent="android:Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@color/day_pressed</item>
+        <item name="android:popupBackground">@color/day_popup</item>
     </style>
 
 
@@ -25,27 +25,37 @@
 
 
 
-    <!-- ActionBar tabs styles -->
-    <style name="MyActionBarTabStyle"
+    <!-- DayActionBar tabs styles -->
+    <style name="DayActionBarTabStyle"
            parent="android:Widget.Holo.Light.ActionBar.TabBar">
-        <item name="android:background">@color/day_pressed</item>
-        <item name="android:actionBarTabStyle">@style/MyActionBarTabs</item>
+        <item name="android:background">@color/day_tab</item>
     </style>
 
     <!-- ActionBar tabs text styles -->
-    <style name="MyActionBarTabText"
+    <style name="DayActionBarTabText"
            parent="android:Widget.Holo.Light.ActionBar.TabText">
         <item name="android:textColor">@color/day_tab_text</item>
 
     </style>
 
-    <style name="MyActionBarTabs"
+    <style name="DayActionBarTabs"
            parent="android:Widget.Holo.Light.ActionBar.TabView">
         <!-- tab indicator -->
         <item name="android:background">@drawable/actionbar_tab_indicator_day</item>
     </style>
 
+    <!-- NightActionBar tabs styles -->
+    <style name="NightActionBarTabStyle"
+           parent="android:Widget.Holo.Light.ActionBar.TabBar">
+        <item name="android:background">@color/night_tab</item>
+    </style>
 
+    <!-- ActionBar tabs text styles -->
+    <style name="NightActionBarTabText"
+           parent="android:Widget.Holo.Light.ActionBar.TabText">
+        <item name="android:textColor">@color/night_tab_text</item>
+
+    </style>
 
 
 </resources>

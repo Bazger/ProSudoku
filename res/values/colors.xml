@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="night_actionbar">#2070B0</color>
-    <color name="night_pressed">#660099CC</color>
-    <color name="night_normal">#6633B5E5</color>
-    <color name="night_popup">#2070B0</color>
+    <color name="night_actionbar">#004A6A</color>
+    <color name="night_actionbar_text">#fff</color>
+    <color name="night_popup">#206FAE</color>
+    <color name="night_pressed">#880099CC</color>
+    <color name="night_normal">#8833B5E5</color>
+    <color name="night_button_text">#fff</color>
+    <color name="night_tab">#206FAE</color>
+    <color name="night_tab_text">#fff</color>
+    <color name="night_pager">@android:color/holo_blue_light</color>
+    <color name="night_pager_text">#fff</color>
+    <color name="matrix_view_text">@android:color/holo_blue_dark</color>
 
     <color name="day_actionbar">#287332</color>
+    <color name="day_actionbar_text">#fff</color>
+    <color name="day_popup">#66B349</color>
     <color name="day_pressed">#66B349</color>
     <color name="day_normal">#B5E61D</color>
-    <color name="day_tab_text">#fff</color>
-    <color name="day_pager_text">#fff</color>
-    <color name="day_actionbar_text">#fff</color>
+    <color name="day_button_text">#000</color>
+    <color name="day_tab">#66B349</color>
+    <color name="day_tab_text">#000</color>
+    <color name="day_pager">#66B349</color>
+    <color name="day_pager_text">#000</color>
+
+    <color name="error_cell_matrix">#EB4604</color>
+
 
     <color name="japan_actionbar">#895023</color>
     <color name="japan_pressed">#895023</color>

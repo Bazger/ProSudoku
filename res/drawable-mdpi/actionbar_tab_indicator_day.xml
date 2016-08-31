@@ -6,18 +6,18 @@
     <!-- Non focused states -->
     <item android:state_focused="false" android:state_selected="false"
           android:state_pressed="false"
-          android:drawable="@drawable/tab_unselected" />
+          android:drawable="@drawable/tab_unselected_day" />
     <item android:state_focused="false" android:state_selected="true"
           android:state_pressed="false"
-          android:drawable="@drawable/tab_selected" />
+          android:drawable="@drawable/tab_selected_day" />
 
     <!-- Focused states (such as when focused with a d-pad or mouse hover) -->
     <item android:state_focused="true" android:state_selected="false"
           android:state_pressed="false"
-          android:drawable="@drawable/tab_unselected_focused" />
+          android:drawable="@drawable/tab_unselected_focused_day" />
     <item android:state_focused="true" android:state_selected="true"
           android:state_pressed="false"
-          android:drawable="@drawable/tab_selected_focused" />
+          android:drawable="@drawable/tab_selected_focused_day" />
 
 
     <!-- STATES WHEN BUTTON IS PRESSED -->
@@ -25,16 +25,16 @@
     <!-- Non focused states -->
     <item android:state_focused="false" android:state_selected="false"
           android:state_pressed="true"
-          android:drawable="@drawable/tab_unselected_pressed" />
+          android:drawable="@drawable/tab_unselected_pressed_day" />
     <item android:state_focused="false" android:state_selected="true"
           android:state_pressed="true"
-          android:drawable="@drawable/tab_selected_pressed" />
+          android:drawable="@drawable/tab_selected_pressed_day" />
 
     <!-- Focused states (such as when focused with a d-pad or mouse hover) -->
     <item android:state_focused="true" android:state_selected="false"
           android:state_pressed="true"
-          android:drawable="@drawable/tab_unselected_pressed" />
+          android:drawable="@drawable/tab_unselected_pressed_day" />
     <item android:state_focused="true" android:state_selected="true"
           android:state_pressed="true"
-          android:drawable="@drawable/tab_selected_pressed" />
+          android:drawable="@drawable/tab_selected_pressed_day" />
 </selector>

@@ -24,7 +24,7 @@ public class DB implements BaseColumns{
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
-    private static int tableCount = 10;
+    public static int tableCount = 10;
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DB_TABLE + " (" +

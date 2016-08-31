@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -31,7 +32,6 @@ public class Prefs extends PreferenceActivity implements SharedPreferences.OnSha
     protected void onCreate(Bundle savedInstanceState) {
         setSettings(this);
         super.onCreate(savedInstanceState);
-        setPreferenceScreen(null);
         addPreferencesFromResource(R.xml.settings);
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
@@ -105,10 +105,16 @@ public class Prefs extends PreferenceActivity implements SharedPreferences.OnSha
         switch (getThemes(context))
         {
             default:
-                context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day2);
+                if(context.getClass() == MyActivity.class)
+                    context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day);
+	            else
+	                context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day3);
                 break;
             case 1:
-                context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.night);
+	            if(context.getClass() == MyActivity.class)
+                    context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.night_title);
+	            else
+		            context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.night);
                 break;
         }
     }
@@ -118,13 +124,26 @@ public class Prefs extends PreferenceActivity implements SharedPreferences.OnSha
         switch (getThemes(context))
         {
             default:
-                pager.setBackgroundResource(R.color.day_pressed);
+                pager.setBackgroundResource(R.color.day_pager);
                 pager.setTextColor(context.getResources().getColor(R.color.day_pager_text));
                 break;
             case 1:
-                pager.setBackgroundResource(R.color.night_normal);
+                pager.setBackgroundResource(R.color.night_pager);
+                pager.setTextColor(context.getResources().getColor(R.color.night_pager_text));
                 break;
         }
     }
+
+	public static MatrixColors setMatrixColor(Context context)
+	{
+		Resources res = context.getResources();
+		switch (getThemes(context))
+		{
+			default:
+				return new MatrixColors(res.getColor(R.color.day_popup), res.getColor(R.color.day_normal), res.getColor(R.color.matrix_view_text));
+			case 1:
+				return new MatrixColors(res.getColor(R.color.night_popup), res.getColor(R.color.night_pager), res.getColor(R.color.day_popup));
+		}
+	}
 
 }
