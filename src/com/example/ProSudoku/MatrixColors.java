@@ -7,15 +7,15 @@ import android.graphics.Color;
  */
 public class MatrixColors {
 
-	private int backColor; // Задний фон
-	private int cellColor; // Цвет ячейки
-	private int sameEmptyNumberCellColor; // Ореол пустой ячейки
-	private int choseEmptyCellColor; // Ореол подобной ячейки
-	private int choseCellColor; // Ореол выбранной ячейки
-	private int changeableTextColor; // Цвет не закрпленных цифр
-	private int idleTextColor; // Цвет закрепленных цифр
-	private int errorColor; // Цвет ошибочного числа
-	private int solveColor; // Цвет временного числа
+	private int backColor;
+	private int cellColor;
+	private int sameEmptyNumberCellColor;
+	private int choseEmptyCellColor;
+	private int choseCellColor;
+	private int changeableTextColor;
+	private int idleTextColor;
+	private int errorColor;
+	private int solveColor;
 
 	public MatrixColors(int choseCellColor,int choseEmptyCellColor, int changeableTextColor)
 	{
