@@ -99,7 +99,7 @@ public class Game extends Activity implements IMatrix {
 
 		matrixView = (MatrixView) findViewById(R.id.matrix_view);
 
-		/**
+		/*
 		 * Database creating
 		 */
 		db = new DB(this);
@@ -122,7 +122,7 @@ public class Game extends Activity implements IMatrix {
 
 		getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
 
-		/**
+		/*
 		 * Scores Dialog creating
 		 */
 		recordsDialog = new Dialog(this);
@@ -160,7 +160,7 @@ public class Game extends Activity implements IMatrix {
 		});
 
 
-		/**
+		/*
 		 * Finish Dialog creating
 		 */
 		finishDialog = new Dialog(this);
@@ -290,13 +290,13 @@ public class Game extends Activity implements IMatrix {
 	private void savePreferences()
 	{
 		getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
-				                                             toMatrixString(MemoryMatrix)).commit();
+				                                             toMatrixString(MemoryMatrix)).apply();
 		getPreferences(MODE_PRIVATE).edit().putString(PREF_ANSWER_MATRIX,
-				                                             toMatrixString(AnswerMatrix)).commit();
+				                                             toMatrixString(AnswerMatrix)).apply();
 		getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
-				                                             toChangeMatrixString(ChangeMatrix)).commit();
-		getPreferences(MODE_PRIVATE).edit().putString(PREF_HINTS, Integer.toString(hintsCount)).commit();
-		getPreferences(MODE_PRIVATE).edit().putString(PREF_TIMER_STOP, Boolean.toString(isTimerStoped)).commit();
+				                                             toChangeMatrixString(ChangeMatrix)).apply();
+		getPreferences(MODE_PRIVATE).edit().putString(PREF_HINTS, Integer.toString(hintsCount)).apply();
+		getPreferences(MODE_PRIVATE).edit().putString(PREF_TIMER_STOP, Boolean.toString(isTimerStoped)).apply();
 	}
 
 	/** Given a difficulty level, come up with a new puzzle */
@@ -320,46 +320,17 @@ public class Game extends Activity implements IMatrix {
 				isTimerStoped = Boolean.parseBoolean(str);
 				break;
 			case DIFFICULTY_HARD:
-				Generate(25 + Randomizer.GetInt(2));
-				AnswerMatrix = getData();
-				Solve();
-				difficulty = DIFFICULTY_HARD;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
-				saveSeconds = 0;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
-				hintsCount = 0;
+				getMatrixHelper(25 + Randomizer.GetInt(2), DIFFICULTY_HARD, 0);
 				break;
 			case DIFFICULTY_MEDIUM:
-				Generate(27 + Randomizer.GetInt(3));
-				AnswerMatrix = getData();
-				Solve();
-				difficulty = DIFFICULTY_MEDIUM;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
-				saveSeconds = 0;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
-				hintsCount = 1;
+				getMatrixHelper(27 + Randomizer.GetInt(3), DIFFICULTY_MEDIUM, 1);
 				break;
 			case DIFFICULTY_EASY:
-				//MemoryMatrix =  fromMatrixString(testMatrix);
-				Generate(30 + Randomizer.GetInt(3));
-				AnswerMatrix = getData();
-				Solve();
-				difficulty = DIFFICULTY_EASY;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
-				saveSeconds = 0;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
-				hintsCount = 2;
+				getMatrixHelper(30 + Randomizer.GetInt(3), DIFFICULTY_EASY, 2);
 				break;
 			case DIFFICULTY_BEGINNER:
 			default:
-				Generate(33 + Randomizer.GetInt(3));
-				AnswerMatrix = getData();
-				Solve();
-				difficulty = DIFFICULTY_BEGINNER;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).commit();
-				saveSeconds = 0;
-				getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).commit();
-				hintsCount = 3;
+				getMatrixHelper(33 + Randomizer.GetInt(3), DIFFICULTY_BEGINNER, 3);
 				break;
 		}
 		setTitle("(" + String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60) + ")");
@@ -367,6 +338,18 @@ public class Game extends Activity implements IMatrix {
 			((ViewManager) buttonHints.getParent()).removeView(buttonHints);
 		else
 			buttonHints.setText(getResources().getString(R.string.hints_label) + " " + hintsCount);
+	}
+
+	private void getMatrixHelper(int generateCellsCount, int difficulty, int hintsCount )
+	{
+		Generate(generateCellsCount);
+		AnswerMatrix = getData();
+		Solve();
+		this.difficulty = difficulty;
+		getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).apply();
+		this.saveSeconds = 0;
+		getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Integer.toString(difficulty)).apply();
+		this.hintsCount = hintsCount;
 	}
 
 	private void openNewGameDialog() {
@@ -945,22 +928,22 @@ public class Game extends Activity implements IMatrix {
 		{
 			case RECORDSDIALOG:
 				adb.setTitle("Custom dialog");
-				// создаем view из dialog.xml
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ view пїЅпїЅ dialog.xml
 				dialogView = getLayoutInflater()
 						             .inflate(R.layout.records_dialog, null);
-				// устанавливаем ее, как содержимое тела диалога
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				adb.setView(dialogView);
-				// находим TexView для отображения кол-ва
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ TexView пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅ
 				//tvCount = (TextView) view.findViewById(R.id.tvCount);
 				return adb.create();
 			default:
 				adb.setTitle("Custom dialog");
-				// создаем view из dialog.xml
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ view пїЅпїЅ dialog.xml
 				dialogView = getLayoutInflater()
 						             .inflate(R.layout.finish_dialog, null);
-				// устанавливаем ее, как содержимое тела диалога
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				adb.setView(dialogView);
-				// находим TexView для отображения кол-ва
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ TexView пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅ
 				//tvCount = (TextView) view.findViewById(R.id.tvCount);
 				return adb.create();
 		}
