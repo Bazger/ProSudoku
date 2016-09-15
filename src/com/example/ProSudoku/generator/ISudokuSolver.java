@@ -1,7 +1,5 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.generator;
 
-/**
- * Created by Vanya on 15.09.2016.
- */
-public interface ISolver {
+public interface ISudokuSolver {
+     boolean solve(byte [][] board);
 }

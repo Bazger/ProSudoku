@@ -11,6 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.example.ProSudoku.generator.ISudokuGenerator;
+import com.example.ProSudoku.generator.ISudokuSolver;
+import com.example.ProSudoku.generator.SudokuSolver;
 
 /**
  * Created by Vanya on 07.03.2015
@@ -18,9 +21,12 @@ import android.widget.TextView;
 public class Solver extends Activity implements View.OnClickListener, IMatrix {
     private static final String TAG = "Solver";
 
-    TextView message;
-    MatrixView matrixView;
-    Button solve_but;
+    private TextView message;
+    private MatrixView matrixView;
+    private Button solve_but;
+
+    private ISudokuSolver sudokuSolver = new SudokuSolver();
+    private ISudokuGenerator sudokuGenerator;
 
     byte[][] MemoryMatrix;
     boolean[][] ChangeMatrix;
@@ -100,7 +106,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                             for (int j = 0; j < matrixRectCount; j++)
                                 if (MemoryMatrix[i][j] == 0)
                                     ChangeMatrix[i][j] = false;
-                        if (Solve())
+                        if (sudokuSolver.solve(MemoryMatrix))
                             message.setText("Solving was completed");
                         isSolved = true;
                         solve_but.setText("Clear");
@@ -290,96 +296,5 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                 return false;
 
         return true;
-    }
-
-    /// <summary>
-    /// Solves the given Sudoku.
-    /// </summary>
-    /// <returns>Success</returns>
-    public boolean Solve()
-    {
-        // Find untouched location with most information
-        int xp = 0;
-        int yp = 0;
-        byte[] Mp = null;
-        int cMp = 10;
-
-        for (int x = 0; x < 9; x++)
-        {
-            for (int y = 0; y < 9; y++)
-            {
-                // Is this spot unused?
-                if (MemoryMatrix[x][y] == 0)
-                {
-                    // Set M of possible solutions
-                    byte[] M = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-                    // Remove used numbers in the vertical direction
-                    for (int a = 0; a < 9; a++)
-                        M[MemoryMatrix[a][y]] = 0;
-
-                    // Remove used numbers in the horizontal direction
-                    for (int b = 0; b < 9; b++)
-                        M[MemoryMatrix[x][b]] = 0;
-
-                    // Remove used numbers in the sub square. BUG:
-                    //int squareIndex = m_subSquare[y, x];
-                    //for (int c = 0; c < 9; c++)
-                    //{
-                    //    EntryPoint p = m_subIndex[squareIndex, c];
-                    //    M[m_sudoku[p.x, p.y]] = 0;
-                    //}
-
-                    int n = (int)Math.sqrt(MemoryMatrix.length);
-                    int sectorX = x / n;
-                    int sectorY = y / n;
-                    for (int a = 0; a < n; a++)
-                    {
-                        for (int b = 0; b < n; b++)
-                        {
-                            M[MemoryMatrix[a + sectorX * n][b + sectorY * n]] = 0;
-                        }
-                    }
-
-
-                    int cM = 0;
-                    // Calculate cardinality of M
-                    for (int d = 1; d < 10; d++)
-                        cM += M[d] == 0 ? 0 : 1;
-
-                    // Is there more information in this spot than in the best yet?
-                    if (cM < cMp)
-                    {
-                        cMp = cM;
-                        Mp = M;
-                        xp = x;
-                        yp = y;
-                    }
-                }
-            }
-        }
-
-        // Finished?
-        if (cMp == 10)
-            return true;
-
-        // Couldn't find a solution?
-        if (cMp == 0)
-            return false;
-
-        // Try elements
-        for (int i = 1; i < 10; i++)
-        {
-            if (Mp[i] != 0)
-            {
-                MemoryMatrix[xp][yp] = Mp[i];
-                if (Solve())
-                    return true;
-            }
-        }
-
-        // Restore to original state.
-        MemoryMatrix[xp][yp] = 0;
-        return false;
     }
 }
