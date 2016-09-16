@@ -11,9 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.example.ProSudoku.generator.ISudokuGenerator;
-import com.example.ProSudoku.generator.ISudokuSolver;
-import com.example.ProSudoku.generator.SudokuSolver;
+import com.example.ProSudoku.logic.ISudokuGenerator;
+import com.example.ProSudoku.logic.ISudokuSolver;
+import com.example.ProSudoku.logic.SimpleSudokuSolver;
+import com.example.ProSudoku.logic.SudokuRulesUtils;
+
+import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 
 /**
  * Created by Vanya on 07.03.2015
@@ -25,7 +28,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
     private MatrixView matrixView;
     private Button solve_but;
 
-    private ISudokuSolver sudokuSolver = new SudokuSolver();
+    private ISudokuSolver sudokuSolver = new SimpleSudokuSolver();
     private ISudokuGenerator sudokuGenerator;
 
     byte[][] MemoryMatrix;
@@ -101,7 +104,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         switch(v.getId()) {
             case R.id.solve_button:
                 if(!isSolved) {
-                    if (IsSudokuFeasible()) {
+                    if (isSudokuFeasible(MemoryMatrix)) {
                         for (int i = 0; i < matrixRectCount; i++)
                             for (int j = 0; j < matrixRectCount; j++)
                                 if (MemoryMatrix[i][j] == 0)
@@ -151,7 +154,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
         getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
                 toMatrixString(MemoryMatrix)).commit();
         getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
-                toChangeMatrixString(ChangeMatrix)).commit();
+                toChangeMatrixString(ChangeMatrix)).apply();
     }
 
 
@@ -227,74 +230,5 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                 else
                     str.append(0);
         return str.toString();
-    }
-
-    /// <summary>
-    /// Fast test if the data is feasible.
-    /// Does not check if there is more than one solution.
-    /// </summary>
-    /// <returns>True if feasible</returns>
-    public boolean IsSudokuFeasible()
-    {
-        for (int x = 0; x < 9; x++)
-        {
-            for (int y = 0; y < 9; y++)
-            {
-                // Set M of possible solutions
-                byte[] M = new byte[10];
-
-                // Count used numbers in the vertical direction
-                for (int a = 0; a < 9; a++)
-                    M[MemoryMatrix[a][y]]++;
-                // Sudoku feasible?
-                if (!Feasible(M))
-                    return false;
-
-                M = new byte[10];
-                // Count used numbers in the horizontal direction
-                for (int b = 0; b < 9; b++)
-                    M[MemoryMatrix[x][b]]++;
-                if (!Feasible(M))
-                    return false;
-
-                M = new byte[10];
-                // Count used numbers in the sub square.  BUG
-                //int squareIndex = m_subSquare[y, x];
-                //for (int c = 0; c < 9; c++)
-                //{
-                //    EntryPoint p = m_subIndex[squareIndex, c];
-                //    if (p.x != y && p.y != x)
-                //        M[m_sudoku[p.x, p.y]]++;
-                //}
-                //if (!Feasible(M))
-                //    return false;
-
-                int n = (int)Math.sqrt(matrixRectCount);
-                int sectorX = x / n;
-                int sectorY = y / n;
-                for (int i = 0; i < n; i++)
-                {
-                    for (int j = 0; j < n; j++)
-                    {
-                        if (i + sectorX * n != x && j + sectorY * n != y)
-                            M[MemoryMatrix[i + sectorX * n][j + sectorY * n]]++;
-                    }
-                }
-                if (!Feasible(M))
-                    return false;
-
-            }
-        }
-
-        return true;
-    }
-
-    private boolean Feasible(byte[] M)
-    {
-        for (int d = 1; d < matrixRectCount + 1; d++)
-            if (M[d] > 1)
-                return false;
-
-        return true;
     }
 }

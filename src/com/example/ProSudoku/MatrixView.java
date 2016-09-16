@@ -11,9 +11,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * Created by Vanya on 21.02.2015
- */
 class MatrixView extends View {
 
     final double widthRatio = 2;//5.56;
@@ -28,6 +25,9 @@ class MatrixView extends View {
 
     private Rect[][] RectMatrix;
     private Rect[] NumberMatrix;
+
+    private Rect gameBoardBackground;
+    private Rect numbersBoardBackground;
 
     private int matrixWidth;
     private int matrixRectCount;
@@ -142,6 +142,9 @@ class MatrixView extends View {
         for (int i = 0; i < NumberMatrix.length; i++)
             NumberMatrix[i] = new Rect(numberXPos + numberMatrixCellWidth * i + matrixSpaceSmall * i, numberYPos,
                     numberXPos + numberMatrixCellWidth * i + matrixSpaceSmall * i + numberMatrixCellWidth, numberYPos + numberMatrixCellWidth);
+
+        gameBoardBackground = new Rect(xPos - matrixBorder, yPos - matrixBorder, xPos + getMatrixWidth() + matrixBorder, yPos + getMatrixWidth() + matrixBorder);
+        numbersBoardBackground = new Rect(numberXPos - matrixBorder, numberYPos - matrixBorder, numberXPos + getRealNumberMatrixWidth() + matrixBorder, numberYPos + numberMatrixCellWidth + matrixBorder);
     }
 
 
@@ -272,10 +275,10 @@ class MatrixView extends View {
 
         p.setColor(matrixColors.getBackColor());
 
-        canvas.drawRect(new Rect(xPos - matrixBorder, yPos - matrixBorder, xPos + getMatrixWidth() + matrixBorder, yPos + getMatrixWidth() + matrixBorder), p);
+        canvas.drawRect(gameBoardBackground, p);
         //if(selectedPoint.x >= 0 && selectedPoint.y >= 0)
         //p.setColor(Color.YELLOW);
-        canvas.drawRect(new Rect(numberXPos - matrixBorder, numberYPos - matrixBorder, numberXPos + getRealNumberMatrixWidth() + matrixBorder, numberYPos + numberMatrixCellWidth + matrixBorder), p);
+        canvas.drawRect(numbersBoardBackground, p);
 
         //1st version of view
         /*for (int i = 0; i < RectMatrix.length; i++)

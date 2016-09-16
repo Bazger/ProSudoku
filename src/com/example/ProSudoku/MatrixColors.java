@@ -2,9 +2,6 @@ package com.example.ProSudoku;
 
 import android.graphics.Color;
 
-/**
- * Created by Vanya on 23.05.2015
- */
 public class MatrixColors {
 
 	private int backColor;

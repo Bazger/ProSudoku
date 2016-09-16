@@ -1,6 +1,6 @@
-package com.example.ProSudoku.generator;
+package com.example.ProSudoku.logic;
 
-public class SudokuSolver implements ISudokuSolver {
+public class SimpleSudokuSolver implements ISudokuSolver {
 
     /**
      * Solves the given Sudoku.

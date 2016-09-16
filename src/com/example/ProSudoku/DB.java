@@ -1,9 +1,5 @@
 package com.example.ProSudoku;
 
-/**
- * Created by Vanya on 16.04.2015
- */
-
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
