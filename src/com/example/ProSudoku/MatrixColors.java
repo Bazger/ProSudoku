@@ -4,15 +4,15 @@ import android.graphics.Color;
 
 public class MatrixColors {
 
-	private int backColor;
-	private int cellColor;
-	private int sameEmptyNumberCellColor;
-	private int choseEmptyCellColor;
-	private int choseCellColor;
-	private int changeableTextColor;
-	private int idleTextColor;
-	private int errorColor;
-	private int solveColor;
+	private int backColor; // Background
+	private int cellColor; // Cell color
+	private int sameEmptyNumberCellColor; // ќреол пустой €чейки
+	private int choseEmptyCellColor; // ќреол подобной €чейки
+	private int choseCellColor; // ќреол выбранной €чейки
+	private int changeableTextColor; // ÷вет не закрпленных цифр
+	private int idleTextColor; // ÷вет закрепленных цифр
+	private int errorColor; // ÷вет ошибочного числа
+	private int solveColor; // ÷вет временного числа
 
 	public MatrixColors(int choseCellColor,int choseEmptyCellColor, int changeableTextColor)
 	{

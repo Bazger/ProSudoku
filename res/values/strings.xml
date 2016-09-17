@@ -32,9 +32,9 @@
     <string name="welldone_label">Well Done!</string>
     <string name="return_label">Finish</string>
 
-    <string name="new_record_label">New Result!</string>
-    <string name="no_records_label">No Results</string>
-    <string name="records_label">High Scores</string>
+    <string name="new_score_label">New Result!</string>
+    <string name="no_scores_label">No Results</string>
+    <string name="scores_label">High Scores</string>
     <string name="save_label">Save</string>
     <string name="enter_name_label">Enter your name:</string>
     <string name="continue_dialog_label">Don&#65287;t save</string>

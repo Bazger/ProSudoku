@@ -1,17 +1,17 @@
 package com.example.ProSudoku;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.*;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import com.example.ProSudoku.plugin.IGameBoardViewPlugin;
 
-class MatrixView extends View {
+import java.util.List;
+
+class GameBoardView extends View {
 
     final double widthRatio = 2;//5.56;
     final double yPosRatio = 2;//5;//7.81;
@@ -54,7 +54,8 @@ class MatrixView extends View {
     private Typeface myTypeface;
 	private MatrixColors matrixColors;
 
-    private final IMatrix activity;
+    private final IGameBoardView activity;
+    private List<IGameBoardViewPlugin> plugins;
 
     //Practical matrix width (without fault)
     public int getMatrixWidth() {
@@ -66,15 +67,15 @@ class MatrixView extends View {
         return numberMatrixCellWidth * NumberMatrix.length + (NumberMatrix.length - 1) * matrixSpaceSmall;
     }
 
-    public MatrixView(Context context) {
+    public GameBoardView(Context context) {
         super(context);
-        activity = (IMatrix) context;
+        activity = (IGameBoardView) context;
         initViews(context, null);
     }
 
-    public MatrixView(Context context, AttributeSet attrs) {
+    public GameBoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        activity = (IMatrix) context;
+        activity = (IGameBoardView) context;
         initViews(context, attrs);
     }
 
@@ -90,6 +91,7 @@ class MatrixView extends View {
 
     private void initViews(Context context, AttributeSet attrs) {
         matrixRectCount = activity.getMatrixRectCount();
+        plugins = activity.getPlugins();
         asset = context.getAssets();
 	    myTypeface = Typeface.createFromAsset(asset, Prefs.getFonts(context));
 
@@ -115,10 +117,10 @@ class MatrixView extends View {
         this.selectedPoint = new Point(-1, -1);
         p = new Paint();
 
-        LoadMatrix();
+        loadMatrix();
     }
 
-    private void LoadMatrix() {
+    private void loadMatrix() {
         xPos = (resolution.x - matrixWidth) / 2 + matrixBorder;
         yPos = (int) ((resolution.y * yPosRatio) / 100) + matrixBorder;
         matrixSmallSpaceCount = matrixRectCount - (int) Math.sqrt(matrixRectCount);
@@ -401,6 +403,11 @@ class MatrixView extends View {
         //canvas.drawBitmap(bit, 200, 0, p);
         //bit = textAsBitmap(String.valueOf(getTop()), numberMatrixCellWidth, Color.BLACK, myTypeface);
         //canvas.drawBitmap(bit, 400, 0, p);
+
+        for(IGameBoardViewPlugin plugin : plugins)
+        {
+            plugin.onDraw(canvas);
+        }
     }
 }
 

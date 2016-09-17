@@ -1,4 +1,4 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.scores;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
+import com.example.ProSudoku.Prefs;
+import com.example.ProSudoku.R;
 
-public class Scores extends FragmentActivity implements
+public class ScoresActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
 	private ViewPager viewPager;
@@ -24,7 +26,7 @@ public class Scores extends FragmentActivity implements
 		setContentView(R.layout.scores);
 
 		// Initilization
-		viewPager = (ViewPager) findViewById(R.id.recordsPager);
+		viewPager = (ViewPager) findViewById(R.id.scoresPager);
 		actionBar = getActionBar();
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 

@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/recordsFragment"
+        android:id="@+id/scoresFragment"
         android:orientation="vertical">
     <TextView
             android:layout_width="fill_parent"
@@ -11,8 +11,8 @@
             android:gravity="center"
             android:textSize="24sp"
             android:visibility="invisible"
-            android:id="@+id/recordsText"
-            android:text="@string/no_records_label"/>
+            android:id="@+id/scoresText"
+            android:text="@string/no_scores_label"/>
     <ListView
             android:id="@+id/lvData"
             android:layout_width="match_parent"

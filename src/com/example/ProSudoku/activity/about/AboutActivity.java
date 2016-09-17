@@ -1,20 +1,17 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.about;
 
 import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.text.Layout;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import com.example.ProSudoku.Prefs;
+import com.example.ProSudoku.R;
 
-public class About extends FragmentActivity{
+public class AboutActivity extends FragmentActivity{
 
     TabsPagerAdapter mTabsPagerAdapter;
 

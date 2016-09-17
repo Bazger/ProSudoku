@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import com.example.ProSudoku.activity.about.AboutActivity;
+import com.example.ProSudoku.activity.scores.ScoresActivity;
 
 public class MyActivity extends Activity implements OnClickListener {
 
@@ -35,15 +37,15 @@ public class MyActivity extends Activity implements OnClickListener {
         exitButton.setOnClickListener(this);
         View solverButton = findViewById(R.id.solver_button);
         solverButton.setOnClickListener(this);
-        View scoresButton = findViewById(R.id.records_button);
+        View scoresButton = findViewById(R.id.scores_button);
         scoresButton.setOnClickListener(this);
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.continue_button:
-                if (getSharedPreferences("Game", MODE_PRIVATE).getString(Game.PREF_MATRIX, null) != null)
-                    startGame(Game.DIFFICULTY_CONTINUE);
+                if (getSharedPreferences("Game", MODE_PRIVATE).getString(GameActivity.PREF_MATRIX, null) != null)
+                    startGame(GameActivity.DIFFICULTY_CONTINUE);
                 else
                     openNewGameDialog();
                 break;
@@ -54,8 +56,8 @@ public class MyActivity extends Activity implements OnClickListener {
                 Intent l = new Intent(this, Solver.class);
 	            startActivityForResult(l, 1);
                 break;
-            case R.id.records_button:
-                Intent j = new Intent(this, Scores.class);
+            case R.id.scores_button:
+                Intent j = new Intent(this, ScoresActivity.class);
                 startActivity(j);
                 break;
             case R.id.how_to_play:
@@ -63,7 +65,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 startActivity(k);
                 break;
             case R.id.about_button:
-                Intent z = new Intent(this, About.class);
+                Intent z = new Intent(this, AboutActivity.class);
                 startActivity(z);
                 break;
             case R.id.exit_button:
@@ -128,8 +130,8 @@ public class MyActivity extends Activity implements OnClickListener {
 
     private void startGame(int i) {
         Log.d(TAG, "clicked on " + i);
-        Intent intent = new Intent(MyActivity.this, Game.class);
-        intent.putExtra(Game.KEY_DIFFICULTY, i);
+        Intent intent = new Intent(MyActivity.this, GameActivity.class);
+        intent.putExtra(GameActivity.KEY_DIFFICULTY, i);
 	    startActivityForResult(intent, 1);
     }
 }

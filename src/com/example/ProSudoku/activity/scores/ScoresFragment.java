@@ -1,4 +1,4 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.scores;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.example.ProSudoku.DB;
+import com.example.ProSudoku.R;
 
 public class ScoresFragment extends Fragment {
 
@@ -55,7 +57,7 @@ public class ScoresFragment extends Fragment {
 
 		if(db.getAllData().getCount() == 0)
 		{
-			TextView tv = (TextView) rootView.findViewById(R.id.recordsText);
+			TextView tv = (TextView) rootView.findViewById(R.id.scoresText);
 			tv.setVisibility(View.VISIBLE);
 		}
 		scAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {

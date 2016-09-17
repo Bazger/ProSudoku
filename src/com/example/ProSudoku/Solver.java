@@ -14,18 +14,21 @@ import android.widget.TextView;
 import com.example.ProSudoku.logic.ISudokuGenerator;
 import com.example.ProSudoku.logic.ISudokuSolver;
 import com.example.ProSudoku.logic.SimpleSudokuSolver;
-import com.example.ProSudoku.logic.SudokuRulesUtils;
+import com.example.ProSudoku.plugin.IGameBoardViewPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 
 /**
  * Created by Vanya on 07.03.2015
  */
-public class Solver extends Activity implements View.OnClickListener, IMatrix {
+public class Solver extends Activity implements View.OnClickListener, IGameBoardView {
     private static final String TAG = "Solver";
 
     private TextView message;
-    private MatrixView matrixView;
+    private GameBoardView gameBoardView;
     private Button solve_but;
 
     private ISudokuSolver sudokuSolver = new SimpleSudokuSolver();
@@ -55,6 +58,12 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
     public int getMatrixRectCount() {
         return matrixRectCount;
     }
+
+    @Override
+    public List<IGameBoardViewPlugin> getPlugins(){
+        return new ArrayList<IGameBoardViewPlugin>();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +106,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
                     }
         }
 
-        matrixView = (MatrixView)findViewById(R.id.matrix_view);
+        gameBoardView = (GameBoardView)findViewById(R.id.matrix_view);
     }
 
     public void onClick(View v){
@@ -141,7 +150,7 @@ public class Solver extends Activity implements View.OnClickListener, IMatrix {
 	            solve_but.setText("Solve");
                 break;
         }
-        matrixView.Update();
+        gameBoardView.Update();
     }
 
 

@@ -45,4 +45,9 @@
                 android:title="Themes">
         </ListPreference>
     </PreferenceCategory>
+    <!--<PreferenceCategory-->
+            <!--android:key="pluginsCateg"-->
+            <!--android:summary="Plugins for Game Board mapping"-->
+            <!--android:title="Plugins">-->
+    <!--</PreferenceCategory>-->
 </PreferenceScreen>

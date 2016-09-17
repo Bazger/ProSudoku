@@ -36,10 +36,10 @@
             android:layout_gravity="center_horizontal"/>
 
     <Button
-            android:id="@+id/records_button"
+            android:id="@+id/scores_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/records_label"
+            android:text="@string/scores_label"
             android:textSize="30sp"
             android:layout_marginBottom="10dip"
             android:layout_weight="0.1"

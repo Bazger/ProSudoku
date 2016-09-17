@@ -32,12 +32,18 @@
         <item>Space Age</item>
         <item>Dalek</item>
         <item>Polo</item>
+        <item>Carolina Valtuille</item>
+        <item>Orange Juice</item>
+        <item>Cartoon</item>
     </string-array>
     <string-array name="fonts_value">
         <item>Mandarin.ttf</item>
-        <item>SpaceAge.ttf</item>
+        <item>Space_Age.ttf</item>
         <item>Dalek.ttf</item>
         <item>Polo.ttf</item>
+        <item>Carolina_Valtuille.ttf</item>
+        <item>Orange_Juice.ttf</item>
+        <item>Cartoon.ttf</item>
     </string-array>
 
 </resources>

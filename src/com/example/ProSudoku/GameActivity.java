@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.*;
@@ -11,13 +12,16 @@ import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 import com.example.ProSudoku.logic.*;
+import com.example.ProSudoku.plugin.IGameBoardViewPlugin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.example.ProSudoku.logic.SudokuRulesUtils.getNumberSpots;
 import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 
-public class Game extends Activity implements IMatrix {
+public class GameActivity extends Activity implements IGameBoardView {
 
     private byte[][] MemoryMatrix;
     private byte[][] AnswerMatrix;
@@ -43,17 +47,19 @@ public class Game extends Activity implements IMatrix {
     public final static String PREF_DIFFICULTY = "difficulty";
     public final static String PREF_TIMER_STOP = "timer_stop";
 
-
+    //Board for testing scores.
     final String testMatrix = "123456789456789123789123456231674895875912364694538217317265948542897631968341570";
 
     private IRandomizer randomizer = new DefaultRandomizer();
     private ISudokuSolver sudokuSolver = new SimpleSudokuSolver();
     private ISudokuGenerator sudokuGenerator = new SimpleSudokuGenerator();
 
-    private MatrixView matrixView;
+    private Resources res;
+
+    private GameBoardView gameBoardView;
     private Button buttonHints;
     private Dialog finishDialog;
-    private Dialog recordsDialog;
+    private Dialog scoresDialog;
     private DB db;
 
     @Override
@@ -69,6 +75,11 @@ public class Game extends Activity implements IMatrix {
     @Override
     public int getMatrixRectCount() {
         return matrixRectCount;
+    }
+
+    @Override
+    public List<IGameBoardViewPlugin> getPlugins(){
+        return new ArrayList<IGameBoardViewPlugin>();
     }
 
 
@@ -88,6 +99,7 @@ public class Game extends Activity implements IMatrix {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gametable);
         Prefs.setBackground(this);
+        res = getResources();
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
         ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
@@ -102,7 +114,7 @@ public class Game extends Activity implements IMatrix {
                 DIFFICULTY_EASY);
         getMatrix(diff);
 
-        matrixView = (MatrixView) findViewById(R.id.matrix_view);
+        gameBoardView = (GameBoardView) findViewById(R.id.matrix_view);
 
 		/*
          * Database creating
@@ -131,22 +143,22 @@ public class Game extends Activity implements IMatrix {
 		/*
          * Scores Dialog creating
 		 */
-        recordsDialog = new Dialog(this);
-        recordsDialog.setContentView(R.layout.scores_dialog);
-        recordsDialog.setTitle(R.string.new_record_label);
-        recordsDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        scoresDialog = new Dialog(this);
+        scoresDialog.setContentView(R.layout.scores_dialog);
+        scoresDialog.setTitle(R.string.new_score_label);
+        scoresDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
-        final EditText dialogName = (EditText) recordsDialog.findViewById(R.id.dialogEditTextName);
-        final TextView dialogTextView = (TextView) recordsDialog.findViewById(R.id.dialogTextView);
-        Button dialogButtonSave = (Button) recordsDialog.findViewById(R.id.dialogButtonSave);
-        // if button is clicked, save the record and go to finish dialog
+        final EditText dialogName = (EditText) scoresDialog.findViewById(R.id.dialogEditTextName);
+        final TextView dialogTextView = (TextView) scoresDialog.findViewById(R.id.dialogTextView);
+        Button dialogButtonSave = (Button) scoresDialog.findViewById(R.id.dialogButtonSave);
+        // if button is clicked, save the score and go to finish dialog
 
         dialogButtonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (dialogName.getText().length() != 0) {
                     db.addRec(dialogName.getText().toString(), Long.parseLong(getPreferences(MODE_PRIVATE).getString(PREF_TIME, null)), DB.Dif.values()[difficulty]);
-                    recordsDialog.dismiss();
+                    scoresDialog.dismiss();
                     finishDialog.show();
                 } else
                     dialogTextView.setText("You need to fill the field below");
@@ -155,12 +167,12 @@ public class Game extends Activity implements IMatrix {
         });
 
 
-        Button dialogButtonContinue = (Button) recordsDialog.findViewById(R.id.dialogButtonContinue);
+        Button dialogButtonContinue = (Button) scoresDialog.findViewById(R.id.dialogButtonContinue);
         // if button is clicked, close this dialog and open finish dialog
         dialogButtonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recordsDialog.dismiss();
+                scoresDialog.dismiss();
                 finishDialog.show();
             }
         });
@@ -244,13 +256,13 @@ public class Game extends Activity implements IMatrix {
             c.moveToLast();
             if (c.getCount() != 0) {
                 if (c.getLong(c.getColumnIndex(DB.COLUMN_TIME)) > Long.parseLong(getPreferences(MODE_PRIVATE).getString(PREF_TIME, null)) || c.getCount() < DB.tableCount)
-                    recordsDialog.show();
+                    scoresDialog.show();
                 else {
                     finishDialog.show();
                 }
                 return true;
             } else
-                recordsDialog.show();
+                scoresDialog.show();
         }
         return false;
     }
@@ -374,8 +386,8 @@ public class Game extends Activity implements IMatrix {
     }
 
     private void startGame(int i) {
-        Intent intent = new Intent(Game.this, Game.class);
-        intent.putExtra(Game.KEY_DIFFICULTY, i);
+        Intent intent = new Intent(GameActivity.this, GameActivity.class);
+        intent.putExtra(GameActivity.KEY_DIFFICULTY, i);
         startActivity(intent);
     }
 
@@ -397,7 +409,7 @@ public class Game extends Activity implements IMatrix {
                     for (int j = 0; j < MemoryMatrix[i].length; j++)
                         if (ChangeMatrix[i][j])
                             MemoryMatrix[i][j] = 0;
-                matrixView.Update();
+                gameBoardView.Update();
                 return true;
             case R.id.settings:
                 Intent intent = new Intent(this, Prefs.class);
@@ -504,6 +516,6 @@ public class Game extends Activity implements IMatrix {
         int num = randomizer.GetInt(count);
         MemoryMatrix[points[num].x][points[num].y] = AnswerMatrix[points[num].x][points[num].y];
         ChangeMatrix[points[num].x][points[num].y] = false;
-        matrixView.Update();
+        gameBoardView.Update();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.about;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
