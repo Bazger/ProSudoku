@@ -47,9 +47,11 @@
     <string name="clear_shortcut">n</string>
 
     <!--Prefs Keys -->
+    <string name="app_preferences">appPreferences</string>
     <string name="music_key">music</string>
     <string name="music_title">Music</string>
     <string name="music_summary">Play background music</string>
+    <string name="plugin_category">pluginCategory</string>
 
     <string name="sound_button_key">music_button</string>
     <string name="sound_button_title">Button click sound</string>
@@ -72,4 +74,5 @@
 
     <string name="school_name_label"><b>School: </b>Amit</string>
     <string name="school_teacher_name"><b>Teacher: </b>Avital Shain</string>
+
 </resources>

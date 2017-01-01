@@ -11,7 +11,7 @@
             android:text="@string/sudoku_solve_label"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textView" android:layout_gravity="center_horizontal"/>
-    <com.example.ProSudoku.GameBoardView
+    <com.example.ProSudoku.activity.board.GameBoardView
             android:id="@+id/matrix_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"

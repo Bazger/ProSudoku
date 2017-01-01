@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="appPreferences">
     <!--<PreferenceCategory
             android:key="musicCateg"
             android:summary="Music"
@@ -17,7 +18,7 @@
                 android:defaultValue="@bool/sound_button_default" />
     </PreferenceCategory>-->
     <PreferenceCategory
-            android:key="graphicsCateg"
+            android:key="graphicsCategory"
             android:summary="Fonts, Themes, Matrix sizes"
             android:title="Graphics">
         <ListPreference
@@ -45,9 +46,4 @@
                 android:title="Themes">
         </ListPreference>
     </PreferenceCategory>
-    <!--<PreferenceCategory-->
-            <!--android:key="pluginsCateg"-->
-            <!--android:summary="Plugins for Game Board mapping"-->
-            <!--android:title="Plugins">-->
-    <!--</PreferenceCategory>-->
 </PreferenceScreen>

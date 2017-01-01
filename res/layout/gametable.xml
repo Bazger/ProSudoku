@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:weightSum="1">
-    <com.example.ProSudoku.GameBoardView
+    <com.example.ProSudoku.activity.board.GameBoardView
             android:id="@+id/matrix_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
