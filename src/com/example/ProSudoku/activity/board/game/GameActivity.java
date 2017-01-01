@@ -18,7 +18,6 @@ import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.activity.scores.DB;
 import com.example.ProSudoku.logic.*;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
-import com.example.ProSudoku.plugin.HighlightSameNumbersPlugin;
 import com.example.ProSudoku.plugin.ShowFinishedNumbersPlugin;
 
 import java.util.ArrayList;
@@ -228,8 +227,7 @@ public class GameActivity extends Activity implements IGameBoardActivity {
 
     private void initPlugins() {
         plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
-                new ShowFinishedNumbersPlugin(this),
-                new HighlightSameNumbersPlugin(this)
+                new ShowFinishedNumbersPlugin(this)
         ));
     }
 
