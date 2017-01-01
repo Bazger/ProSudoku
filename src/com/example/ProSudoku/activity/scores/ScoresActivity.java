@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
-import com.example.ProSudoku.Prefs;
+import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.R;
 
 public class ScoresActivity extends FragmentActivity implements
@@ -21,7 +21,7 @@ public class ScoresActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Prefs.setSettings(this);
+		PrefsActivity.setSettings(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scores);
 

@@ -11,6 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import com.example.ProSudoku.activity.about.AboutActivity;
+import com.example.ProSudoku.activity.board.game.GameActivity;
+import com.example.ProSudoku.activity.board.solver.SolverActivity;
+import com.example.ProSudoku.activity.howtoplay.HowToPlayActivity;
+import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.activity.scores.ScoresActivity;
 
 public class MyActivity extends Activity implements OnClickListener {
@@ -19,10 +23,10 @@ public class MyActivity extends Activity implements OnClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-	    Prefs.setSettings(this);
+	    PrefsActivity.setSettings(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-	    Prefs.setBackground(this);
+	    PrefsActivity.setBackground(this);
 
         //Set up Click listeners for all the buttons
         View continueButton = findViewById(R.id.continue_button);
@@ -44,7 +48,8 @@ public class MyActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.continue_button:
-                if (getSharedPreferences("Game", MODE_PRIVATE).getString(GameActivity.PREF_MATRIX, null) != null)
+                if (getSharedPreferences(getSharedPrefFileNameFromActivity(GameActivity.class), MODE_PRIVATE)
+                        .getString(GameActivity.PREF_MATRIX, null) != null)
                     startGame(GameActivity.DIFFICULTY_CONTINUE);
                 else
                     openNewGameDialog();
@@ -53,7 +58,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 openNewGameDialog();
                 break;
             case R.id.solver_button:
-                Intent l = new Intent(this, Solver.class);
+                Intent l = new Intent(this, SolverActivity.class);
 	            startActivityForResult(l, 1);
                 break;
             case R.id.scores_button:
@@ -61,7 +66,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 startActivity(j);
                 break;
             case R.id.how_to_play:
-                Intent k = new Intent(this, HowToPlay.class);
+                Intent k = new Intent(this, HowToPlayActivity.class);
                 startActivity(k);
                 break;
             case R.id.about_button:
@@ -72,6 +77,11 @@ public class MyActivity extends Activity implements OnClickListener {
                 finish();
                 break;
         }
+    }
+
+    public String getSharedPrefFileNameFromActivity(Class activity)
+    {
+        return activity.getName().replace(this.getClass().getPackage().getName() + ".", "");
     }
 
 
@@ -97,7 +107,7 @@ public class MyActivity extends Activity implements OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                Intent intent = new Intent(this, Prefs.class);
+                Intent intent = new Intent(this, PrefsActivity.class);
                 startActivityForResult(intent, 1);
 
                 return true;

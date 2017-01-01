@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.example.ProSudoku.DB;
 import com.example.ProSudoku.R;
 
 public class ScoresFragment extends Fragment {

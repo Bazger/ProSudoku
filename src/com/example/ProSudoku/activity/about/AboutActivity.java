@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import com.example.ProSudoku.Prefs;
+import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.R;
 
 public class AboutActivity extends FragmentActivity{
@@ -20,7 +20,7 @@ public class AboutActivity extends FragmentActivity{
     String[] tabs = { "School", "Tweets"};
 
     public void onCreate(Bundle savedInstanceState) {
-	    Prefs.setSettings(this);
+	    PrefsActivity.setSettings(this);
         super.onCreate(savedInstanceState);
 	    setContentView(R.layout.about);
 
@@ -39,7 +39,7 @@ public class AboutActivity extends FragmentActivity{
         mViewPager.setAdapter(mTabsPagerAdapter);
 
 	    PagerTitleStrip pagerTitleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
-	    Prefs.setPagerTitleStripColor(this, pagerTitleStrip);
+	    PrefsActivity.setPagerTitleStripColor(this, pagerTitleStrip);
 
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
 

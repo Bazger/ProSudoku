@@ -1,4 +1,4 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.board.game;
 
 import android.annotation.SuppressLint;
 import android.app.*;
@@ -11,8 +11,14 @@ import android.os.*;
 import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
+import com.example.ProSudoku.*;
+import com.example.ProSudoku.activity.board.IGameBoardActivity;
+import com.example.ProSudoku.activity.board.GameBoardView;
+import com.example.ProSudoku.activity.prefs.PrefsActivity;
+import com.example.ProSudoku.activity.scores.DB;
 import com.example.ProSudoku.logic.*;
-import com.example.ProSudoku.plugin.IGameBoardViewPlugin;
+import com.example.ProSudoku.plugin.GameBoardViewPlugin;
+import com.example.ProSudoku.plugin.ShowFinishedNumbersPlugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +27,7 @@ import java.util.List;
 import static com.example.ProSudoku.logic.SudokuRulesUtils.getNumberSpots;
 import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 
-public class GameActivity extends Activity implements IGameBoardView {
+public class GameActivity extends Activity implements IGameBoardActivity {
 
     private byte[][] MemoryMatrix;
     private byte[][] AnswerMatrix;
@@ -62,6 +68,8 @@ public class GameActivity extends Activity implements IGameBoardView {
     private Dialog scoresDialog;
     private DB db;
 
+    private static List<GameBoardViewPlugin> plugins;
+
     @Override
     public byte[][] getMemoryMatrix() {
         return MemoryMatrix;
@@ -78,8 +86,8 @@ public class GameActivity extends Activity implements IGameBoardView {
     }
 
     @Override
-    public List<IGameBoardViewPlugin> getPlugins(){
-        return new ArrayList<IGameBoardViewPlugin>();
+    public List<GameBoardViewPlugin> getPlugins(){
+        return this.plugins;
     }
 
 
@@ -95,10 +103,11 @@ public class GameActivity extends Activity implements IGameBoardView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Prefs.setSettings(this);
+        PrefsActivity.setSettings(this);
         super.onCreate(savedInstanceState);
+        initPlugins();
         setContentView(R.layout.gametable);
-        Prefs.setBackground(this);
+        PrefsActivity.setBackground(this);
         res = getResources();
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
@@ -214,6 +223,13 @@ public class GameActivity extends Activity implements IGameBoardView {
                 finish();
             }
         });
+    }
+
+    private void initPlugins()
+    {
+        plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
+                new ShowFinishedNumbersPlugin(this))
+        );
     }
 
     private final Runnable mRunnable = new Runnable() {
@@ -336,7 +352,7 @@ public class GameActivity extends Activity implements IGameBoardView {
                 isTimerStoped = Boolean.parseBoolean(str);
                 break;
             case DIFFICULTY_HARD:
-                getMatrixHelper(25 + randomizer.GetInt(2), DIFFICULTY_HARD, 0);
+                getMatrixHelper(24 + randomizer.GetInt(3), DIFFICULTY_HARD, 0);
                 break;
             case DIFFICULTY_MEDIUM:
                 getMatrixHelper(27 + randomizer.GetInt(3), DIFFICULTY_MEDIUM, 1);
@@ -409,10 +425,10 @@ public class GameActivity extends Activity implements IGameBoardView {
                     for (int j = 0; j < MemoryMatrix[i].length; j++)
                         if (ChangeMatrix[i][j])
                             MemoryMatrix[i][j] = 0;
-                gameBoardView.Update();
+                gameBoardView.invalidate();
                 return true;
             case R.id.settings:
-                Intent intent = new Intent(this, Prefs.class);
+                Intent intent = new Intent(this, PrefsActivity.class);
                 startActivityForResult(intent, 1);
                 return true;
             case android.R.id.home:
@@ -516,6 +532,6 @@ public class GameActivity extends Activity implements IGameBoardView {
         int num = randomizer.GetInt(count);
         MemoryMatrix[points[num].x][points[num].y] = AnswerMatrix[points[num].x][points[num].y];
         ChangeMatrix[points[num].x][points[num].y] = false;
-        gameBoardView.Update();
+        gameBoardView.invalidate();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.board.solver;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -11,10 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.example.ProSudoku.activity.prefs.PrefsActivity;
+import com.example.ProSudoku.R;
+import com.example.ProSudoku.activity.board.IGameBoardActivity;
+import com.example.ProSudoku.activity.board.GameBoardView;
 import com.example.ProSudoku.logic.ISudokuGenerator;
 import com.example.ProSudoku.logic.ISudokuSolver;
 import com.example.ProSudoku.logic.SimpleSudokuSolver;
-import com.example.ProSudoku.plugin.IGameBoardViewPlugin;
+import com.example.ProSudoku.plugin.GameBoardViewPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +28,7 @@ import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 /**
  * Created by Vanya on 07.03.2015
  */
-public class Solver extends Activity implements View.OnClickListener, IGameBoardView {
+public class SolverActivity extends Activity implements View.OnClickListener, IGameBoardActivity {
     private static final String TAG = "Solver";
 
     private TextView message;
@@ -60,17 +64,17 @@ public class Solver extends Activity implements View.OnClickListener, IGameBoard
     }
 
     @Override
-    public List<IGameBoardViewPlugin> getPlugins(){
-        return new ArrayList<IGameBoardViewPlugin>();
+    public List<GameBoardViewPlugin> getPlugins(){
+        return new ArrayList<GameBoardViewPlugin>();
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-	    Prefs.setSettings(this);
+	    PrefsActivity.setSettings(this);
         super.onCreate(savedInstanceState);
 	    setContentView(R.layout.solver);
-	    Prefs.setBackground(this);
+	    PrefsActivity.setBackground(this);
 
         View solve_button = findViewById(R.id.solve_button);
         solve_button.setOnClickListener(this);
@@ -150,7 +154,7 @@ public class Solver extends Activity implements View.OnClickListener, IGameBoard
 	            solve_but.setText("Solve");
                 break;
         }
-        gameBoardView.Update();
+        gameBoardView.invalidate();
     }
 
 
@@ -179,7 +183,7 @@ public class Solver extends Activity implements View.OnClickListener, IGameBoard
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                Intent intent = new Intent(this, Prefs.class);
+                Intent intent = new Intent(this, PrefsActivity.class);
                 startActivityForResult(intent, 1);
                 return true;
             case android.R.id.home:

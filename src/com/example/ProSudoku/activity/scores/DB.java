@@ -1,4 +1,4 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.scores;
 
 import android.content.Context;
 import android.content.ContentValues;

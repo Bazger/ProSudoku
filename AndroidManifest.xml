@@ -21,10 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".GameActivity"
+        <activity android:name=".activity.board.game.GameActivity"
                   android:screenOrientation="portrait"/>
 
-        <activity android:name=".Solver"
+        <activity android:name=".activity.board.solver.SolverActivity"
                   android:label="@string/solve_label"
                   android:screenOrientation="portrait"/>
 
@@ -32,7 +32,7 @@
                   android:label="@string/scores_label"
                   android:screenOrientation="portrait"/>
 
-        <activity android:name=".HowToPlay"
+        <activity android:name=".activity.howtoplay.HowToPlayActivity"
                   android:label="@string/how_to_play_title"
                   android:theme="@android:style/Theme.Holo.Light.Dialog"
                   android:screenOrientation="portrait"/>
@@ -41,7 +41,7 @@
                   android:label="@string/about_label"
                   android:screenOrientation="portrait"/>
 
-        <activity android:name=".Prefs"
+        <activity android:name=".activity.prefs.PrefsActivity"
                   android:label="@string/settings_title"
                   android:screenOrientation="portrait"/>
     </application>

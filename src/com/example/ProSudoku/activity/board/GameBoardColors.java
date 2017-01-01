@@ -1,11 +1,11 @@
-package com.example.ProSudoku;
+package com.example.ProSudoku.activity.board;
 
 import android.graphics.Color;
 
-public class MatrixColors {
+public class GameBoardColors {
 
-	private int backColor; // Background
-	private int cellColor; // Cell color
+	private int backColor; // Заставка
+	private int cellColor; // Цвет ячейки
 	private int sameEmptyNumberCellColor; // Ореол пустой ячейки
 	private int choseEmptyCellColor; // Ореол подобной ячейки
 	private int choseCellColor; // Ореол выбранной ячейки
@@ -14,7 +14,7 @@ public class MatrixColors {
 	private int errorColor; // Цвет ошибочного числа
 	private int solveColor; // Цвет временного числа
 
-	public MatrixColors(int choseCellColor,int choseEmptyCellColor, int changeableTextColor)
+	public GameBoardColors(int choseCellColor, int choseEmptyCellColor, int changeableTextColor)
 	{
 
 		this.choseCellColor = choseCellColor;//Color.rgb(50, 205, 50);
