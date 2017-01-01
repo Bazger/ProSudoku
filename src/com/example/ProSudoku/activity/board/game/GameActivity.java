@@ -18,6 +18,7 @@ import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.activity.scores.DB;
 import com.example.ProSudoku.logic.*;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
+import com.example.ProSudoku.plugin.HighlightSameNumbersPlugin;
 import com.example.ProSudoku.plugin.ShowFinishedNumbersPlugin;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class GameActivity extends Activity implements IGameBoardActivity {
     }
 
     @Override
-    public List<GameBoardViewPlugin> getPlugins(){
+    public List<GameBoardViewPlugin> getPlugins() {
         return this.plugins;
     }
 
@@ -225,11 +226,11 @@ public class GameActivity extends Activity implements IGameBoardActivity {
         });
     }
 
-    private void initPlugins()
-    {
+    private void initPlugins() {
         plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
-                new ShowFinishedNumbersPlugin(this))
-        );
+                new ShowFinishedNumbersPlugin(this),
+                new HighlightSameNumbersPlugin(this)
+        ));
     }
 
     private final Runnable mRunnable = new Runnable() {
@@ -373,7 +374,7 @@ public class GameActivity extends Activity implements IGameBoardActivity {
     }
 
     private void getMatrixHelper(int generateCellsCount, int difficulty, int hintsCount) {
-		/*Check if sudoku generated correctly, else return to main screen*/
+        /*Check if sudoku generated correctly, else return to main screen*/
         if (!sudokuGenerator.generate(generateCellsCount, MemoryMatrix)) {
             //TODO: return case;
         }
