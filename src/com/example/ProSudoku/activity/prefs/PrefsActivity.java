@@ -12,6 +12,7 @@ import com.example.ProSudoku.MyActivity;
 import com.example.ProSudoku.R;
 import com.example.ProSudoku.activity.board.GameBoardColors;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
+import com.example.ProSudoku.plugin.IPreferencePlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,6 +28,8 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
             {10, 15, 12}};// Large
 
     private boolean isChanged = false;
+
+    private List<GameBoardViewPlugin> plugins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,20 +62,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
             InvocationTargetException {
         Class<?> pluginClass = Class.forName(pluginsClassName);
         Method getPluginsMethod = pluginClass.getMethod("getPlugins");
-        List<GameBoardViewPlugin> plugins = (List<GameBoardViewPlugin>) getPluginsMethod.invoke(pluginClass.newInstance(), null);
-
-        boolean pluginsWithPrefs = false;
-        for (GameBoardViewPlugin plugin : plugins) {
-            if(plugin.getPreference() != null)
-            {
-                pluginsWithPrefs = true;
-                break;
-            }
-        }
-        if(!pluginsWithPrefs)
-        {
-            return;
-        }
+        plugins = (List<GameBoardViewPlugin>) getPluginsMethod.invoke(pluginClass.newInstance(), null);
 
         PreferenceScreen preferenceScreen = (PreferenceScreen) findPreference(getResources().getString(R.string.app_preferences));
 
@@ -82,7 +72,16 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         preferenceScreen.addPreference(pluginCategory);
 
         for (GameBoardViewPlugin plugin : plugins) {
-            pluginCategory.addPreference(plugin.getPreference());
+            if (plugin instanceof IPreferencePlugin) {
+                IPreferencePlugin preferencePlugin = (IPreferencePlugin) plugin;
+                if (preferencePlugin.getPreference() == null) {
+                    continue;
+                }
+                pluginCategory.addPreference(preferencePlugin.getPreference());
+            }
+        }
+        if (pluginCategory.getPreferenceCount() == 0) {
+            preferenceScreen.removePreference(pluginCategory);
         }
     }
 
@@ -94,7 +93,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
 
     /** Get the current value of the music option */
     /*public static boolean getMusic(Context context) {
-		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getResources().getString(R.string.music_key),
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getResources().getString(R.string.music_key),
 				context.getResources().getBoolean(R.bool.music_default));
 	}*/
 
@@ -134,8 +133,8 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                 context.setTheme(R.style.AppNightTheme);
                 break;
         }
-	    /*if(getButtonSound(context))
-		    context.setTheme(R.style.AppTheme);
+        /*if(getButtonSound(context))
+            context.setTheme(R.style.AppTheme);
 	    else
 		    context.setTheme(R.style.AppThemeWithoutSound);*/
 	    /*if(getMusic(context))

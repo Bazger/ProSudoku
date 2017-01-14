@@ -1,8 +1,6 @@
 package com.example.ProSudoku.activity.board;
 
-import com.example.ProSudoku.plugin.IPluginHandlerActivity;
-
-public interface IGameBoardActivity extends IPluginHandlerActivity {
+public interface IGameBoardActivity{
     byte[][] getMemoryMatrix();
     boolean[][] getChangeMatrix();
     int getMatrixRectCount();

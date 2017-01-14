@@ -12,13 +12,15 @@ import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 import com.example.ProSudoku.*;
-import com.example.ProSudoku.activity.board.IGameBoardActivity;
 import com.example.ProSudoku.activity.board.GameBoardView;
+import com.example.ProSudoku.activity.board.PluginHandlerActivity;
 import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.activity.scores.DB;
 import com.example.ProSudoku.logic.*;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
-import com.example.ProSudoku.plugin.ShowFinishedNumbersPlugin;
+import com.example.ProSudoku.plugin.plugins.DetectNumberErrorsPlugin;
+import com.example.ProSudoku.plugin.plugins.HighlightSameNumbersPlugin;
+import com.example.ProSudoku.plugin.plugins.ShowFinishedNumbersPlugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ import java.util.List;
 import static com.example.ProSudoku.logic.SudokuRulesUtils.getNumberSpots;
 import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 
-public class GameActivity extends Activity implements IGameBoardActivity {
+public class GameActivity extends PluginHandlerActivity {
 
     private byte[][] MemoryMatrix;
     private byte[][] AnswerMatrix;
@@ -87,7 +89,7 @@ public class GameActivity extends Activity implements IGameBoardActivity {
 
     @Override
     public List<GameBoardViewPlugin> getPlugins() {
-        return this.plugins;
+        return plugins;
     }
 
 
@@ -104,8 +106,14 @@ public class GameActivity extends Activity implements IGameBoardActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PrefsActivity.setSettings(this);
+        plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
+                new HighlightSameNumbersPlugin(this),
+                new DetectNumberErrorsPlugin(this),
+                new ShowFinishedNumbersPlugin(this)
+        ));
+
         super.onCreate(savedInstanceState);
-        initPlugins();
+
         setContentView(R.layout.gametable);
         PrefsActivity.setBackground(this);
         res = getResources();
@@ -125,9 +133,20 @@ public class GameActivity extends Activity implements IGameBoardActivity {
 
         gameBoardView = (GameBoardView) findViewById(R.id.matrix_view);
 
-		/*
-         * Database creating
-		 */
+        createDb();
+
+        mHandler = new Handler();
+
+        getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
+
+        createScoresDialog();
+        createScoresDialog();
+    }
+
+    /**
+     * Database creating
+     */
+    private void createDb() {
         db = new DB(this);
         db.open();
 
@@ -144,14 +163,12 @@ public class GameActivity extends Activity implements IGameBoardActivity {
                 }
             }
         });
+    }
 
-        mHandler = new Handler();
-
-        getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
-
-		/*
-         * Scores Dialog creating
-		 */
+    /**
+     * Scores Dialog creating
+     */
+    public void createScoresDialog() {
         scoresDialog = new Dialog(this);
         scoresDialog.setContentView(R.layout.scores_dialog);
         scoresDialog.setTitle(R.string.new_score_label);
@@ -185,11 +202,12 @@ public class GameActivity extends Activity implements IGameBoardActivity {
                 finishDialog.show();
             }
         });
+    }
 
-
-		/*
-         * Finish Dialog creating
-		 */
+    /**
+     * Finish Dialog creating
+     */
+    public void createFinishDialog() {
         finishDialog = new Dialog(this);
         finishDialog.setContentView(R.layout.finish_dialog);
         finishDialog.setTitle(R.string.welldone_label);
@@ -223,12 +241,6 @@ public class GameActivity extends Activity implements IGameBoardActivity {
                 finish();
             }
         });
-    }
-
-    private void initPlugins() {
-        plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
-                new ShowFinishedNumbersPlugin(this)
-        ));
     }
 
     private final Runnable mRunnable = new Runnable() {

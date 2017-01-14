@@ -11,6 +11,7 @@ import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.activity.board.solver.SolverActivity;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameBoardView extends View {
@@ -21,10 +22,14 @@ public class GameBoardView extends View {
 
     private int gameBSpaceSmall;
     private int gameBSpaceBig;
+
     private int gameBChoseBorder;
     private int gameBBorder;
 
+    private Bitmap[][] GameBoardNumbers;
     private Rect[][] GameBoardRects;
+
+    private Bitmap[] NumberBoardNumbers;
     private Rect[] NumberBoardRects;
 
     private Rect gameBBackground;
@@ -32,6 +37,7 @@ public class GameBoardView extends View {
 
     private int gameBWidth;
     private int gameBRectsCount;
+
     private int gameBCellWidth;
 
     private int numberBCellWidth;
@@ -47,16 +53,18 @@ public class GameBoardView extends View {
     //boolean isScreenTouched = false;
 
     private Point resolution;
+
     private Point selectedPoint;
 
     private Paint p;
 
     private AssetManager asset;
+
     private Typeface gameBTypeface;
     private GameBoardColors gameBColors;
 
     private final IGameBoardActivity activity;
-    private static List<GameBoardViewPlugin> plugins;
+    private List<GameBoardViewPlugin> plugins;
 
     //Practical matrix width (without fault)
     private int getGameBoardWidth() {
@@ -110,16 +118,27 @@ public class GameBoardView extends View {
     }
 
     private void loadPlugins() {
-        plugins = activity.getPlugins();
-        for (GameBoardViewPlugin plugin : plugins) {
-            plugin.init(this);
+        List<GameBoardViewPlugin> activePlugins = new ArrayList<GameBoardViewPlugin>();
+        if (activity instanceof PluginHandlerActivity) {
+            PluginHandlerActivity pluginActivity = (PluginHandlerActivity) activity;
+            if (pluginActivity.getPlugins() != null) {
+                for (GameBoardViewPlugin plugin : pluginActivity.getPlugins()) {
+                    if (plugin.isActive()) {
+                        activePlugins.add(plugin);
+                        plugin.init(this);
+                    }
+                }
+            }
         }
+        plugins = activePlugins;
     }
 
     private void load() {
 
         GameBoardRects = new Rect[gameBRectsCount][gameBRectsCount];
+        GameBoardNumbers = new Bitmap[gameBRectsCount][gameBRectsCount];
         NumberBoardRects = new Rect[gameBRectsCount + 1];
+        NumberBoardNumbers = new Bitmap[gameBRectsCount + 1];
 
         this.gameBWidth = (int) (resolution.x - (resolution.x * WIDTH_RATIO) / 100);// Matrix width with borders
         this.selectedPoint = new Point(-1, -1);
@@ -164,7 +183,7 @@ public class GameBoardView extends View {
     }
 
     //Finding width without remainder
-    private int getGameBoardCellWidth() {
+    public int getGameBoardCellWidth() {
         int width = gameBWidth;
         double num = (width - gameBSpaceBig * (gameBRectsCount - gameBSmallSpaceCount - 1) - gameBSpaceSmall * gameBSmallSpaceCount - 2 * gameBBorder) / gameBRectsCount;
         return (int) num;
@@ -183,8 +202,6 @@ public class GameBoardView extends View {
         float evX = event.getX();
         float evY = event.getY();
 
-        //boolean flag = false;
-
         switch (event.getAction()) {
             // Touch has been started
             case MotionEvent.ACTION_DOWN:
@@ -192,25 +209,19 @@ public class GameBoardView extends View {
                 for (int i = 0; i < GameBoardRects.length; i++)
                     for (int j = 0; j < GameBoardRects[i].length; j++)
                         if (GameBoardRects[i][j].contains((int) evX, (int) evY) && new Point(i, j) != selectedPoint) {
-                            selectedPoint = new Point(i, j);
-                            //flag = true;
+                            selectedPoint.set(i, j);
                         }
 
                 for (int i = 0; i < NumberBoardRects.length; i++) {
                     if (NumberBoardRects[i].contains((int) evX, (int) evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y] &&
                             activity.getClass() != SolverActivity.class) {
                         activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] = (byte) (i);
-                        //flag = true;
                     } else if (NumberBoardRects[i].contains((int) evX, (int) evY) && selectedPoint.x >= 0 && selectedPoint.y >= 0 && activity.getClass() == SolverActivity.class) {
                         activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] = (byte) (i);
                         activity.getChangeMatrix()[selectedPoint.x][selectedPoint.y] = true;
                     }
                 }
-                //isScreenTouched = flag;
                 break;
-            //case MotionEvent.ACTION_UP:
-            //if (!isScreenTouched)
-            //selectedPoint = new Point(-1,-1);
         }
 
         for (GameBoardViewPlugin plugin : plugins) {
@@ -265,140 +276,95 @@ public class GameBoardView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //canvas.drawRGB(173, 255, 47);
-        //canvas.drawARGB(50, 20, 204, 255);
-
         p.setColor(gameBColors.getBackColor());
 
         canvas.drawRect(gameBBackground, p);
-        //if(selectedPoint.x >= 0 && selectedPoint.y >= 0)
-        //p.setColor(Color.YELLOW);
         canvas.drawRect(numberBBackground, p);
 
-        //1st version of view
-        /*for (int i = 0; i < GameBoardRects.length; i++)
-            for (int j = 0; j < GameBoardRects[i].length; j++) {
-                p.setColor(cellColor);
-                canvas.drawRect(new Rect(GameBoardRects[i][j].left + gameBSpaceSmall, GameBoardRects[i][j].top + gameBSpaceSmall, GameBoardRects[i][j].right - gameBSpaceSmall, GameBoardRects[i][j].bottom - gameBSpaceSmall), p);
-                if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
-                    p.setColor(sameNumbersColor);
-                    canvas.drawRect(GameBoardRects[selectedPoint.x][selectedPoint.y], p);
-                }
-                //else
-                //{
-                //p.setColor(Color.WHITE);
-                //canvas.drawRect(GameBoardRects[i][j], p);
-                //}
-            }*/
-
-        //2nd version of view
-        for (int i = 0; i < GameBoardRects.length; i++)
-            for (int j = 0; j < GameBoardRects[i].length; j++) {
-                //1st v.
-                //if(activity.getMemoryMatrix()[i][j] != 0 && !isUniqueNumber(new Point(i,j)))
-                //p.setColor(errorColor);
-                //else
-                p.setColor(gameBColors.getCellColor());
-
-                canvas.drawRect(GameBoardRects[i][j], p);
-                if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
-                    //What kind of cell was chosen
-                    if (activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0)
-                        p.setColor(gameBColors.getSameEmptyNumberCellColor());
-                    else
-                        p.setColor(gameBColors.getChoseEmptyCellColor());
-
-                    if (activity.getMemoryMatrix()[i][j] == activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] && activity.getMemoryMatrix()[i][j] != 0) {
-                        if (i == selectedPoint.x && j == selectedPoint.y)
-                            p.setColor(gameBColors.getChoseCellColor());
-                        canvas.drawRect(GameBoardRects[i][j], p);
-                        p.setColor(gameBColors.getCellColor());
-
-                        //1st v.
-                        //if(!isUniqueNumber(new Point(i,j)))
-                        //p.setColor(errorColor);
-
-                        canvas.drawRect(new Rect(GameBoardRects[i][j].left + gameBChoseBorder,
-                                GameBoardRects[i][j].top + gameBChoseBorder,
-                                GameBoardRects[i][j].right - gameBChoseBorder,
-                                GameBoardRects[i][j].bottom - gameBChoseBorder), p);
-                    }
-
-                    if (activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0) {
-                        canvas.drawRect(GameBoardRects[selectedPoint.x][selectedPoint.y], p);
-                        p.setColor(gameBColors.getCellColor());
-                        canvas.drawRect(new Rect(GameBoardRects[selectedPoint.x][selectedPoint.y].left + gameBChoseBorder,
-                                GameBoardRects[selectedPoint.x][selectedPoint.y].top + gameBChoseBorder,
-                                GameBoardRects[selectedPoint.x][selectedPoint.y].right - gameBChoseBorder,
-                                GameBoardRects[selectedPoint.x][selectedPoint.y].bottom - gameBChoseBorder), p);
-                    }
-                }
+        for (int i = 0; i < GameBoardNumbers.length; i++) {
+            for (int j = 0; j < GameBoardNumbers[i].length; j++) {
+                GameBoardNumbers[i][j] = null;
             }
+        }
+
+        for (int i = 1; i < NumberBoardRects.length; i++) {
+            NumberBoardNumbers[i] = null;
+        }
+
+        for (int i = 0; i < GameBoardRects.length; i++) {
+            for (int j = 0; j < GameBoardRects[i].length; j++) {
+                p.setColor(gameBColors.getCellColor());
+                canvas.drawRect(GameBoardRects[i][j], p);
+            }
+        }
+
+        if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
+            //What kind of cell was chosen
+            if (activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0)
+                p.setColor(gameBColors.getSameEmptyNumberCellColor());
+            else
+                p.setColor(gameBColors.getChoseCellColor());
+
+            canvas.drawRect(GameBoardRects[selectedPoint.x][selectedPoint.y], p);
+            p.setColor(gameBColors.getCellColor());
+            canvas.drawRect(new Rect(GameBoardRects[selectedPoint.x][selectedPoint.y].left + gameBChoseBorder,
+                    GameBoardRects[selectedPoint.x][selectedPoint.y].top + gameBChoseBorder,
+                    GameBoardRects[selectedPoint.x][selectedPoint.y].right - gameBChoseBorder,
+                    GameBoardRects[selectedPoint.x][selectedPoint.y].bottom - gameBChoseBorder), p);
+        }
 
         p.setColor(gameBColors.getCellColor());
-        for (Rect aNumberMatrix : NumberBoardRects) {
+        for (Rect numberBRect : NumberBoardRects) {
             //1st version of view
             //canvas.drawRect(new Rect(NumberBoardRects[i].left + gameBSpaceSmall, NumberBoardRects[i].top + gameBSpaceSmall, NumberBoardRects[i].right - gameBSpaceSmall, NumberBoardRects[i].bottom - gameBSpaceSmall), p);
 
             //2nd version of view
-            canvas.drawRect(aNumberMatrix, p);
+            canvas.drawRect(numberBRect, p);
         }
 
-        for (int i = 0; i < GameBoardRects.length; i++)
+        for (int i = 0; i < GameBoardRects.length; i++) {
             for (int j = 0; j < GameBoardRects[i].length; j++) {
                 if (activity.getMemoryMatrix()[i][j] > 0) {
-
-                    //2nd v.
-                    //Check errors
-                    if (activity.getChangeMatrix()[i][j] && !isUniqueNumber(i, j)) {
+                    if (activity.getChangeMatrix()[i][j]) {
                         //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                        Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getErrorColor(), gameBTypeface);
-                        canvas.drawBitmap(bit, GameBoardRects[i][j].centerX() - bit.getWidth() / 2, GameBoardRects[i][j].centerY() - bit.getHeight() / 2, p);
+                        GameBoardNumbers[i][j] = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getSolveColor(), gameBTypeface);
                     } else {
-                        //Check if numbers are changeable
-                        //Check the activity class
-                        if (activity.getClass() != SolverActivity.class)
-                            if (activity.getChangeMatrix()[i][j]) {
-                                //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getChangeableTextColor(), gameBTypeface);
-                                canvas.drawBitmap(bit, GameBoardRects[i][j].centerX() - bit.getWidth() / 2, GameBoardRects[i][j].centerY() - bit.getHeight() / 2, p);
-                            } else {
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getIdleTextColor(), gameBTypeface);
-                                canvas.drawBitmap(bit, GameBoardRects[i][j].centerX() - bit.getWidth() / 2, GameBoardRects[i][j].centerY() - bit.getHeight() / 2, p);
-                            }
-                        else {
-                            if (activity.getChangeMatrix()[i][j]) {
-                                //canvas.drawText(String.valueOf(MemoryMatrix[i][j]),textPosition.x, textPosition.y, p );
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getChangeableTextColor(), gameBTypeface);
-                                canvas.drawBitmap(bit, GameBoardRects[i][j].centerX() - bit.getWidth() / 2, GameBoardRects[i][j].centerY() - bit.getHeight() / 2, p);
-                            } else {
-                                Bitmap bit = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getSolveColor(), gameBTypeface);
-                                canvas.drawBitmap(bit, GameBoardRects[i][j].centerX() - bit.getWidth() / 2, GameBoardRects[i][j].centerY() - bit.getHeight() / 2, p);
-                            }
-                        }
+                        GameBoardNumbers[i][j] = textAsBitmap(String.valueOf(activity.getMemoryMatrix()[i][j]), gameBCellWidth, gameBColors.getIdleTextColor(), gameBTypeface);
                     }
                 }
             }
-
-        for (int i = 1; i < NumberBoardRects.length; i++) {
-            Bitmap bit = textAsBitmap(String.valueOf(i), numberBCellWidth, gameBColors.getIdleTextColor(), gameBTypeface);
-            canvas.drawBitmap(bit, NumberBoardRects[i].centerX() - bit.getWidth() / 2, NumberBoardRects[i].centerY() - bit.getHeight() / 2, p);
         }
 
-        //Bitmap bit = textAsBitmap(currentTime, numberBCellWidth, Color.GREEN, gameBTypeface);
-        //canvas.drawBitmap(bit, 30, 0, p);
-        //bit = textAsBitmap(String.valueOf(numberXPos), numberBCellWidth, Color.BLACK, gameBTypeface);
-        //canvas.drawBitmap(bit, 200, 0, p);
-        //bit = textAsBitmap(String.valueOf(getTop()), numberBCellWidth, Color.BLACK, gameBTypeface);
-        //canvas.drawBitmap(bit, 400, 0, p);
+        for (int i = 1; i < NumberBoardRects.length; i++) {
+            NumberBoardNumbers[i] = textAsBitmap(String.valueOf(i), numberBCellWidth, gameBColors.getIdleTextColor(), gameBTypeface);
+        }
 
         for (GameBoardViewPlugin plugin : plugins) {
             plugin.onDraw(canvas);
         }
+
+        for (int i = 0; i < GameBoardNumbers.length; i++) {
+            for (int j = 0; j < GameBoardNumbers[i].length; j++) {
+                if(GameBoardNumbers[i][j] != null) {
+                    canvas.drawBitmap(GameBoardNumbers[i][j], GameBoardRects[i][j].centerX() - GameBoardNumbers[i][j].getWidth() / 2, GameBoardRects[i][j].centerY() - GameBoardNumbers[i][j].getHeight() / 2, p);
+                }
+            }
+        }
+
+        for (int i = 1; i < NumberBoardRects.length; i++) {
+            if(NumberBoardNumbers[i] != null) {
+                canvas.drawBitmap(NumberBoardNumbers[i], NumberBoardRects[i].centerX() - NumberBoardNumbers[i].getWidth() / 2, NumberBoardRects[i].centerY() - NumberBoardNumbers[i].getHeight() / 2, p);
+            }
+        }
+
     }
 
     public Rect[] getNumberBoardRects() {
         return NumberBoardRects;
+    }
+
+    public Rect[][] getGameBoardRects() {
+        return GameBoardRects;
     }
 
     public Typeface getGameBoardTypeface() {
@@ -409,10 +375,24 @@ public class GameBoardView extends View {
         return gameBColors;
     }
 
-
     public IGameBoardActivity getActivity() {
         return activity;
     }
 
+    public Point getSelectedPoint() {
+        return selectedPoint;
+    }
+
+    public Bitmap[][] getGameBoardNumbers() {
+        return GameBoardNumbers;
+    }
+
+    public Bitmap[] getNumberBoardNumbers() {
+        return NumberBoardNumbers;
+    }
+
+    public int getGameBChoseBorder() {
+        return gameBChoseBorder;
+    }
 }
 

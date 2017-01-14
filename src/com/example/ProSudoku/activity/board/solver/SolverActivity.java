@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.example.ProSudoku.activity.board.PluginHandlerActivity;
 import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.R;
 import com.example.ProSudoku.activity.board.IGameBoardActivity;
@@ -19,8 +20,13 @@ import com.example.ProSudoku.logic.ISudokuGenerator;
 import com.example.ProSudoku.logic.ISudokuSolver;
 import com.example.ProSudoku.logic.SimpleSudokuSolver;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
+import com.example.ProSudoku.plugin.plugins.DetectNumberErrorsPlugin;
+import com.example.ProSudoku.plugin.plugins.HighlightNumbersForSolverPlugin;
+import com.example.ProSudoku.plugin.plugins.HighlightSameNumbersPlugin;
+import com.example.ProSudoku.plugin.plugins.ShowFinishedNumbersPlugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
@@ -28,7 +34,7 @@ import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
 /**
  * Created by Vanya on 07.03.2015
  */
-public class SolverActivity extends Activity implements View.OnClickListener, IGameBoardActivity {
+public class SolverActivity extends PluginHandlerActivity implements View.OnClickListener {
     private static final String TAG = "Solver";
 
     private TextView message;
@@ -47,6 +53,7 @@ public class SolverActivity extends Activity implements View.OnClickListener, IG
 
     final static String PREF_MATRIX = "matrix";
     final static String PREF_CHANGE_MATRIX = "change_matrix";
+    private static List<GameBoardViewPlugin> plugins;
 
     @Override
     public byte[][] getMemoryMatrix() {
@@ -65,13 +72,18 @@ public class SolverActivity extends Activity implements View.OnClickListener, IG
 
     @Override
     public List<GameBoardViewPlugin> getPlugins(){
-        return new ArrayList<GameBoardViewPlugin>();
+        return plugins;
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	    PrefsActivity.setSettings(this);
+        plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
+                new HighlightSameNumbersPlugin(this),
+                new HighlightNumbersForSolverPlugin(this),
+                new DetectNumberErrorsPlugin(this)
+        ));
         super.onCreate(savedInstanceState);
 	    setContentView(R.layout.solver);
 	    PrefsActivity.setBackground(this);
@@ -143,12 +155,14 @@ public class SolverActivity extends Activity implements View.OnClickListener, IG
                 }
                 break;
             case R.id.clear_all_button:
-                MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
-                for (int i = 0; i < matrixRectCount; i++)
-                    for (int j = 0; j < matrixRectCount; j++)
+                for (int i = 0; i < matrixRectCount; i++) {
+                    for (int j = 0; j < matrixRectCount; j++) {
+                        MemoryMatrix[i][j] = 0;
                         if (!ChangeMatrix[i][j]) {
                             ChangeMatrix[i][j] = true;
                         }
+                    }
+                }
                 message.setText(getResources().getString(R.string.sudoku_solve_label));
 	            isSolved = false;
 	            solve_but.setText("Solve");

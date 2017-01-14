@@ -6,9 +6,9 @@ public class GameBoardColors {
 
 	private int backColor; // Заставка
 	private int cellColor; // Цвет ячейки
-	private int sameEmptyNumberCellColor; // Ореол пустой ячейки
-	private int choseEmptyCellColor; // Ореол подобной ячейки
-	private int choseCellColor; // Ореол выбранной ячейки
+	private int sameEmptyNumberCellColor; // Выделение для пустой ячейки
+	private int choseEmptyCellColor; // Выделение для ячеек с таким же числом как у выделенной ячейки
+	private int choseCellColor; // Выделение для НЕ пустой ячейки
 	private int changeableTextColor; // Цвет не закрпленных цифр
 	private int idleTextColor; // Цвет закрепленных цифр
 	private int errorColor; // Цвет ошибочного числа

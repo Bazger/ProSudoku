@@ -1,16 +1,30 @@
 package com.example.ProSudoku.plugin;
 
+import android.content.Context;
 import android.graphics.Canvas;
-import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import com.example.ProSudoku.activity.board.GameBoardView;
 
 public abstract class GameBoardViewPlugin {
-    public GameBoardViewPlugin() {
+
+    private Context context;
+    private GameBoardView gameBoardView;
+
+    public GameBoardView getGameBoardView() {
+        return gameBoardView;
+    }
+    public Context getContext() {
+        return context;
     }
 
-    public abstract void init(GameBoardView gameBoardView);
+    public GameBoardViewPlugin(Context context) {
+        this.context = context;
+    }
+
+    public void init(GameBoardView gameBoardView){
+        this.gameBoardView = gameBoardView;
+    }
 
     public abstract void onDraw(Canvas canvas);
 
@@ -23,9 +37,10 @@ public abstract class GameBoardViewPlugin {
         return true;
     }
 
-    public Preference getPreference() {
-        return null;
+    public String getPluginName(){
+        return getCleanPluginName() + context.getClass().getSimpleName();
     }
 
-    public abstract String getPluginName();
+    protected abstract String getCleanPluginName();
+
 }
