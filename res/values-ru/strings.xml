@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Main menu activity-->
+    <string name="app_name">ProSudoku</string>
+    <string name="continue_label">Продолжить</string>
+    <string name="new_label">Новая игра</string>
+    <string name="how_to_play">Как играть?</string>
+    <string name="about_label">Об Авторе</string>
+    <string name="exit_label">Выход</string>
+
+    <string name="how_to_play_title">Как играть?</string>
+    <string name="how_to_play_text">Игровое поле представляет собой квадрат размером 9×9,
+        разделённый на меньшие квадраты со стороной в 3 клетки.
+        Таким образом, всё игровое поле состоит из 81 клетки.
+        В них уже в начале игры стоят некоторые числа (от 1 до 9),
+        называемые подсказками. От игрока требуется заполнить свободные клетки цифрами от 1 до 9 так,
+        чтобы в каждой строке, в каждом столбце и в каждом малом квадрате 3×3 каждая цифра встречалась бы только один раз.</string>
+
+
+    <string name="settings_label">Настройки</string>
+    <string name="settings_title">Игровые настройки</string>
+    <string name="settings_shortcut">s</string>
+
+    <string name="new_game_title">Сложность</string>
+    <string name="beginner_label">Начинающий</string>
+    <string name="easy_label">Легко</string>
+    <string name="medium_label">Средне</string>
+    <string name="hard_label">Сложно</string>
+
+    <!--Game activity-->
+    <string name="game_title">00:00</string>
+    <string name="no_moves_label">Нет больше ходов</string>
+    <string name="hints_label">Подсказки:</string>
+
+    <string name="welldone_label">Молодец!</string>
+    <string name="return_label">Закончить</string>
+
+    <string name="game_new_score_label">Новый рекорд!</string>
+    <string name="game_no_scores_label">Нет резлуьтатов</string>
+    <string name="game_scores_label">Рекорды</string>
+    <string name="game_save_label">Сохранить</string>
+    <string name="game_enter_name_label">Введите свое имя:</string>
+    <string name="game_continue_dialog_label">Не сохранять</string>
+    <string name="game_need_to_fill">"You need to fill the field below"</string>
+
+    <!--Solver activity-->
+    <string name ="solver_solve_label">Решить</string>
+    <string name ="solver_clear_label">Очистить</string>
+    <string name ="solver_clear_all_label">Очистить все</string>
+    <string name ="solver_competed_label">Успешно решено</string>
+    <string name ="solver_cant_solve_label">Не удается решить</string>
+    <string name ="solver_sudoku_solve_label">Введите имеющиеся числа судоку</string>
+
+    <string name="new_paper_shortcut">n</string>
+    <string name="clear_shortcut">n</string>
+
+    <!--Prefs keys activity-->
+    <string name="app_preferences">appPreferences</string>
+
+    <string name="prefs_graphics_category_key">graphicsCategory</string>
+    <string name="prefs_graphics_category_summary">Шрифты, Темы, Размеры доски</string>
+    <string name="prefs_graphics_category_title">Графика</string>
+
+    <string name="prefs_plugin_category_key">pluginCategory</string>
+    <string name="prefs_plugin_category_summary">Плагины для игровой доски</string>
+    <string name="prefs_plugin_category_title">Плагины</string>
+
+    <string name="prefs_border_size_key">border_size</string>
+    <string name="prefs_border_size_default">1</string>
+    <string name="prefs_border_size_summary">Размер границ игровой доски</string>
+    <string name="prefs_border_size_title">Размер доски</string>
+    <string name="prefs_border_size_option_small">Маленький</string>
+    <string name="prefs_border_size_option_normal">Нормальный</string>
+    <string name="prefs_border_size_option_large">Большой</string>
+
+
+    <string name="prefs_themes_key">themes</string>
+    <string name="prefs_themes_default">0</string>
+    <string name="prefs_themes_summary">Игровая тема, меняет весь интерфейс игры</string>
+    <string name="prefs_themes_title">Темы</string>
+    <string name="prefs_themes_option_day">День</string>
+    <string name="prefs_themes_option_night_sleep">Ночной мрак</string>
+
+    <string name="prefs_fonts_key">fonts</string>
+    <string name="prefs_fonts_default">Polo.ttf</string>
+    <string name="prefs_fonts_summary">Шрифты к игровой доске</string>
+    <string name="prefs_fonts_title">Шрифты</string>
+
+    <!--About activity-->
+    <string name="my_name"><b>Иван Золотарев</b></string>
+    <string name="my_twitter_name"><i>\@Bazger97</i></string>
+    <string name="my_info">Разработчик игр, Разработчик модов для Minecraft(MoneyCraft)</string>
+    <string name="my_link"><a ref="http://t.co/ZhSITOHa">Click me!</a></string>
+
+    <string name="school_name_label"><b>Школа: </b>Amit</string>
+    <string name="school_teacher_name"><b>Учитель: </b>Avital Shain</string>
+
+    <string name="about_tab_school">Школа</string>
+    <string name="about_tab_tweets">Твиты</string>
+
+</resources>

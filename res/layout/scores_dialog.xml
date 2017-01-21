@@ -6,7 +6,7 @@
               android:weightSum="1">
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="@string/enter_name_label"
+              android:text="@string/game_enter_name_label"
               android:textSize="20sp"
               android:id="@+id/dialogTextView"
               android:layout_gravity="center_horizontal"/>
@@ -18,14 +18,14 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                   android:orientation="horizontal">
         <Button
-            android:id="@+id/dialogButtonContinue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/continue_dialog_label" android:layout_weight="0.50"/>
+                android:id="@+id/dialogButtonContinue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/game_continue_dialog_label" android:layout_weight="0.50"/>
         <Button
-            android:id="@+id/dialogButtonSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/save_label" android:layout_weight="0.50"/>
+                android:id="@+id/dialogButtonSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/game_save_label" android:layout_weight="0.50"/>
     </LinearLayout>
 </LinearLayout>

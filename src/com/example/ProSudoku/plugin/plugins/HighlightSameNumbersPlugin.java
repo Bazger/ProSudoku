@@ -33,7 +33,7 @@ public class HighlightSameNumbersPlugin extends GameBoardViewPlugin implements I
         preference.setTitle("Highlight Same Numbers");
         preference.setSummary("Highlighting same numbers on the game board");
         preference.setKey(getPluginName());
-        preference.setDefaultValue(false);
+        preference.setDefaultValue(true);
     }
 
     @Override

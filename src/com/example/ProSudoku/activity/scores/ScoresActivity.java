@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
+import com.example.ProSudoku.Consts;
 import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.R;
 
@@ -14,10 +15,10 @@ public class ScoresActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
 	private ViewPager viewPager;
-	private TabsPagerAdapter mAdapter;
+	private TabsPagerAdapter adapter;
 	private ActionBar actionBar;
 	// Tab titles
-	private String[] tabs = { "Beginner", "Easy", "Medium", "Hard" };
+	private String[] tabs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +26,14 @@ public class ScoresActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scores);
 
+		tabs = this.getResources().getStringArray(R.array.difficulties);
+
 		// Initilization
 		viewPager = (ViewPager) findViewById(R.id.scoresPager);
 		actionBar = getActionBar();
-		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+		adapter = new TabsPagerAdapter(getSupportFragmentManager());
 
-		viewPager.setAdapter(mAdapter);
+		viewPager.setAdapter(adapter);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 

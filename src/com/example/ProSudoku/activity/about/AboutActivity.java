@@ -1,6 +1,7 @@
 package com.example.ProSudoku.activity.about;
 
 import android.app.ActionBar;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerTitleStrip;
@@ -13,16 +14,20 @@ import com.example.ProSudoku.R;
 
 public class AboutActivity extends FragmentActivity{
 
-    TabsPagerAdapter mTabsPagerAdapter;
+    private TabsPagerAdapter mTabsPagerAdapter;
 
-    ViewPager mViewPager;
-    ImageView imageViewAbout;
-    String[] tabs = { "School", "Tweets"};
+    private ViewPager mViewPager;
+    private ImageView imageViewAbout;
+    private  String[] tabs;
 
     public void onCreate(Bundle savedInstanceState) {
 	    PrefsActivity.setSettings(this);
         super.onCreate(savedInstanceState);
 	    setContentView(R.layout.about);
+
+        tabs = new String[]{
+//                getBaseContext().getResources().getString(R.string.about_tab_school),
+                getBaseContext().getResources().getString(R.string.about_tab_tweets)};
 
         mTabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
@@ -72,9 +77,11 @@ public class AboutActivity extends FragmentActivity{
         public Fragment getItem(int position) {
             switch(position)
             {
+//                case 0:
+//                    return new AboutInfoFragment();
+//                case 1:
+//                    return new AboutTwitterFragment();
                 case 0:
-                    return new AboutInfoFragment();
-                case 1:
                     return new AboutTwitterFragment();
             }
             return null;

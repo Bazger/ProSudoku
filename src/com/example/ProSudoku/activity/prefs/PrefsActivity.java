@@ -8,7 +8,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.*;
 import android.support.v4.view.PagerTitleStrip;
-import com.example.ProSudoku.MyActivity;
+import com.example.ProSudoku.MainActivity;
 import com.example.ProSudoku.R;
 import com.example.ProSudoku.activity.board.GameBoardColors;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
@@ -67,8 +67,8 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         PreferenceScreen preferenceScreen = (PreferenceScreen) findPreference(getResources().getString(R.string.app_preferences));
 
         PreferenceCategory pluginCategory = new PreferenceCategory(this);
-        pluginCategory.setSummary("Plugins for Game Board mapping");
-        pluginCategory.setTitle("Plugins");
+        pluginCategory.setSummary(R.string.prefs_plugin_category_summary);
+        pluginCategory.setTitle(R.string.prefs_plugin_category_title);
         preferenceScreen.addPreference(pluginCategory);
 
         for (GameBoardViewPlugin plugin : plugins) {
@@ -103,16 +103,26 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
      */
     public static int getMatrixBorder(Context context, Border border) {
         return matrixBorder[Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getResources().getString(R.string.border_size_key),
-                        context.getResources().getString(R.string.border_size_default)))][border.ordinal()];
+                .getString(context.getResources().getString(R.string.prefs_border_size_key),
+                        context.getResources().getString(R.string.prefs_border_size_default)))][border.ordinal()];
     }
 
     /**
      * Get the current value of the Themes option
      */
-    public static int getThemes(Context context) {
+    public static int getTheme(Context context) {
         return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getResources().getString(R.string.themes_key), context.getResources().getString(R.string.themes_default)));
+                .getString(context.getResources().getString(R.string.prefs_themes_key), context.getResources().getString(R.string.prefs_themes_default)));
+    }
+
+    public static int getThemeResId(Context context)
+    {
+        switch (getTheme(context)) {
+            default:
+                return R.style.AppDayTheme;
+            case 1:
+                return R.style.AppNightTheme;
+        }
     }
 
     /**
@@ -120,19 +130,12 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
      */
     public static String getFonts(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getResources().getString(R.string.fonts_key), context.getResources().getString(R.string.fonts_default));
+                .getString(context.getResources().getString(R.string.prefs_fonts_key), context.getResources().getString(R.string.prefs_fonts_default));
     }
 
 
     public static void setSettings(Context context) {
-        switch (getThemes(context)) {
-            default:
-                context.setTheme(R.style.AppDayTheme);
-                break;
-            case 1:
-                context.setTheme(R.style.AppNightTheme);
-                break;
-        }
+        context.setTheme(getThemeResId(context));
         /*if(getButtonSound(context))
             context.setTheme(R.style.AppTheme);
 	    else
@@ -144,15 +147,15 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     }
 
     public static void setBackground(Activity context) {
-        switch (getThemes(context)) {
+        switch (getTheme(context)) {
             default:
-                if (context.getClass() == MyActivity.class)
+                if (context.getClass() == MainActivity.class)
                     context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day_title);
                 else
                     context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.day);
                 break;
             case 1:
-                if (context.getClass() == MyActivity.class)
+                if (context.getClass() == MainActivity.class)
                     context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.night_title);
                 else
                     context.getWindow().getDecorView().getRootView().setBackgroundResource(R.drawable.night);
@@ -161,7 +164,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     }
 
     public static void setPagerTitleStripColor(Context context, PagerTitleStrip pager) {
-        switch (getThemes(context)) {
+        switch (getTheme(context)) {
             default:
                 pager.setBackgroundResource(R.color.day_pager);
                 pager.setTextColor(context.getResources().getColor(R.color.day_pager_text));
@@ -175,7 +178,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
 
     public static GameBoardColors setMatrixColor(Context context) {
         Resources res = context.getResources();
-        switch (getThemes(context)) {
+        switch (getTheme(context)) {
             default:
                 return new GameBoardColors(res.getColor(R.color.day_popup), res.getColor(R.color.day_normal), res.getColor(R.color.matrix_view_text));
             case 1:

@@ -89,7 +89,7 @@ public class ScoresFragment extends Fragment {
 		add_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				db.open();
+				db.show();
 				db.addRec("sometext " + getArguments().getInt(TAG), 10, DB.Dif.values()[getArguments().getInt(TAG)]);
 				scAdapter.notifyDataSetChanged();
 			}

@@ -1,25 +1,58 @@
 package com.example.ProSudoku.logic;
 
+import android.support.annotation.Nullable;
 import com.example.ProSudoku.DefaultRandomizer;
+import com.example.ProSudoku.Difficulty;
 import com.example.ProSudoku.IRandomizer;
+
 import java.util.Arrays;
 
-import static com.example.ProSudoku.logic.SudokuRulesUtils.getNumberSpots;
-import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
+import static com.example.ProSudoku.Consts.BOARD_SIDE_RECT_COUNT;
+import static com.example.ProSudoku.logic.SudokuLogicUtils.getNumberSpots;
+import static com.example.ProSudoku.logic.SudokuLogicUtils.isSudokuFeasible;
 
-public class SimpleSudokuGenerator implements ISudokuGenerator{
+public class SimpleSudokuGenerator implements ISudokuGenerator {
 
-    private static 	final int numberOfTries = 1000000;
+    private static final int numberOfTries = 1000000;
     private IRandomizer randomizer = new DefaultRandomizer();
+
     private enum Ret {Unique, NotUnique, NoSolution}
+
+
+    @Nullable
+    public String generate(Difficulty difficulty) {
+        byte[][] gameBoard = new byte[BOARD_SIDE_RECT_COUNT][BOARD_SIDE_RECT_COUNT];
+        boolean isGenerated;
+        switch (difficulty) {
+            case Hard:
+                isGenerated = generateBoard(24 + randomizer.GetInt(3), gameBoard);
+                break;
+            case Medium:
+                isGenerated = generateBoard(27 + randomizer.GetInt(3), gameBoard);
+                break;
+            case Easy:
+                isGenerated = generateBoard(30 + randomizer.GetInt(3), gameBoard);
+                break;
+            case Beginner:
+            default:
+                isGenerated = generateBoard(33 + randomizer.GetInt(3), gameBoard);
+                break;
+        }
+        if (isGenerated) {
+            return SudokuLogicUtils.toMatrixString(gameBoard);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Generate a new Sudoku from the template.
-     * @param spots Number of set spots in Sudoku.
+     *
+     * @param spots     Number of set spots in Sudoku.
      * @param gameBoard Game matrix
      * @return True if sudoku generated normally
      */
-    public boolean generate(int spots, byte[][] gameBoard) {
+    private boolean generateBoard(int spots, byte[][] gameBoard) {
         // Number of set spots.
         int num = getNumberSpots(gameBoard);
         // num - number of start table numbers
@@ -37,7 +70,7 @@ public class SimpleSudokuGenerator implements ISudokuGenerator{
         byte[][] originalData = getCopyOfGameBoard(gameBoard);
 
         for (long tries = 0; tries < numberOfTries; tries++) {
-            // Try to generate spots
+            // Try to generateBoard spots
             if (generateSpots(spots - num, gameBoard)) {
                 // Test if unique solution.
                 if (isSudokuUnique(gameBoard)) {
@@ -133,6 +166,7 @@ public class SimpleSudokuGenerator implements ISudokuGenerator{
 
     /**
      * Is there one and only one solution?
+     *
      * @param gameBoard Game matrix
      */
     private Ret TestUniqueness(byte[][] gameBoard) {

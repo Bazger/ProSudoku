@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Main menu activity-->
     <string name="app_name">ProSudoku</string>
     <string name="continue_label">Continue</string>
     <string name="new_label">New Paper</string>
@@ -25,6 +26,12 @@
     <string name="medium_label">Medium</string>
     <string name="hard_label">Hard</string>
 
+    <!--Loading screen-->
+    <string name="loading_screen_title">Creating board</string>
+    <string name="loading_screen_message">Loading</string>
+    <string name="loading_screen_cancel_but">Cancel</string>
+
+    <!--Game activity-->
     <string name="game_title">00:00</string>
     <string name="no_moves_label">No moves</string>
     <string name="hints_label">Hints:</string>
@@ -32,41 +39,57 @@
     <string name="welldone_label">Well Done!</string>
     <string name="return_label">Finish</string>
 
-    <string name="new_score_label">New Result!</string>
-    <string name="no_scores_label">No Results</string>
-    <string name="scores_label">High Scores</string>
-    <string name="save_label">Save</string>
-    <string name="enter_name_label">Enter your name:</string>
-    <string name="continue_dialog_label">Don&#65287;t save</string>
+    <string name="game_new_score_label">New Result!</string>
+    <string name="game_no_scores_label">No Results</string>
+    <string name="game_scores_label">High Scores</string>
+    <string name="game_save_label">Save</string>
+    <string name="game_enter_name_label">Enter your name:</string>
+    <string name="game_continue_dialog_label">Don&#65287;t save</string>
+    <string name="game_need_to_fill">"You need to fill the field below"</string>
 
-    <string name ="solve_label">Solve</string>
-    <string name ="clear_all_label">Clear All</string>
-    <string name ="sudoku_solve_label">Enter sudoku matrix for solving</string>
+    <!--Solver activity-->
+    <string name ="solver_solve_label">Solve</string>
+    <string name ="solver_clear_label">Clear</string>
+    <string name ="solver_clear_all_label">Clear All</string>
+    <string name ="solver_competed_label">Solving was completed</string>
+    <string name ="solver_cant_solve_label">Can&#65287;t solve</string>
+    <string name ="solver_sudoku_solve_label">Enter sudoku matrix for solving</string>
 
     <string name="new_paper_shortcut">n</string>
     <string name="clear_shortcut">n</string>
 
-    <!--Prefs Keys -->
+    <!--Prefs keys activity-->
     <string name="app_preferences">appPreferences</string>
-    <string name="music_key">music</string>
-    <string name="music_title">Music</string>
-    <string name="music_summary">Play background music</string>
-    <string name="plugin_category">pluginCategory</string>
 
-    <string name="sound_button_key">music_button</string>
-    <string name="sound_button_title">Button click sound</string>
-    <string name="sound_button_summary">Sound of buttons click</string>
+    <string name="prefs_graphics_category_key">graphicsCategory</string>
+    <string name="prefs_graphics_category_summary">Fonts, Themes, Matrix sizes</string>
+    <string name="prefs_graphics_category_title">Graphics</string>
 
-    <string name="border_size_key">border_size</string>
-    <string name="border_size_default">1</string>
+    <string name="prefs_plugin_category_key">pluginCategory</string>
+    <string name="prefs_plugin_category_summary">Plugins for Game Board mapping</string>
+    <string name="prefs_plugin_category_title">Plugins</string>
 
-    <string name="themes_key">themes</string>
-    <string name="themes_default">0</string>
+    <string name="prefs_border_size_key">border_size</string>
+    <string name="prefs_border_size_default">1</string>
+    <string name="prefs_border_size_summary">Border size of game matrix</string>
+    <string name="prefs_border_size_title">Matrix border size</string>
+    <string name="prefs_border_size_option_small">Small</string>
+    <string name="prefs_border_size_option_normal">Normal</string>
+    <string name="prefs_border_size_option_large">Large</string>
 
-    <string name="fonts_key">fonts</string>
-    <string name="fonts_default">Polo.ttf</string>
+    <string name="prefs_themes_key">themes</string>
+    <string name="prefs_themes_default">0</string>
+    <string name="prefs_themes_summary">With themes can be changed background image, color of matrix, buttons, etc.</string>
+    <string name="prefs_themes_title">Themes</string>
+    <string name="prefs_themes_option_day">Day</string>
+    <string name="prefs_themes_option_night_sleep">Night sleep</string>
 
-    <!--About-->
+    <string name="prefs_fonts_key">fonts</string>
+    <string name="prefs_fonts_default">Polo.ttf</string>
+    <string name="prefs_fonts_summary">Font of game matrix</string>
+    <string name="prefs_fonts_title">Matrix fonts</string>
+
+    <!--About activity-->
     <string name="my_name"><b>Ivan Zolotaryov</b></string>
     <string name="my_twitter_name"><i>\@Bazger97</i></string>
     <string name="my_info">Game developer, Minecraft mod(MoneyCraft) developer</string>
@@ -74,5 +97,9 @@
 
     <string name="school_name_label"><b>School: </b>Amit</string>
     <string name="school_teacher_name"><b>Teacher: </b>Avital Shain</string>
+
+
+    <string name="about_tab_school">School</string>
+    <string name="about_tab_tweets">Tweets</string>
 
 </resources>

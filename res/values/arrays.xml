@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="difficulty">
+    <array name="difficulties">
         <item>@string/beginner_label</item>
         <item>@string/easy_label</item>
         <item>@string/medium_label</item>
@@ -8,9 +8,9 @@
     </array>
 
     <string-array name="matrix_border">
-        <item>Small</item>
-        <item>Normal</item>
-        <item>Large</item>
+        <item>@string/prefs_border_size_option_small</item>
+        <item>@string/prefs_border_size_option_normal</item>
+        <item>@string/prefs_border_size_option_large</item>
     </string-array>
     <string-array name="matrix_values">
         <item>0</item>
@@ -19,8 +19,8 @@
     </string-array>
 
     <string-array name="themes">
-        <item>Day</item>
-        <item>Night Sleep</item>
+        <item>@string/prefs_themes_option_day</item>
+        <item>@string/prefs_themes_option_night_sleep</item>
     </string-array>
     <string-array name="themes_value">
         <item>0</item>
@@ -29,21 +29,17 @@
 
     <string-array name="fonts">
         <item>Mandarin</item>
-        <item>Space Age</item>
-        <item>Dalek</item>
         <item>Polo</item>
         <item>Carolina Valtuille</item>
-        <item>Orange Juice</item>
         <item>Cartoon</item>
+        <item>Parisian</item>
     </string-array>
     <string-array name="fonts_value">
         <item>Mandarin.ttf</item>
-        <item>Space_Age.ttf</item>
-        <item>Dalek.ttf</item>
         <item>Polo.ttf</item>
         <item>Carolina_Valtuille.ttf</item>
-        <item>Orange_Juice.ttf</item>
         <item>Cartoon.ttf</item>
+        <item>Parisian.ttf</item>
     </string-array>
 
 </resources>

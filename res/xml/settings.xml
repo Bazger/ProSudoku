@@ -18,32 +18,32 @@
                 android:defaultValue="@bool/sound_button_default" />
     </PreferenceCategory>-->
     <PreferenceCategory
-            android:key="graphicsCategory"
-            android:summary="Fonts, Themes, Matrix sizes"
-            android:title="Graphics">
+            android:key="@string/prefs_graphics_category_key"
+            android:summary="@string/prefs_graphics_category_summary"
+            android:title="@string/prefs_graphics_category_title">
         <ListPreference
                 android:entries="@array/matrix_border"
                 android:entryValues="@array/matrix_values"
-                android:key="@string/border_size_key"
-                android:summary="Border size of game matrix"
-                android:defaultValue="@string/border_size_default"
-                android:title="Matrix border size">
+                android:key="@string/prefs_border_size_key"
+                android:summary="@string/prefs_border_size_summary"
+                android:defaultValue="@string/prefs_border_size_default"
+                android:title="@string/prefs_border_size_title">
         </ListPreference>
         <ListPreference
                 android:entries="@array/fonts"
                 android:entryValues="@array/fonts_value"
-                android:key="@string/fonts_key"
-                android:summary="Font of game matrix"
-                android:defaultValue="@string/fonts_default"
-                android:title="Matrix fonts">
+                android:key="@string/prefs_fonts_key"
+                android:summary="@string/prefs_fonts_summary"
+                android:defaultValue="@string/prefs_fonts_default"
+                android:title="@string/prefs_fonts_title">
         </ListPreference>
         <ListPreference
                 android:entries="@array/themes"
                 android:entryValues="@array/themes_value"
-                android:key="@string/themes_key"
-                android:summary="With themes can be changed background image, color of matrix, buttons, etc."
-                android:defaultValue="@string/themes_default"
-                android:title="Themes">
+                android:key="@string/prefs_themes_key"
+                android:summary="@string/prefs_themes_summary"
+                android:defaultValue="@string/prefs_themes_default"
+                android:title="@string/prefs_themes_title">
         </ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>

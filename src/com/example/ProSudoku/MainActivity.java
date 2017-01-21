@@ -2,6 +2,7 @@ package com.example.ProSudoku;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,9 +18,12 @@ import com.example.ProSudoku.activity.howtoplay.HowToPlayActivity;
 import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.activity.scores.ScoresActivity;
 
-public class MyActivity extends Activity implements OnClickListener {
+import java.lang.reflect.Method;
+
+public class MainActivity extends Activity implements OnClickListener {
 
     private static final String TAG = "Sudoku";
+    private boolean isFirstTime = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +54,10 @@ public class MyActivity extends Activity implements OnClickListener {
             case R.id.continue_button:
                 if (getSharedPreferences(getSharedPrefFileNameFromActivity(GameActivity.class), MODE_PRIVATE)
                         .getString(GameActivity.PREF_MATRIX, null) != null)
-                    startGame(GameActivity.DIFFICULTY_CONTINUE);
+                {
+                    Intent n = new Intent(this, GameActivity.class);
+                    startActivity(n);
+                }
                 else
                     openNewGameDialog();
                 break;
@@ -59,7 +66,7 @@ public class MyActivity extends Activity implements OnClickListener {
                 break;
             case R.id.solver_button:
                 Intent l = new Intent(this, SolverActivity.class);
-	            startActivityForResult(l, 1);
+	            startActivity(l);
                 break;
             case R.id.scores_button:
                 Intent j = new Intent(this, ScoresActivity.class);
@@ -94,8 +101,29 @@ public class MyActivity extends Activity implements OnClickListener {
     }*/
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(getThemeId(this) != PrefsActivity.getThemeResId(this))
+        {
+            finish();
+            startActivity(getIntent());
+        }
+    }
 
-	@Override
+    private int getThemeId(Context context) {
+        try {
+            Class<?> wrapper = context.getClass();
+            Method method = wrapper.getMethod("getThemeResId");
+            method.setAccessible(true);
+            return (Integer) method.invoke(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -116,32 +144,17 @@ public class MyActivity extends Activity implements OnClickListener {
         return false;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null) {return;}
-        finish();
-        startActivity(getIntent());
-    }
-
-
     /** Ask the user what difficulty level they want */
     private void openNewGameDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.new_game_title)
-                .setItems(R.array.difficulty,
+                .setItems(R.array.difficulties,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialoginterface,
                                                 int i) {
-                                startGame(i);
+                                new GameLoadingScreen(MainActivity.this).start(Difficulty.values()[i], false);
                             }
                         })
                 .show();
-    }
-
-    private void startGame(int i) {
-        Log.d(TAG, "clicked on " + i);
-        Intent intent = new Intent(MyActivity.this, GameActivity.class);
-        intent.putExtra(GameActivity.KEY_DIFFICULTY, i);
-	    startActivityForResult(intent, 1);
     }
 }

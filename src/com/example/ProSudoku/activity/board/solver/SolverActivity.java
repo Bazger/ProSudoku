@@ -1,7 +1,6 @@
 package com.example.ProSudoku.activity.board.solver;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,22 +13,20 @@ import android.widget.TextView;
 import com.example.ProSudoku.activity.board.PluginHandlerActivity;
 import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.R;
-import com.example.ProSudoku.activity.board.IGameBoardActivity;
 import com.example.ProSudoku.activity.board.GameBoardView;
-import com.example.ProSudoku.logic.ISudokuGenerator;
 import com.example.ProSudoku.logic.ISudokuSolver;
 import com.example.ProSudoku.logic.SimpleSudokuSolver;
+import com.example.ProSudoku.logic.SudokuLogicUtils;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
 import com.example.ProSudoku.plugin.plugins.DetectNumberErrorsPlugin;
 import com.example.ProSudoku.plugin.plugins.HighlightNumbersForSolverPlugin;
 import com.example.ProSudoku.plugin.plugins.HighlightSameNumbersPlugin;
-import com.example.ProSudoku.plugin.plugins.ShowFinishedNumbersPlugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
+import static com.example.ProSudoku.logic.SudokuLogicUtils.isSudokuFeasible;
 
 /**
  * Created by Vanya on 07.03.2015
@@ -42,17 +39,16 @@ public class SolverActivity extends PluginHandlerActivity implements View.OnClic
     private Button solve_but;
 
     private ISudokuSolver sudokuSolver = new SimpleSudokuSolver();
-    private ISudokuGenerator sudokuGenerator;
 
-    byte[][] MemoryMatrix;
-    boolean[][] ChangeMatrix;
+    private byte[][] MemoryMatrix;
+    private boolean[][] ChangeMatrix;
 
-    boolean isSolved;
+    private boolean isSolved;
 
-    final int matrixRectCount = 9;
+    private final int matrixRectCount = 9;
 
-    final static String PREF_MATRIX = "matrix";
-    final static String PREF_CHANGE_MATRIX = "change_matrix";
+    private final static String PREF_MATRIX = "matrix";
+    private final static String PREF_CHANGE_MATRIX = "change_matrix";
     private static List<GameBoardViewPlugin> plugins;
 
     @Override
@@ -71,78 +67,76 @@ public class SolverActivity extends PluginHandlerActivity implements View.OnClic
     }
 
     @Override
-    public List<GameBoardViewPlugin> getPlugins(){
+    public List<GameBoardViewPlugin> getPlugins() {
         return plugins;
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-	    PrefsActivity.setSettings(this);
+        PrefsActivity.setSettings(this);
         plugins = new ArrayList<GameBoardViewPlugin>(Arrays.asList(
                 new HighlightSameNumbersPlugin(this),
                 new HighlightNumbersForSolverPlugin(this),
                 new DetectNumberErrorsPlugin(this)
         ));
         super.onCreate(savedInstanceState);
-	    setContentView(R.layout.solver);
-	    PrefsActivity.setBackground(this);
+        setContentView(R.layout.solver);
+        PrefsActivity.setBackground(this);
 
         View solve_button = findViewById(R.id.solve_button);
         solve_button.setOnClickListener(this);
         View clear_button = findViewById(R.id.clear_all_button);
         clear_button.setOnClickListener(this);
-        solve_but = (Button)findViewById(R.id.solve_button);
+        solve_but = (Button) findViewById(R.id.solve_button);
 
 
         final ActionBar actionBar = getActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        message = (TextView)findViewById(R.id.textView);
-        message.setText(getResources().getString(R.string.sudoku_solve_label));
+        message = (TextView) findViewById(R.id.textView);
+        message.setText(getResources().getString(R.string.solver_sudoku_solve_label));
         message.setTextColor(Color.WHITE);
 
         MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
         ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
         isSolved = false;
 
-        if(getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null) != null) {
+        if (getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null) != null) {
             String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null);
-            MemoryMatrix = fromMatrixString(str);
+            MemoryMatrix = SudokuLogicUtils.fromMatrixString(str);
             str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null);
-            ChangeMatrix = fromChangeMatrixString(str);
+            ChangeMatrix = SudokuLogicUtils.fromChangeMatrixString(str);
             for (int i = 0; i < matrixRectCount; i++)
                 for (int j = 0; j < matrixRectCount; j++)
                     if (!ChangeMatrix[i][j]) {
                         isSolved = true;
-                        solve_but.setText("Clear");
-                        message.setText("Solving was completed");
+                        solve_but.setText(R.string.solver_clear_label);
+                        message.setText(R.string.solver_competed_label);
                         break;
                     }
         }
 
-        gameBoardView = (GameBoardView)findViewById(R.id.matrix_view);
+        gameBoardView = (GameBoardView) findViewById(R.id.matrix_view);
     }
 
-    public void onClick(View v){
-        switch(v.getId()) {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.solve_button:
-                if(!isSolved) {
+                if (!isSolved) {
                     if (isSudokuFeasible(MemoryMatrix)) {
                         for (int i = 0; i < matrixRectCount; i++)
                             for (int j = 0; j < matrixRectCount; j++)
                                 if (MemoryMatrix[i][j] == 0)
                                     ChangeMatrix[i][j] = false;
                         if (sudokuSolver.solve(MemoryMatrix))
-                            message.setText("Solving was completed");
+                            message.setText(R.string.solver_competed_label);
                         isSolved = true;
-                        solve_but.setText("Clear");
+                        solve_but.setText(R.string.solver_clear_label);
                     } else
-                        message.setText("Can't solve");
-                }
-                else
-                {
+                        message.setText(R.string.solver_cant_solve_label);
+                } else {
                     for (int i = 0; i < matrixRectCount; i++)
                         for (int j = 0; j < matrixRectCount; j++)
                             if (!ChangeMatrix[i][j]) {
@@ -150,8 +144,8 @@ public class SolverActivity extends PluginHandlerActivity implements View.OnClic
                                 ChangeMatrix[i][j] = true;
                             }
                     isSolved = false;
-                    solve_but.setText("Solve");
-                    message.setText(getResources().getString(R.string.sudoku_solve_label));
+                    solve_but.setText(R.string.solver_solve_label);
+                    message.setText(getResources().getString(R.string.solver_sudoku_solve_label));
                 }
                 break;
             case R.id.clear_all_button:
@@ -163,9 +157,9 @@ public class SolverActivity extends PluginHandlerActivity implements View.OnClic
                         }
                     }
                 }
-                message.setText(getResources().getString(R.string.sudoku_solve_label));
-	            isSolved = false;
-	            solve_but.setText("Solve");
+                message.setText(getResources().getString(R.string.solver_sudoku_solve_label));
+                isSolved = false;
+                solve_but.setText(R.string.solver_solve_label);
                 break;
         }
         gameBoardView.invalidate();
@@ -179,9 +173,9 @@ public class SolverActivity extends PluginHandlerActivity implements View.OnClic
 
         // Save the current matrix
         getPreferences(MODE_PRIVATE).edit().putString(PREF_MATRIX,
-                toMatrixString(MemoryMatrix)).commit();
+                SudokuLogicUtils.toMatrixString(MemoryMatrix)).commit();
         getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
-                toChangeMatrixString(ChangeMatrix)).apply();
+                SudokuLogicUtils.toChangeMatrixString(ChangeMatrix)).apply();
     }
 
 
@@ -209,53 +203,13 @@ public class SolverActivity extends PluginHandlerActivity implements View.OnClic
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null) {return;}
-	    Intent intent = new Intent();
-	    intent.putExtra("isChanged", true);
-	    setResult(RESULT_OK, intent);
-	    finish();
-	    startActivity(getIntent());
-    }
-
-    /** Convert an array into a matrix string */
-    static private String toMatrixString(byte[][] matrix)
-    {
-        StringBuilder str =  new StringBuilder();
-        for(byte[] element : matrix)
-            for(byte element2 : element )
-                str.append(element2);
-        return str.toString();
-    }
-
-    /** Convert a puzzle string into an array */
-    static protected byte[][]  fromMatrixString(String string) {
-        byte[][] matrix = new byte[(int)Math.sqrt(string.length())][(int)Math.sqrt(string.length())];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-                matrix[i][j] = (byte)(string.charAt(j + i * 9) - '0');
-        return matrix;
-    }
-
-    /** Convert a puzzle string into an array */
-    static protected boolean[][]  fromChangeMatrixString(String string) {
-        boolean[][] matrix = new boolean[(int)Math.sqrt(string.length())][(int)Math.sqrt(string.length())];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-                matrix[i][j] = (string.charAt(j + i * 9) - '0') == 1;
-
-        return matrix;
-    }
-
-    /** Convert an array into a matrix string */
-    static private String toChangeMatrixString(boolean[][] matrix)
-    {
-        StringBuilder str =  new StringBuilder();
-        for(boolean [] element : matrix)
-            for(boolean element2 : element )
-                if(element2)
-                    str.append(1);
-                else
-                    str.append(0);
-        return str.toString();
+        if (data == null) {
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra("isChanged", true);
+        setResult(RESULT_OK, intent);
+        finish();
+        startActivity(getIntent());
     }
 }

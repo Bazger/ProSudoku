@@ -12,7 +12,7 @@
             android:textSize="24sp"
             android:visibility="invisible"
             android:id="@+id/scoresText"
-            android:text="@string/no_scores_label"/>
+            android:text="@string/game_no_scores_label"/>
     <ListView
             android:id="@+id/lvData"
             android:layout_width="match_parent"

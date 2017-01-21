@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.*;
@@ -26,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.ProSudoku.logic.SudokuRulesUtils.getNumberSpots;
-import static com.example.ProSudoku.logic.SudokuRulesUtils.isSudokuFeasible;
+import static com.example.ProSudoku.Consts.BOARD_SIDE_RECT_COUNT;
+import static com.example.ProSudoku.logic.SudokuLogicUtils.*;
 
 public class GameActivity extends PluginHandlerActivity {
 
@@ -35,17 +34,8 @@ public class GameActivity extends PluginHandlerActivity {
     private byte[][] AnswerMatrix;
     private boolean[][] ChangeMatrix;
 
-    public static final int matrixRectCount = 9;
-
     public static final String KEY_DIFFICULTY =
             "org.example.sudoku.difficulty";
-
-    public static final int DIFFICULTY_BEGINNER = 0;
-    public static final int DIFFICULTY_EASY = 1;
-    public static final int DIFFICULTY_MEDIUM = 2;
-    public static final int DIFFICULTY_HARD = 3;
-
-    public static final int DIFFICULTY_CONTINUE = -1;
 
     public final static String PREF_MATRIX = "matrix";
     public final static String PREF_CHANGE_MATRIX = "change_matrix";
@@ -58,11 +48,8 @@ public class GameActivity extends PluginHandlerActivity {
     //Board for testing scores.
     final String testMatrix = "123456789456789123789123456231674895875912364694538217317265948542897631968341570";
 
-    private IRandomizer randomizer = new DefaultRandomizer();
+    private IRandomizer defaultRandomizer = new DefaultRandomizer();
     private ISudokuSolver sudokuSolver = new SimpleSudokuSolver();
-    private ISudokuGenerator sudokuGenerator = new SimpleSudokuGenerator();
-
-    private Resources res;
 
     private GameBoardView gameBoardView;
     private Button buttonHints;
@@ -84,7 +71,7 @@ public class GameActivity extends PluginHandlerActivity {
 
     @Override
     public int getMatrixRectCount() {
-        return matrixRectCount;
+        return BOARD_SIDE_RECT_COUNT;
     }
 
     @Override
@@ -93,14 +80,14 @@ public class GameActivity extends PluginHandlerActivity {
     }
 
 
-    private Handler mHandler;
-    private boolean mStarted;
+    private Handler timerRunnableHandler;
+    private boolean timerRunnableStarted;
     private long milliseconds;
     private long saveSeconds;
     private long seconds;
-    private boolean isTimerStoped;
+    private boolean isTimerStopped;
     private int hintsCount;
-    private int difficulty;
+    private Difficulty difficulty;
 
 
     @Override
@@ -116,31 +103,30 @@ public class GameActivity extends PluginHandlerActivity {
 
         setContentView(R.layout.gametable);
         PrefsActivity.setBackground(this);
-        res = getResources();
 
-        MemoryMatrix = new byte[matrixRectCount][matrixRectCount];
-        ChangeMatrix = new boolean[matrixRectCount][matrixRectCount];
-        AnswerMatrix = new byte[matrixRectCount][matrixRectCount];
+        MemoryMatrix = new byte[BOARD_SIDE_RECT_COUNT][BOARD_SIDE_RECT_COUNT];
+        ChangeMatrix = new boolean[BOARD_SIDE_RECT_COUNT][BOARD_SIDE_RECT_COUNT];
+        AnswerMatrix = new byte[BOARD_SIDE_RECT_COUNT][BOARD_SIDE_RECT_COUNT];
         buttonHints = (Button) findViewById(R.id.hints_button);
 
         final ActionBar actionBar = getActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        int diff = getIntent().getIntExtra(KEY_DIFFICULTY,
-                DIFFICULTY_EASY);
-        getMatrix(diff);
+        Difficulty diff = Difficulty.values()[getIntent().getIntExtra(KEY_DIFFICULTY,
+                Difficulty.Continue.ordinal())];
+        initializeGameSettings(diff);
 
         gameBoardView = (GameBoardView) findViewById(R.id.matrix_view);
 
         createDb();
 
-        mHandler = new Handler();
+        timerRunnableHandler = new Handler();
 
-        getIntent().putExtra(KEY_DIFFICULTY, DIFFICULTY_CONTINUE);
+        getIntent().putExtra(KEY_DIFFICULTY, Difficulty.Continue);
 
         createScoresDialog();
-        createScoresDialog();
+        createFinishDialog();
     }
 
     /**
@@ -168,10 +154,10 @@ public class GameActivity extends PluginHandlerActivity {
     /**
      * Scores Dialog creating
      */
-    public void createScoresDialog() {
+    private void createScoresDialog() {
         scoresDialog = new Dialog(this);
         scoresDialog.setContentView(R.layout.scores_dialog);
-        scoresDialog.setTitle(R.string.new_score_label);
+        scoresDialog.setTitle(R.string.game_new_score_label);
         scoresDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
         final EditText dialogName = (EditText) scoresDialog.findViewById(R.id.dialogEditTextName);
@@ -183,18 +169,18 @@ public class GameActivity extends PluginHandlerActivity {
             @Override
             public void onClick(View v) {
                 if (dialogName.getText().length() != 0) {
-                    db.addRec(dialogName.getText().toString(), Long.parseLong(getPreferences(MODE_PRIVATE).getString(PREF_TIME, null)), DB.Dif.values()[difficulty]);
+                    db.addRec(dialogName.getText().toString(), getPreferences(MODE_PRIVATE).getLong(PREF_TIME, 0), DB.Dif.values()[difficulty.ordinal()]);
                     scoresDialog.dismiss();
                     finishDialog.show();
                 } else
-                    dialogTextView.setText("You need to fill the field below");
+                    dialogTextView.setText(R.string.game_need_to_fill);
             }
 
         });
 
 
         Button dialogButtonContinue = (Button) scoresDialog.findViewById(R.id.dialogButtonContinue);
-        // if button is clicked, close this dialog and open finish dialog
+        // if button is clicked, close this dialog and show finish dialog
         dialogButtonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,14 +193,14 @@ public class GameActivity extends PluginHandlerActivity {
     /**
      * Finish Dialog creating
      */
-    public void createFinishDialog() {
+    private void createFinishDialog() {
         finishDialog = new Dialog(this);
         finishDialog.setContentView(R.layout.finish_dialog);
         finishDialog.setTitle(R.string.welldone_label);
 
 
         Button dialogButtonNew = (Button) finishDialog.findViewById(R.id.dialogButtonNew);
-        // if button is clicked, open new game diaolog
+        // if button is clicked, show new game diaolog
         dialogButtonNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,13 +229,13 @@ public class GameActivity extends PluginHandlerActivity {
         });
     }
 
-    private final Runnable mRunnable = new Runnable() {
+    private final Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mStarted && !isSudokuFeasible(MemoryMatrix) || getNumberSpots(MemoryMatrix) != matrixRectCount * matrixRectCount) {
+            if (timerRunnableStarted && !isSudokuFeasible(MemoryMatrix) || getNumberSpots(MemoryMatrix) != BOARD_SIDE_RECT_COUNT * BOARD_SIDE_RECT_COUNT) {
                 seconds = saveSeconds + (System.currentTimeMillis() - milliseconds) / 1000;
                 setTitle(String.format("%02d:%02d", seconds / 60, seconds % 60));
-                mHandler.postDelayed(mRunnable, 1000L);
+                timerRunnableHandler.postDelayed(timerRunnable, 1000L);
             } else
                 setTitle("(" + String.format("%02d:%02d", seconds / 60, seconds % 60) + ")");
         }
@@ -261,18 +247,18 @@ public class GameActivity extends PluginHandlerActivity {
         // TODO Auto-generated method stub
         super.dispatchTouchEvent(ev);
         /*float evY = ev.getY();
-        if (!mStarted && evY > actionBarHeight) {
+        if (!timerRunnableStarted && evY > actionBarHeight) {
             milliseconds = System.currentTimeMillis();
-            mStarted = true;
-            mHandler.postDelayed(mRunnable, 1000L);
+            timerRunnableStarted = true;
+            timerRunnableHandler.postDelayed(timerRunnable, 1000L);
             setTitle(String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60));
             return true;
         }*/
-        if (getNumberSpots(MemoryMatrix) == matrixRectCount * matrixRectCount && !finishDialog.isShowing() && isSudokuFeasible(MemoryMatrix)) {
-            if (!isTimerStoped) {
-                isTimerStoped = true;
+        if (getNumberSpots(MemoryMatrix) == BOARD_SIDE_RECT_COUNT * BOARD_SIDE_RECT_COUNT && !finishDialog.isShowing() && isSudokuFeasible(MemoryMatrix)) {
+            if (!isTimerStopped) {
+                isTimerStopped = true;
                 setTitle("(" + String.format("%02d:%02d", seconds / 60, seconds % 60) + ")");
-                getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
+                getPreferences(MODE_PRIVATE).edit().putLong(PREF_TIME, seconds).apply();
                 for (int i = 0; i < MemoryMatrix.length; i++)
                     for (int j = 0; j < MemoryMatrix[i].length; j++)
                         ChangeMatrix[i][j] = false;
@@ -282,7 +268,7 @@ public class GameActivity extends PluginHandlerActivity {
             Cursor c = db.getQuery(null, DB.COLUMN_DIFFICULTY + " == ?", new String[]{difficulty + ""}, null, null, DB.COLUMN_TIME);
             c.moveToLast();
             if (c.getCount() != 0) {
-                if (c.getLong(c.getColumnIndex(DB.COLUMN_TIME)) > Long.parseLong(getPreferences(MODE_PRIVATE).getString(PREF_TIME, null)) || c.getCount() < DB.tableCount)
+                if (c.getLong(c.getColumnIndex(DB.COLUMN_TIME)) > getPreferences(MODE_PRIVATE).getLong(PREF_TIME, 0) || c.getCount() < DB.tableCount)
                     scoresDialog.show();
                 else {
                     finishDialog.show();
@@ -297,9 +283,8 @@ public class GameActivity extends PluginHandlerActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!isSudokuFeasible(MemoryMatrix) || getNumberSpots(MemoryMatrix) != matrixRectCount * matrixRectCount) {
-            String str = getPreferences(MODE_PRIVATE).getString(PREF_TIME, null);
-            saveSeconds = Long.parseLong(str, 10);
+        if (!isSudokuFeasible(MemoryMatrix) || getNumberSpots(MemoryMatrix) != BOARD_SIDE_RECT_COUNT * BOARD_SIDE_RECT_COUNT) {
+            saveSeconds = getPreferences(MODE_PRIVATE).getLong(PREF_TIME, 0);
             new CountDownTimer(1000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -307,8 +292,8 @@ public class GameActivity extends PluginHandlerActivity {
 
                 public void onFinish() {
                     milliseconds = System.currentTimeMillis();
-                    mStarted = true;
-                    mHandler.postDelayed(mRunnable, 1000L);
+                    timerRunnableStarted = true;
+                    timerRunnableHandler.postDelayed(timerRunnable, 1000L);
                     setTitle(String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60));
                 }
 
@@ -319,13 +304,13 @@ public class GameActivity extends PluginHandlerActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mStarted = false;
-        mHandler.removeCallbacks(mRunnable);
-        if (!isTimerStoped && seconds != 0) {
-            getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(seconds)).commit();
+        timerRunnableStarted = false;
+        timerRunnableHandler.removeCallbacks(timerRunnable);
+        if (!isTimerStopped && seconds != 0) {
+            getPreferences(MODE_PRIVATE).edit().putLong(PREF_TIME, seconds).commit();
             setTitle("(" + String.format("%02d:%02d", seconds / 60, seconds % 60) + ")");
         }
-        if (!isTimerStoped) {
+        if (!isTimerStopped) {
             savePreferences();
         }
     }
@@ -337,45 +322,39 @@ public class GameActivity extends PluginHandlerActivity {
                 toMatrixString(AnswerMatrix)).apply();
         getPreferences(MODE_PRIVATE).edit().putString(PREF_CHANGE_MATRIX,
                 toChangeMatrixString(ChangeMatrix)).apply();
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_HINTS, Integer.toString(hintsCount)).apply();
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_TIMER_STOP, Boolean.toString(isTimerStoped)).apply();
+        getPreferences(MODE_PRIVATE).edit().putInt(PREF_HINTS, hintsCount).apply();
+        getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_TIMER_STOP, isTimerStopped).apply();
     }
 
     /**
      * Given a difficulty level, come up with a new puzzle
      */
-    private void getMatrix(int diff) {
-        switch (diff) {
-            case DIFFICULTY_CONTINUE:
-                String str = getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null);
-                MemoryMatrix = fromMatrixString(str);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_ANSWER_MATRIX, null);
-                AnswerMatrix = fromMatrixString(str);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null);
-                ChangeMatrix = fromChangeMatrixString(str);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_TIME, null);
-                saveSeconds = Long.parseLong(str, 10);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_HINTS, null);
-                hintsCount = Integer.parseInt(str, 10);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_DIFFICULTY, null);
-                difficulty = Integer.parseInt(str, 10);
-                str = getPreferences(MODE_PRIVATE).getString(PREF_TIMER_STOP, null);
-                isTimerStoped = Boolean.parseBoolean(str);
-                break;
-            case DIFFICULTY_HARD:
-                getMatrixHelper(24 + randomizer.GetInt(3), DIFFICULTY_HARD, 0);
-                break;
-            case DIFFICULTY_MEDIUM:
-                getMatrixHelper(27 + randomizer.GetInt(3), DIFFICULTY_MEDIUM, 1);
-                break;
-            case DIFFICULTY_EASY:
-                getMatrixHelper(30 + randomizer.GetInt(3), DIFFICULTY_EASY, 2);
-                break;
-            case DIFFICULTY_BEGINNER:
-            default:
-                getMatrixHelper(33 + randomizer.GetInt(3), DIFFICULTY_BEGINNER, 3);
-                break;
-        }
+    private void initializeGameSettings(Difficulty diff) {
+            switch (diff) {
+                case Continue:
+                    MemoryMatrix = fromMatrixString(getPreferences(MODE_PRIVATE).getString(PREF_MATRIX, null));
+                    AnswerMatrix = fromMatrixString(getPreferences(MODE_PRIVATE).getString(PREF_ANSWER_MATRIX, null));
+                    ChangeMatrix = fromChangeMatrixString(getPreferences(MODE_PRIVATE).getString(PREF_CHANGE_MATRIX, null));
+
+                    saveSeconds = getPreferences(MODE_PRIVATE).getLong(PREF_TIME, 0);
+                    hintsCount = getPreferences(MODE_PRIVATE).getInt(PREF_HINTS, 0);
+                    difficulty = Difficulty.values()[getPreferences(MODE_PRIVATE).getInt(PREF_DIFFICULTY, 0)];
+                    isTimerStopped = getPreferences(MODE_PRIVATE).getBoolean(PREF_TIMER_STOP, false);
+                    break;
+                case Hard:
+                    initializeMatrices(Difficulty.Hard, 0);
+                    break;
+                case Medium:
+                    initializeMatrices(Difficulty.Medium, 0);
+                    break;
+                case Easy:
+                    initializeMatrices(Difficulty.Easy, 1);
+                    break;
+                case Beginner:
+                default:
+                    initializeMatrices(Difficulty.Beginner, 2);
+                    break;
+            }
         setTitle("(" + String.format("%02d:%02d", saveSeconds / 60, saveSeconds % 60) + ")");
         if (hintsCount == 0)
             ((ViewManager) buttonHints.getParent()).removeView(buttonHints);
@@ -383,39 +362,29 @@ public class GameActivity extends PluginHandlerActivity {
             buttonHints.setText(getResources().getString(R.string.hints_label) + " " + hintsCount);
     }
 
-    private void getMatrixHelper(int generateCellsCount, int difficulty, int hintsCount) {
-        /*Check if sudoku generated correctly, else return to main screen*/
-        if (!sudokuGenerator.generate(generateCellsCount, MemoryMatrix)) {
-            //TODO: return case;
-        }
+    private void initializeMatrices(Difficulty difficulty, int hintsCount) {
+        MemoryMatrix = fromMatrixString(getIntent().getStringExtra(PREF_MATRIX));
         setChangeMatrix();
-        AnswerMatrix = getData();
+        AnswerMatrix = getCopyOfMemoryMatrix();
         sudokuSolver.solve(AnswerMatrix);
         this.difficulty = difficulty;
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_DIFFICULTY, Integer.toString(difficulty)).apply();
+        getPreferences(MODE_PRIVATE).edit().putInt(PREF_DIFFICULTY, difficulty.ordinal()).apply();
         this.saveSeconds = 0;
-        getPreferences(MODE_PRIVATE).edit().putString(PREF_TIME, Long.toString(this.saveSeconds)).apply();
+        getPreferences(MODE_PRIVATE).edit().putLong(PREF_TIME, this.saveSeconds).apply();
         this.hintsCount = hintsCount;
     }
 
     private void openNewGameDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.new_game_title)
-                .setItems(R.array.difficulty,
+                .setItems(R.array.difficulties,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialoginterface,
                                                 int i) {
-                                finish();
-                                startGame(i);
+                                new GameLoadingScreen(GameActivity.this).start(Difficulty.values()[i], true);
                             }
                         })
                 .show();
-    }
-
-    private void startGame(int i) {
-        Intent intent = new Intent(GameActivity.this, GameActivity.class);
-        intent.putExtra(GameActivity.KEY_DIFFICULTY, i);
-        startActivity(intent);
     }
 
     @Override
@@ -461,7 +430,7 @@ public class GameActivity extends PluginHandlerActivity {
         startActivity(getIntent());
     }
 
-    private byte[][] getData() {
+    private byte[][] getCopyOfMemoryMatrix() {
         byte[][] result = new byte[MemoryMatrix.length][];
         for (int i = 0; i < MemoryMatrix.length; i++) {
             result[i] = Arrays.copyOf(MemoryMatrix[i], MemoryMatrix[i].length);
@@ -469,7 +438,7 @@ public class GameActivity extends PluginHandlerActivity {
         return result;
     }
 
-    private void setData(byte[][] original) {
+    private void copyToMemoryMatrix(byte[][] original) {
         for (int i = 0; i < original.length; i++) {
             MemoryMatrix[i] = Arrays.copyOf(original[i], original[i].length);
         }
@@ -484,63 +453,15 @@ public class GameActivity extends PluginHandlerActivity {
         }
     }
 
-    /**
-     * Convert an array into a matrix string
-     */
-    static private String toMatrixString(byte[][] matrix) {
-        StringBuilder str = new StringBuilder();
-        for (byte[] element : matrix)
-            for (byte element2 : element)
-                str.append(element2);
-        return str.toString();
-    }
-
-    /**
-     * Convert a puzzle string into an array
-     */
-    private static byte[][] fromMatrixString(String string) {
-        byte[][] matrix = new byte[(int) Math.sqrt(string.length())][(int) Math.sqrt(string.length())];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-                matrix[i][j] = (byte) (string.charAt(j + i * 9) - '0');
-        return matrix;
-    }
-
-    /**
-     * Convert an array into a matrix string
-     */
-    private static String toChangeMatrixString(boolean[][] matrix) {
-        StringBuilder str = new StringBuilder();
-        for (boolean[] element : matrix)
-            for (boolean element2 : element)
-                if (element2)
-                    str.append(1);
-                else
-                    str.append(0);
-        return str.toString();
-    }
-
-    /**
-     * Convert a puzzle string into an array
-     */
-    private static boolean[][] fromChangeMatrixString(String string) {
-        boolean[][] matrix = new boolean[(int) Math.sqrt(string.length())][(int) Math.sqrt(string.length())];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-                matrix[i][j] = (string.charAt(j + i * 9) - '0') == 1;
-
-        return matrix;
-    }
-
     private void Hints() {
-        Point points[] = new Point[matrixRectCount * matrixRectCount];
+        Point points[] = new Point[BOARD_SIDE_RECT_COUNT * BOARD_SIDE_RECT_COUNT];
         int count = 0;
-        for (int i = 0; i < matrixRectCount; i++)
-            for (int j = 0; j < matrixRectCount; j++)
+        for (int i = 0; i < BOARD_SIDE_RECT_COUNT; i++)
+            for (int j = 0; j < BOARD_SIDE_RECT_COUNT; j++)
                 if (ChangeMatrix[i][j] && (MemoryMatrix[i][j] != AnswerMatrix[i][j] || MemoryMatrix[i][j] == 0)) {
                     points[count++] = new Point(i, j);
                 }
-        int num = randomizer.GetInt(count);
+        int num = defaultRandomizer.GetInt(count);
         MemoryMatrix[points[num].x][points[num].y] = AnswerMatrix[points[num].x][points[num].y];
         ChangeMatrix[points[num].x][points[num].y] = false;
         gameBoardView.invalidate();

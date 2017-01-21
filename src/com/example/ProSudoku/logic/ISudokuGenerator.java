@@ -1,5 +1,7 @@
 package com.example.ProSudoku.logic;
 
+import com.example.ProSudoku.Difficulty;
+
 public interface ISudokuGenerator {
-    boolean generate(int spots, byte[][] gameBoard);
+    String generate(Difficulty difficulty);
 }
