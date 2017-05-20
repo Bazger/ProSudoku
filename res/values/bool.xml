@@ -2,4 +2,5 @@
 <resources>
     <bool name="music_default">true</bool>
     <bool name="sound_button_default">true</bool>
+    <bool name="download_sudoku_default">true</bool>
 </resources>

@@ -6,11 +6,23 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.widget.TextView;
 import com.example.ProSudoku.activity.board.game.GameActivity;
+import com.example.ProSudoku.activity.prefs.PrefsActivity;
 import com.example.ProSudoku.logic.ISudokuGenerator;
 import com.example.ProSudoku.logic.SimpleSudokuGenerator;
+import com.example.ProSudoku.logic.WebSudokuGenerator;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.ContentValues.TAG;
 
@@ -21,9 +33,36 @@ public class GameLoadingScreen {
     private GenerateBoardTask generateBoardTask;
     private Difficulty difficulty;
     private boolean closeCallingActivity;
+    private ArrayList<String> loadingMessages;
+    private Thread updatedMessagesProcess = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            int i = 0;
+            try {
+                while (true) {
+                    Message msg = new Message();
+                    msg.obj = loadingMessages.get(i % loadingMessages.size());
+                    loadDialogHandler.sendMessage(msg);
+                    TimeUnit.MILLISECONDS.sleep(context.getResources().getInteger(R.integer.loading_change_messages_time));
+                    i++;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    });
+
+    private Handler loadDialogHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            loadDialog.setMessage(((String)msg.obj));
+        }
+    };
+
 
     public GameLoadingScreen(Context context) {
         this.context = context;
+        loadingMessages = new ArrayList<String>(Arrays.asList(context.getResources().getStringArray(R.array.loading_messages)));
+        Collections.shuffle(loadingMessages);
     }
 
     public void start(Difficulty difficulty, boolean closeCallingActivity) {
@@ -31,7 +70,16 @@ public class GameLoadingScreen {
         this.difficulty = difficulty;
         this.closeCallingActivity = closeCallingActivity;
 
-        generateBoardTask = new GenerateBoardTask();
+        ISudokuGenerator generator;
+        if (PrefsActivity.getDownloadSudoku(context) && isInternetAvailable()) {
+            generator = new WebSudokuGenerator();
+            loadDialog.setMessage(context.getResources().getString(R.string.loading_screen_downloading_message));
+        } else {
+            generator = new SimpleSudokuGenerator();
+            updatedMessagesProcess.start();
+        }
+
+        generateBoardTask = new GenerateBoardTask(generator);
         generateBoardTask.execute();
     }
 
@@ -59,7 +107,22 @@ public class GameLoadingScreen {
         context.startActivity(intent);
     }
 
+    private boolean isInternetAvailable() {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity.getActiveNetworkInfo() != null) {
+            if (connectivity.getActiveNetworkInfo().isConnected())
+                return true;
+        }
+        return false;
+    }
+
     private class GenerateBoardTask extends AsyncTask<Void, Void, String> {
+
+        private ISudokuGenerator generator;
+
+        private GenerateBoardTask(ISudokuGenerator generator) {
+            this.generator = generator;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -68,20 +131,24 @@ public class GameLoadingScreen {
 
         @Override
         protected String doInBackground(Void... params) {
-            ISudokuGenerator generator = new SimpleSudokuGenerator();
             return generator.generate(difficulty);
         }
 
         @Override
         protected void onPostExecute(String gameBoard) {
             super.onPostExecute(gameBoard);
-            if(gameBoard != null)
-            {
-                startGame(gameBoard);
-                if(closeCallingActivity)
-                {
-                    ((Activity)context).finish();
-                }
+            if(updatedMessagesProcess.isAlive()) {
+                updatedMessagesProcess.interrupt();
+            }
+
+            if (gameBoard == null) {
+                loadDialog.dismiss();
+                return;
+            }
+
+            startGame(gameBoard);
+            if (closeCallingActivity) {
+                ((Activity) context).finish();
             }
         }
     }

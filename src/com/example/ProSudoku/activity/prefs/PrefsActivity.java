@@ -128,6 +128,14 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     /**
      * Get the current value of the Font option
      */
+    public static Boolean getDownloadSudoku(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getResources().getString(R.string.prefs_download_sudoku_key), context.getResources().getBoolean(R.bool.download_sudoku_default));
+    }
+
+    /**
+     * Get the current value of the Font option
+     */
     public static String getFonts(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(context.getResources().getString(R.string.prefs_fonts_key), context.getResources().getString(R.string.prefs_fonts_default));

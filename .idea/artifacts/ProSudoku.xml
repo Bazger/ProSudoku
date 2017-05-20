@@ -13,6 +13,8 @@
     </properties>
     <root id="archive" name="ProSudoku.apk">
       <element id="android-final-package" facet="ProSudoku/android/Android" />
+      <element id="library" level="project" name="android-support-v4" />
+      <element id="library" level="project" name="jsoup-1.10.2" />
     </root>
   </artifact>
 </component>

@@ -27,6 +27,19 @@
     <string name="medium_label">Средне</string>
     <string name="hard_label">Сложно</string>
 
+    <!--Loading screen-->
+    <string name="loading_screen_title">Создание доски</string>
+    <string name="loading_screen_message">Загрузка</string>
+    <string name="loading_screen_cancel_but">Отмена</string>
+    <string name="loading_screen_downloading_message">Тырим судоку с интернета</string>
+
+    <string name="loading_screen_message_ex1">Сдуваем пыль с доски</string>
+    <string name="loading_screen_message_ex2">Крутим вертим числами</string>
+    <string name="loading_screen_message_ex3">Клеим обои и выставляем настройки</string>
+    <string name="loading_screen_message_ex4">Паримся над решением</string>
+    <string name="loading_screen_message_ex5">Создаем квадратики</string>
+    <string name="loading_screen_message_ex6">Раскрашиваем границы</string>
+
     <!--Game activity-->
     <string name="game_title">00:00</string>
     <string name="no_moves_label">Нет больше ходов</string>
@@ -65,6 +78,9 @@
     <string name="prefs_plugin_category_summary">Плагины для игровой доски</string>
     <string name="prefs_plugin_category_title">Плагины</string>
 
+    <string name="prefs_network_category_key">networkCategory</string>
+    <string name="prefs_network_category_title">Сеть</string>
+
     <string name="prefs_border_size_key">border_size</string>
     <string name="prefs_border_size_default">1</string>
     <string name="prefs_border_size_summary">Размер границ игровой доски</string>
@@ -72,7 +88,6 @@
     <string name="prefs_border_size_option_small">Маленький</string>
     <string name="prefs_border_size_option_normal">Нормальный</string>
     <string name="prefs_border_size_option_large">Большой</string>
-
 
     <string name="prefs_themes_key">themes</string>
     <string name="prefs_themes_default">0</string>
@@ -86,14 +101,25 @@
     <string name="prefs_fonts_summary">Шрифты к игровой доске</string>
     <string name="prefs_fonts_title">Шрифты</string>
 
+    <string name="prefs_download_sudoku_key">downloadSudoku</string>
+    <string name="prefs_download_sudoku_summary">Для закачки судоку с интернета</string>
+    <string name="prefs_download_sudoku_title">Скачать судоку</string>
+
+    <!--Plugins-->
+    <string name="plugin_highlight_same_numbers_title">Подсветка одинаковых чисел</string>
+    <string name="plugin_highlight_same_numbers_summary">Подсвечивает одинаковые числа на игровой доске</string>
+
+    <string name="plugin_show_finished_number_title">Подсветка оконченного числа</string>
+    <string name="plugin_show_finished_number_summary">Подсвечивает на числовой строке число которое было полностью заполнено</string>
+
     <!--About activity-->
     <string name="my_name"><b>Иван Золотарев</b></string>
     <string name="my_twitter_name"><i>\@Bazger97</i></string>
     <string name="my_info">Разработчик игр, Разработчик модов для Minecraft(MoneyCraft)</string>
     <string name="my_link"><a ref="http://t.co/ZhSITOHa">Click me!</a></string>
 
-    <string name="school_name_label"><b>Школа: </b>Amit</string>
-    <string name="school_teacher_name"><b>Учитель: </b>Avital Shain</string>
+    <string name="school_name_label"><b>Школа: </b>Амит</string>
+    <string name="school_teacher_name"><b>Учитель: </b>Авиталь Шайн</string>
 
     <string name="about_tab_school">Школа</string>
     <string name="about_tab_tweets">Твиты</string>

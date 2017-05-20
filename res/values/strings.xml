@@ -30,6 +30,14 @@
     <string name="loading_screen_title">Creating board</string>
     <string name="loading_screen_message">Loading</string>
     <string name="loading_screen_cancel_but">Cancel</string>
+    <string name="loading_screen_downloading_message">Stealing sudoku from the internet</string>
+
+    <string name="loading_screen_message_ex1">Wiping dust from the board</string>
+    <string name="loading_screen_message_ex2">Randomize numbers</string>
+    <string name="loading_screen_message_ex3">Setting background and fonts</string>
+    <string name="loading_screen_message_ex4">Trying to solve sudoku</string>
+    <string name="loading_screen_message_ex5">Creating cells</string>
+    <string name="loading_screen_message_ex6">Paint borders</string>
 
     <!--Game activity-->
     <string name="game_title">00:00</string>
@@ -69,6 +77,9 @@
     <string name="prefs_plugin_category_summary">Plugins for Game Board mapping</string>
     <string name="prefs_plugin_category_title">Plugins</string>
 
+    <string name="prefs_network_category_key">networkCategory</string>
+    <string name="prefs_network_category_title">Network</string>
+
     <string name="prefs_border_size_key">border_size</string>
     <string name="prefs_border_size_default">1</string>
     <string name="prefs_border_size_summary">Border size of game matrix</string>
@@ -88,6 +99,17 @@
     <string name="prefs_fonts_default">Polo.ttf</string>
     <string name="prefs_fonts_summary">Font of game matrix</string>
     <string name="prefs_fonts_title">Matrix fonts</string>
+
+    <string name="prefs_download_sudoku_key">downloadSudoku</string>
+    <string name="prefs_download_sudoku_summary">Get sudoku boards from the internet</string>
+    <string name="prefs_download_sudoku_title">Download sudoku</string>
+
+    <!--Plugins-->
+    <string name="plugin_highlight_same_numbers_title">Highlight Same Numbers</string>
+    <string name="plugin_highlight_same_numbers_summary">Highlighting same numbers on the game board</string>
+
+    <string name="plugin_show_finished_number_title">Finished Numbers</string>
+    <string name="plugin_show_finished_number_summary">Show finished numbers</string>
 
     <!--About activity-->
     <string name="my_name"><b>Ivan Zolotaryov</b></string>

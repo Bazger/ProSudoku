@@ -301,9 +301,9 @@ public class GameBoardView extends View {
         if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
             //What kind of cell was chosen
             if (activity.getMemoryMatrix()[selectedPoint.x][selectedPoint.y] == 0)
-                p.setColor(gameBColors.getSameEmptyNumberCellColor());
+                p.setColor(gameBColors.getSelectedEmptyCellColor());
             else
-                p.setColor(gameBColors.getChoseCellColor());
+                p.setColor(gameBColors.getSelectedNotEmptyCellColor());
 
             canvas.drawRect(GameBoardRects[selectedPoint.x][selectedPoint.y], p);
             p.setColor(gameBColors.getCellColor());

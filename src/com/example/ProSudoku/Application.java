@@ -16,7 +16,7 @@ public final class Application extends android.app.Application {
 			FontsOverride.setDefaultFont(this, "MONOSPACE", "BrushType.ttf");
 
 		} else {
-			FontsOverride.setDefaultFont(this, "MONOSPACE", "Polo.ttf");
+			FontsOverride.setDefaultFont(this, "MONOSPACE", "BrushType.ttf");
 
 		}
 	}

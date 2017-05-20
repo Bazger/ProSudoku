@@ -1,16 +1,14 @@
 package com.example.ProSudoku.plugin.plugins;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import com.example.ProSudoku.R;
 import com.example.ProSudoku.activity.board.GameBoardColors;
 import com.example.ProSudoku.activity.board.GameBoardView;
 import com.example.ProSudoku.plugin.GameBoardViewPlugin;
 import com.example.ProSudoku.plugin.IPreferencePlugin;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class ShowFinishedNumbersPlugin extends GameBoardViewPlugin implements IPreferencePlugin {
 
@@ -27,8 +25,8 @@ public class ShowFinishedNumbersPlugin extends GameBoardViewPlugin implements IP
     public ShowFinishedNumbersPlugin(Context context) {
         super(context);
         preference = new CheckBoxPreference(context);
-        preference.setTitle("Finished Numbers");
-        preference.setSummary("Show finished numbers");
+        preference.setTitle(R.string.plugin_show_finished_number_title);
+        preference.setSummary(R.string.plugin_show_finished_number_summary);
         preference.setKey(getPluginName());
         preference.setDefaultValue(false);
     }
@@ -87,7 +85,7 @@ public class ShowFinishedNumbersPlugin extends GameBoardViewPlugin implements IP
 
         for (int i = 1; i < numberBoardRects.length; i++) {
             if (uNumbers[i].uniqueness) {
-                numberBoardNumbers[i] = getGameBoardView().textAsBitmap(String.valueOf(i), numberBoardRects[i].width(), colors.getErrorColor(), typeface);
+                numberBoardNumbers[i] = getGameBoardView().textAsBitmap(String.valueOf(i), numberBoardRects[i].width(), colors.getSameCellsToSelectedCellColor(), typeface);
             }
         }
     }

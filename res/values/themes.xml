@@ -23,6 +23,7 @@
         <item name="android:actionBarTabTextStyle">@style/DayActionBarTabText</item>
         <item name="android:actionBarTabStyle">@style/DayActionBarTabs</item>
 
+        <item name="android:alertDialogTheme">@style/DayDialog</item>
         <item name="android:popupMenuStyle">@style/DayPopupMenu</item>
     </style>
 
@@ -36,7 +37,7 @@
         <item name="android:actionBarTabBarStyle">@style/NightActionBarTabStyle</item>
         <item name="android:actionBarTabTextStyle">@style/NightActionBarTabText</item>
         <!--<item name="android:actionBarTabStyle">@style/NightActionBarTabs</item>-->
-
+        <item name="android:alertDialogTheme">@style/NightDialog</item>
         <item name="android:popupMenuStyle">@style/NightPopupMenu</item>
     </style>
 
@@ -49,6 +50,58 @@
     <style name="ButtonNight" parent="@android:style/Widget.Button">
         <item name="android:textColor">@color/night_button_text</item>
         <item name="android:background">@drawable/button_night</item>
+    </style>
+
+
+    <!-- Dialog Styles -->
+    <style name="DayDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle.Day</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.Medium</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.Medium</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="NightDialog" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle.Night</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.Medium</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.Medium</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="TextAppearance.Medium" parent="@android:style/TextAppearance.Holo.Medium">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="DialogWindowTitle">
+        <item name="android:maxLines">1</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.DialogWindowTitle</item>
+    </style>
+
+    <style name="DialogWindowTitle.Day" parent="@style/DialogWindowTitle">
+        <item name="android:textAppearance">@style/TextAppearance.Day.DialogWindowTitle</item>
+    </style>
+
+    <style name="DialogWindowTitle.Night" parent="@style/DialogWindowTitle">
+        <item name="android:textAppearance">@style/TextAppearance.Night.DialogWindowTitle</item>
+    </style>
+
+    <style name="TextAppearance.Day.DialogWindowTitle" parent="@android:style/TextAppearance.Holo.DialogWindowTitle">
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.Night.DialogWindowTitle" parent="@android:style/TextAppearance.Holo.DialogWindowTitle">
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
 </resources>

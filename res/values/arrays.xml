@@ -42,4 +42,13 @@
         <item>Parisian.ttf</item>
     </string-array>
 
+    <string-array name="loading_messages">
+        <item>@string/loading_screen_message_ex1</item>
+        <item>@string/loading_screen_message_ex2</item>
+        <item>@string/loading_screen_message_ex3</item>
+        <item>@string/loading_screen_message_ex4</item>
+        <item>@string/loading_screen_message_ex5</item>
+        <item>@string/loading_screen_message_ex6</item>
+    </string-array>
+
 </resources>
