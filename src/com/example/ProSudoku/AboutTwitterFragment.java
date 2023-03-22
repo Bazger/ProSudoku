@@ -14,7 +14,7 @@ import com.example.ProSudoku.R;
 public class AboutTwitterFragment extends Fragment {
 
     private static final String baseURl = "https://twitter.com";
-    private static final String widgetInfo = " <a class=\"twitter-timeline\" href=\"https://twitter.com/Bazger97\" data-widget-id=\"592304691645534209\">“‚ËÚ˚ ÓÚ @Bazger97</a> " +
+    private static final String widgetInfo = " <a class=\"twitter-timeline\" href=\"https://twitter.com/Bazger\" data-widget-id=\"592304691645534209\">√í√¢√®√≤√ª √Æ√≤ @Bazger97</a> " +
             "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id))" +
             "{js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script> ";
 
